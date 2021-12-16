@@ -38,6 +38,10 @@ export class HeaderContainerComponent implements OnInit {
   public nativeTitle = '';
 
   ngOnInit() {
+    console.log('ttttttttttt');
+    console.log(this.menuItems);
+    console.log(CurrentInstance.instance.constructor.name);
+    
     if (this.currentMenuItem) {
       this.nativeTitle = this.currentMenuItem.label;
     }
