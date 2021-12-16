@@ -77,14 +77,13 @@ jobs:
       - name: npm install, build, and test
         run: |
           npm install
-          npm run build --if-present
-          npm run test --if-present
+          npm run build
 
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v2
-        with:
-          name: node-app
-          path: .
+      # - name: Upload artifact for deployment job
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: node-app
+      #     path: .
 
   deploy:
     runs-on: ubuntu-latest
@@ -94,10 +93,10 @@ jobs:
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v2
-        with:
-          name: node-app
+      # - name: Download artifact from build job
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: node-app
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -106,4 +105,4 @@ jobs:
           app-name: 'bmgmt-client2'
           slot-name: 'production'
           publish-profile: ${{ secrets.AzureAppService_PublishProfile_7964f62d07ae4f5ebe77595dddebdb13 }}
-          package: .
+          package: ./dist/builder-mgmt
