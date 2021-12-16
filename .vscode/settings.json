@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/76f4403b-10f4-4bd4-b90a-b763e619f8b7/resourceGroups/DefaultResourceGroup-DEWC/providers/Microsoft.Web/sites/bmgmt-client2",
+    "appService.deploySubpath": "."
+}

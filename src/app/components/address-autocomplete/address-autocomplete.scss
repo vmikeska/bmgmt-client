@@ -1,0 +1,27 @@
+@import '../../scss/values';
+
+app-address-autocomplete {
+  .search-results-cont {
+    position: relative;
+  }
+
+  .items {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: white;
+    z-index: 1000;
+
+    .item {
+      padding: 1rem;
+      cursor: pointer;
+
+      &:hover {
+        color: white;
+        background-color: $c-violete;
+      }
+    }
+
+
+  }
+}

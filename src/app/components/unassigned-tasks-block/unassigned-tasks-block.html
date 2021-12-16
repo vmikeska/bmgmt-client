@@ -1,0 +1,21 @@
+<ng-container *ngIf="tasks">
+  <div class="split-block-title">Unassigned tasks</div>
+
+    <div class="split-block">
+
+      <div class="unassigned-tasks-block">
+
+        <div class="unassigned-tasks-cont">
+          <div
+            *ngFor="let item of tasks"
+            class="item"
+            (click)="taskLinkClick(item)"
+          >
+            {{item.name}}
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+</ng-container>

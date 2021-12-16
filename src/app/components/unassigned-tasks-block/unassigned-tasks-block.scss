@@ -1,0 +1,22 @@
+
+@import '../../scss/values';
+
+.unassigned-tasks-block {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+}
+
+.unassigned-tasks-cont {
+  .item {
+    font-size: 1.4rem;
+    line-height: 2rem;
+    color: $c-black;
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+      color: $c-green;
+    }
+  }
+}

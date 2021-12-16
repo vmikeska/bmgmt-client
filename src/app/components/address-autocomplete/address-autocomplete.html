@@ -1,0 +1,27 @@
+
+  <mat-form-field class="example-full-width">
+    <mat-label>Address</mat-label>
+    <input
+      type="text"
+      placeholder="Search address"
+      matInput
+      [(ngModel)]="searchStr"
+      (keyup)="searchChange()"
+    >
+    <div
+      *ngIf="showOptions"
+      class="search-results-cont"
+    >
+      <div class="items">
+        <div
+          *ngFor="let option of options | async"
+          class="item"
+          (click)="itemClick(option)"
+        >
+          <!-- <div class="t1">{{option.text1}}</div> -->
+          <div class="t2">{{option.text2}}</div>
+        </div>
+      </div>
+    </div>
+  </mat-form-field>
+

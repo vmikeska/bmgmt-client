@@ -1,0 +1,15 @@
+<mat-form-field appearance="fill">
+  <mat-label>{{label}}</mat-label>
+  <mat-select
+    [(ngModel)]="model"
+    (ngModelChange)="innerChangeEvent()"
+  >
+    <mat-option
+      *ngFor="let opt of opts"
+      [value]="opt.value"
+    >
+      {{opt.label}}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+

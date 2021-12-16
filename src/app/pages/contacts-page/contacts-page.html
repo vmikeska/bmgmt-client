@@ -1,0 +1,135 @@
+<div class="page-all">
+
+  <app-header-container>
+
+    <div class="search-str-block">
+
+      <mat-radio-group
+        aria-label="Who do you want to search?"
+        [(ngModel)]="searchType"
+        (ngModelChange)="typeChange()"
+      >
+        <mat-radio-button
+          *ngFor="let item of searchTypes"
+          [value]="item.value"
+        >{{item.label}}</mat-radio-button>
+      </mat-radio-group>
+
+      <div class="input-cont">
+
+        <input
+          [(ngModel)]="serachStr"
+          placeholder="Find a Contact"
+          (keyup)="searchChange()"
+          class="input"
+        />
+
+      </div>
+    </div>
+
+  </app-header-container>
+
+  <div class="results">
+
+    <!-- <div
+      *ngIf="hasEmptyString"
+      class="results-info-block empty-string"
+    >
+      <div class="main-row">No name specified</div>
+      <div class="secondary-row">Type a name into the search box</div>
+    </div> -->
+
+    <div
+      *ngIf="showHasNoResults"
+      class="results-info-block no-results"
+    >
+      <div class="main-row">No results found</div>
+      <div class="secondary-row">Try to type a different name</div>
+    </div>
+
+    <ng-container *ngIf="showItems">
+      <div
+        *ngFor="let item of items"
+        class="result"
+      >
+
+        <div class="name-bar">
+          <div
+            class="l"
+            (click)="detailClick(item)"
+          >
+
+            <fa-icon
+              class="ico"
+              [icon]="faUser"
+              size="3x"
+            ></fa-icon>
+
+          </div>
+
+          <div
+            class="m"
+            (click)="detailClick(item)"
+          >
+            {{item.fullName}}
+          </div>
+
+          <div class="r">
+
+            <span
+              *ngFor="let action of item.actions"
+              class="comm-item"
+            >
+              <fa-icon
+                class="ico"
+                [icon]="action.ico"
+                size="3x"
+                (click)="action.callback(item)"
+              ></fa-icon>
+            </span>
+
+          </div>
+        </div>
+
+        <div
+          *ngIf="item.isOpened"
+          class="bottom-actions-cont"
+        >
+          <div class="tbl">
+            <span
+              *ngFor="let action of item.detailActions"
+              class="act-item"
+            >
+              <fa-icon
+                class="ico"
+                [icon]="action.ico"
+                size="3x"
+                (click)="action.callback(item)"
+              ></fa-icon>
+            </span>
+          </div>
+        </div>
+
+        <!-- <div
+          *ngIf="item.isOpened && item.tags.length"
+          class="tags-cont"
+        >
+          <span
+            *ngFor="let tag of item.tags"
+            class="tag"
+          >{{tag.name}}</span>
+        </div> -->
+
+        <app-list-tagger
+          *ngIf="item.isOpened"
+          [entityId]="item.id"
+          [loadCallback]="userTagsLoadCallback"
+          [editable]="false"
+        ></app-list-tagger>
+
+      </div>
+    </ng-container>
+
+  </div>
+
+</div>

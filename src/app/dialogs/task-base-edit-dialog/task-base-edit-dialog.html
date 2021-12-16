@@ -1,0 +1,123 @@
+<app-base-dialog title="Edit task base">
+
+  <div
+    *ngIf="initialized"
+    class="page-all"
+  >
+
+    <div class="form-cont">
+
+      <div class="single-line">
+        <app-input
+          label="Task name"
+          [(model)]="vm.name"
+        ></app-input>
+      </div>
+
+      <div class="single-line">
+        <mat-form-field>
+          <mat-label>Description</mat-label>
+          <textarea
+            matInput
+            [(ngModel)]="vm.desc"
+          ></textarea>
+        </mat-form-field>
+
+      </div>
+
+      <div class="single-line">
+        <app-select
+          label="Select task type"
+          [(model)]="vm.type"
+          [opts]="typeOptions"
+          (change)="taskTypeChange()"
+        ></app-select>
+      </div>
+
+      <ng-container *ngIf="isPeriodBased">
+
+        <div class="double-line">
+          <div class="l">
+            <app-select
+              *ngIf="isWeekBased"
+              label="Week"
+              [(model)]="vm.week"
+              [opts]="weekOptions"
+            ></app-select>
+
+            <app-select
+              *ngIf="isMonthBased"
+              label="Month"
+              [(model)]="vm.month"
+              [opts]="monthOptions"
+            ></app-select>
+          </div>
+          <div class="r">
+            <app-select
+              label="Year"
+              [(model)]="vm.year"
+              [opts]="yearsOptions"
+              (change)="yearChange()"
+            ></app-select>
+          </div>
+        </div>
+
+      </ng-container>
+
+      <ng-container *ngIf="isDateRangeBased">
+
+        <div class="double-line">
+          <div class="l">
+            <app-date-picker
+              label="Date from"
+              [(model)]="vm.dateFrom"
+              (change)="dateRangeChange()"
+            ></app-date-picker>
+          </div>
+          <div class="r">
+            <app-date-picker
+              label="Date to"
+              [(model)]="vm.dateTo"
+              (change)="dateRangeChange()"
+            ></app-date-picker>
+          </div>
+        </div>
+
+      </ng-container>
+
+      <div class="double-line">
+        <div class="l">
+          <app-input
+            label="Mandays"
+            type="number"
+            [(model)]="vm.manDays"
+          ></app-input>
+        </div>
+        <div class="r">
+          <app-input
+            label="Manhours"
+            type="number"
+            [(model)]="vm.manHours"
+          ></app-input>
+        </div>
+      </div>
+
+      <div class="btn-cont">
+        <button
+          class="left-rounded-btn"
+          (click)="updateClick()"
+        >
+          <fa-icon
+            class="ico"
+            [icon]="faSave"
+            size="2x"
+          ></fa-icon>
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+
+</app-base-dialog>

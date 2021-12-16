@@ -1,0 +1,35 @@
+@import '../../scss/values';
+
+app-task-detail-page {
+
+  .title-action-cont {
+    text-align: left;
+    color: white;
+  }
+
+  .local-title-name {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .date-and-load {
+
+    padding-left: 1rem;
+
+    color: white;
+  }
+
+  .desc {
+    margin-top: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 1.1rem;
+  }
+
+  .add-actions-block {
+    margin-top: 0.5rem;
+  }
+
+}
+
+

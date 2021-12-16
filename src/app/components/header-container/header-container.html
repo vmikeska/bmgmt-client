@@ -1,0 +1,25 @@
+<div class="header-container">
+  <div class="menu">
+
+    <div
+      *ngFor="let item of menuItems"
+      class="item"
+      [ngClass]="{'active': activeMenuItem === item}"
+      (click)="itemClicked(item)"
+    >
+      <fa-icon
+        class="ico"
+        [icon]="item.ico"
+        size="2x"
+      ></fa-icon>
+    </div>
+
+  </div>
+
+  <div
+    *ngIf="showTitle"
+    class="title-name"
+  >{{title}}</div>
+
+  <ng-content></ng-content>
+

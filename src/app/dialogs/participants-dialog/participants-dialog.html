@@ -1,0 +1,45 @@
+<app-base-dialog title="Assign project participants">
+
+  <div class="role-block">
+    <div class="title">Admin</div>
+    <div class="desc"></div>
+    <div class="tagger-cont">
+      <app-role-tagger
+        [topicId]="topicId"
+        [role]="TopicParticipantEnum.Admin"
+        [removeCallback]="removeCallback"
+        [addCallback]="addCallback"
+        [loadCallback]="loadCallback"
+      ></app-role-tagger>
+    </div>
+  </div>
+
+  <div class="role-block">
+    <div class="title">Worker</div>
+    <div class="desc"></div>
+    <div class="tagger-cont">
+      <app-role-tagger
+        [topicId]="topicId"
+        [role]="TopicParticipantEnum.Worker"
+        [removeCallback]="removeCallback"
+        [addCallback]="addCallback"
+        [loadCallback]="loadCallback"
+      ></app-role-tagger>
+    </div>
+  </div>
+
+  <div class="role-block">
+    <div class="title">Observer</div>
+    <div class="desc"></div>
+    <div class="tagger-cont">
+      <app-role-tagger
+        [topicId]="topicId"
+        [role]="TopicParticipantEnum.Observer"
+        [removeCallback]="removeCallback"
+        [addCallback]="addCallback"
+        [loadCallback]="loadCallback"
+      ></app-role-tagger>
+    </div>
+  </div>
+
+</app-base-dialog>

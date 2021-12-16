@@ -1,0 +1,61 @@
+<app-base-dialog [title]="title">
+
+  <div class="dlg-cont">
+
+    <div
+      *ngIf="desc"
+      class="desc"
+    >{{desc}}</div>
+
+    <div
+      *ngIf="load"
+      class="desc"
+    >{{load}}</div>
+
+    <div class="bottom-buttons">
+      <span
+        class="btn"
+        (click)="deleteClick()"
+      >
+        <fa-icon
+          class="ico"
+          [icon]="faTimes"
+          size="3x"
+        ></fa-icon>
+      </span>
+      <span
+        class="btn"
+        (click)="compensateClick()"
+      >
+        <fa-icon
+          class="ico"
+          [icon]="faClock"
+          size="3x"
+        ></fa-icon>
+      </span>
+      <span
+        class="btn"
+        (click)="finishClick()"
+      >
+        <fa-icon
+          class="ico"
+          [icon]="faCheck"
+          size="3x"
+        ></fa-icon>
+      </span>
+
+      <span
+        class="btn"
+        (click)="detailClick()"
+      >
+        <fa-icon
+          class="ico"
+          [icon]="faEye"
+          size="3x"
+        ></fa-icon>
+      </span>
+    </div>
+
+  </div>
+
+</app-base-dialog>

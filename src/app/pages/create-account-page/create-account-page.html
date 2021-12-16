@@ -1,0 +1,36 @@
+<div class="page-cont">
+
+  <div class="controls-cont">
+
+    <div class="input-cont">
+      <app-input
+        label="Mail"
+        [(model)]="mail"
+      ></app-input>
+    </div>
+
+    <div class="input-cont">
+      <app-input
+        label="Password"
+        [(model)]="password"
+      ></app-input>
+    </div>
+
+    <div class="button-cont">
+      <span
+        class="btn"
+        (click)="createClick()"
+      >Create account</span>
+    </div>
+
+    <div class="login-cont">
+      <span
+        class="login-btn"
+        (click)="loginClick()"
+      >Log in</span>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,27 @@
+.dlg-cont {
+  .desc {
+    font-weight: bold;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+  }
+
+  .projects {
+    .project {
+      color: darkblue;
+      text-decoration: underline;
+      cursor: pointer;
+      line-height: 1.5rem;
+    }
+  }
+
+  .remove-cont {
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+
+    .remove-btn {
+      color: darkblue;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+}

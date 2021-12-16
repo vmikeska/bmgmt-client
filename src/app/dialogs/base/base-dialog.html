@@ -1,0 +1,21 @@
+<div class="dialog-all">
+  <div class="title-bar">
+
+    <div class="l">{{title}}</div>
+
+    <div class="r">
+      <fa-icon
+        class="ico"
+        [icon]="faTimes"
+        size="3x"
+        (click)="closeClicked()"
+      ></fa-icon>
+    </div>
+
+  </div>
+
+  <div class="dialog-content">
+    <ng-content></ng-content>
+  </div>
+
+</div>

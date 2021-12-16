@@ -1,0 +1,71 @@
+<div class="chat-cont">
+
+  <div class="split-block-title">Comments</div>
+
+  <div class="new-message-cont">
+    <div class="txt-cont">
+
+      <textarea
+        [(ngModel)]="text"
+        placeholder="Leave a comment"
+      ></textarea>
+
+    </div>
+    <div class="btn-cont">
+      <button (click)="postClick()">
+        <fa-icon
+          class="ico"
+          [icon]="faEnvelope"
+          size="3x"
+        ></fa-icon>
+      </button>
+    </div>
+  </div>
+
+  <div
+    *ngIf="showMessages"
+    class="split-block"
+  >
+
+    <div class="messages">
+      <div
+        *ngFor="let m of vms"
+        class="message"
+      >
+        <div class="top-bar">
+
+          <div class="tbl">
+
+            <div class="l">
+              <fa-icon
+                class="ico"
+                [icon]="faUser"
+                size="3x"
+              ></fa-icon>
+            </div>
+            <div class="r">
+              <span class="name">{{m.fullName}}</span>
+              <div class="date">{{m.date}}</div>
+            </div>
+
+
+          </div>
+
+
+
+
+          <!-- <span
+            class="close"
+            (click)="deleteClick(m.id)"
+          >X</span> -->
+        </div>
+
+
+        <div class="text">{{m.text}}</div>
+      </div>
+    </div>
+
+  </div>
+
+
+</div>

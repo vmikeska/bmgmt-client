@@ -1,0 +1,87 @@
+@import "../../scss/values";
+
+app-chat {
+  .chat-cont {
+    margin-top: 1rem;
+    padding-bottom: 2rem;
+
+    .new-message-cont {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      padding-bottom: 1rem;
+
+      textarea {
+        width: calc(100% - 1rem);
+        min-height: 120px;
+        border: 0;
+        font-style: inherit;
+        font-size: 1.2rem;
+        line-height: 1.4rem;
+        border-radius: 4px;
+        padding: 0.5rem;
+        resize: vertical;
+      }
+
+      .btn-cont {
+        margin-top: 0.5rem;
+        text-align: right;
+      }
+
+      button {
+        background-color: $c-yellow;
+        color: white;
+        border: 0;
+        height: 3rem;
+        border-top-left-radius: 25px;
+        border-bottom-left-radius: 25px;
+        width: 100px;
+        cursor: pointer;
+      }
+    }
+
+    .messages {
+      padding-left: 1rem;
+      padding-top: 1rem;
+
+      .message {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+
+        .top-bar {
+
+          .tbl {
+            display: flex;
+            justify-content: flex-start;
+          }
+
+          .l {
+            .ico {
+              color: $c-green;
+            }
+            padding-right: 0.5rem;
+          }
+
+          .name {
+            font-weight: bold;
+            font-size: 1.2rem;
+          }
+
+          .date {
+            font-size: 0.7rem;
+          }
+        }
+
+        .close {
+          font-weight: bold;
+          color: red;
+          font-size: 1.2rem;
+          cursor: pointer;
+        }
+
+        .text {
+          padding-top: 0.5rem;
+        }
+      }
+    }
+  }
+}

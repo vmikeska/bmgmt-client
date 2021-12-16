@@ -1,0 +1,276 @@
+@import "../scss/values";
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.frame {
+  height: 1100px;
+
+  position: relative;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  max-width: 500px;
+
+  overflow-y: hidden;
+}
+
+.site-all {
+
+  overflow-y: scroll;
+
+  height: 1100px;
+
+  &::-webkit-scrollbar {
+    width: 0;  /* Remove scrollbar space */
+    background: transparent;  /* Optional: just make scrollbar invisible */
+}
+}
+
+.dynamic-content-cont {
+
+}
+
+.page-all {
+  background-color: $c-gray;
+  padding-bottom: 2rem;
+}
+
+.page-title {
+  font-weight: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.quick-item-block {
+  margin-left: 1rem;
+
+  .quick-item-table {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .mat-radio-button {
+    margin-right: 25px;
+  }
+
+  .mat-radio-label {
+    color: white;
+  }
+
+  .mat-radio-outer-circle {
+    border-color: white;
+  }
+
+  .mat-radio-button.mat-accent .mat-radio-inner-circle {
+    background-color: $c-green;
+  }
+
+  .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+    border-color: $c-green;
+  }
+
+  .quick-input-cont {
+    padding-top: 1rem;
+    padding-left: 1.5rem;
+    padding-bottom: 1rem;
+
+    .input {
+      height: 2.5rem;
+      font-size: 1.2rem;
+      width: 100%;
+      padding-left: 1rem;
+    }
+  }
+}
+
+.left-rounded-btn {
+  background-color: $c-yellow;
+  color: white;
+  border: 0;
+  height: 3rem;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
+  width: 100px;
+  cursor: pointer;
+}
+
+.dialog-all {
+  background-color: white;
+
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  // border: 1px solid red;
+
+  // padding: 2rem;
+
+  z-index: 10;
+
+  .title-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: $c-violete;
+    color: white;
+    padding: 1rem;
+
+    .ico {
+      cursor: pointer;
+    }
+
+    .l {
+      font-size: 1.3rem;
+      flex-grow: 1;
+    }
+
+    .r {
+      padding-left: 2rem;
+    }
+  }
+
+  .dialog-content {
+    padding: 1rem;
+    background-color: $c-gray;
+  }
+}
+
+.split-block {
+  background-color: white;
+  // margin-top: 2rem;
+  margin-right: 1rem;
+
+  $rad: 30px;
+  border-top-right-radius: $rad;
+  border-bottom-right-radius: $rad;
+}
+
+.split-block-title {
+  font-size: 1.4rem;
+  font-weight: normal;
+
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 1rem;
+
+  color: $c-violete;
+}
+
+.header-container {
+  // min-height: 200px;
+  background-color: $c-violete;
+  border-bottom-left-radius: 60px;
+
+  .title-name {
+    color: white;
+    font-size: 1.3rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    text-align: center;
+  }
+
+  .title-action-cont {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 0.5rem;
+    margin-top: 0.5rem;
+
+    .l {
+      padding-left: 2.5rem;
+    }
+
+    .r {
+    }
+  }
+}
+
+.menu {
+  display: flex;
+  justify-content: space-between;
+
+  padding-top: 2rem;
+  padding-bottom: 0.5rem;
+
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  color: white;
+  letter-spacing: 1px;
+
+  .item {
+    &.active {
+      color: $c-green;
+    }
+
+    .svg {
+      height: 150px;
+    }
+
+    font-size: 1.1rem;
+
+    cursor: pointer;
+    display: inline-block;
+
+    &:hover {
+      color: $c-light-violete;
+    }
+  }
+}
+
+.top-ribbon-cont {
+  text-align: right;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+
+  .logout-btn {
+    color: darkblue;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .login-name-btn {
+    margin-right: 1rem;
+    color: darkblue;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+.form-cont {
+  margin-top: 1rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  font-size: 20px;
+
+  .mat-form-field {
+    width: 100% !important;
+  }
+
+  .double-line {
+    display: flex;
+
+    .l {
+      width: 50%;
+    }
+
+    .r {
+      width: 50%;
+    }
+  }
+
+  .btn-cont {
+    text-align: right;
+  }
+}

@@ -1,0 +1,98 @@
+@import '../../scss/values';
+
+app-user-detail-page {
+  .photo-name-cont {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+
+    .l {
+      padding-left: 1rem;
+    }
+
+    .r {
+
+    }
+
+    .photo-cont {
+      $size: 100px;
+      width: $size;
+      height: $size;
+
+      border-radius: 50%;
+      text-align: center;
+      background-color: white;
+      padding: 1rem;
+
+      .photo {
+        .ico {
+          color: $c-gray-darker;
+        }
+      }
+    }
+
+    .name {
+      color: white;
+      font-size: 40px;
+      padding-right: 1rem;
+    }
+
+    .btn-cont {
+      margin-top: 3rem;
+      text-align: right;
+    }
+  }
+
+  .description {
+    padding-top: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    font-size: 20px;
+  }
+
+  .double-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    font-size: 20px;
+    cursor: pointer;
+    padding-top: 1rem;
+
+    &:last-of-type {
+      padding-bottom: 1rem;
+    }
+
+    .ico {
+      color: $c-violete;
+    }
+
+    .ico-cont {
+      width: 40px;
+      display: inline-block;
+    }
+
+    .l {
+      padding-left: 1rem;
+      text-align: right;
+      text-align: center;
+    }
+
+    .r {
+      padding-right: 1rem;
+      padding-left: 1rem;
+
+      word-break: break-all;
+      text-align: right;
+
+    }
+  }
+
+  .linkable {
+    color: $c-green;
+    text-decoration: underline;
+  }
+}

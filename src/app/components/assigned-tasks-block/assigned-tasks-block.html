@@ -1,0 +1,29 @@
+<ng-container *ngIf="tasks">
+  <div class="split-block-title">Tasks with dates</div>
+
+  <div class="split-block">
+
+    <div class="assigned-tasks-block">
+
+      <div class="date-tasks-cont">
+
+        <app-assigned-tasks-list [items]="tasks.dates"></app-assigned-tasks-list>
+
+      </div>
+
+      <div class="week-tasks-cont">
+
+        <app-assigned-tasks-list [items]="tasks.weeks"></app-assigned-tasks-list>
+
+      </div>
+
+      <div class="month-tasks-cont">
+
+        <app-assigned-tasks-list [items]="tasks.months"></app-assigned-tasks-list>
+
+      </div>
+
+    </div>
+
+  </div>
+</ng-container>

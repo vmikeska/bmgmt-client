@@ -1,0 +1,18 @@
+<mat-form-field appearance="fill">
+  <mat-label>{{label}}</mat-label>
+  <input
+    *ngIf="type === 'text'"
+    type="text"
+    matInput
+    [(ngModel)]="model"
+    (ngModelChange)="innerChangeEvent($event)"
+  >
+
+  <input
+    *ngIf="type === 'number'"
+    type="number"
+    matInput
+    [(ngModel)]="model"
+    (ngModelChange)="innerChangeEvent($event)"
+  >
+</mat-form-field>

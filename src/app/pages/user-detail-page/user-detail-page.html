@@ -1,0 +1,143 @@
+<div
+  *ngIf="vm"
+  class="page-all"
+>
+
+  <app-header-container [showTitle]="false">
+
+    <div class="photo-name-cont">
+
+      <div class="l">
+
+        <div class="photo-cont">
+          <span class="photo">
+            <fa-icon
+              class="ico"
+              [icon]="faUser"
+              size="7x"
+            ></fa-icon>
+          </span>
+        </div>
+
+      </div>
+      <div class="r">
+
+        <div class="name">{{vm.fullName}}</div>
+
+        <div class="btn-cont">
+
+          <button
+            class="left-rounded-btn"
+            (click)="editClick()"
+          >
+            <fa-icon
+              class="ico"
+              [icon]="faPen"
+              size="2x"
+            ></fa-icon>
+          </button>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+  </app-header-container>
+
+  <div class="content-cont">
+
+    <div
+      *ngIf="vm.desc"
+      class="description"
+    >{{vm.desc}}</div>
+
+    <div class="split-block-title">Capabilites</div>
+
+    <div class="split-block">
+
+      <app-list-tagger
+        [entityId]="realId"
+        [loadCallback]="userTagsLoadCallback"
+        [editable]="false"
+      ></app-list-tagger>
+    </div>
+
+    <div class="split-block-title">Contacts</div>
+
+    <div class="split-block">
+
+      <div
+        *ngIf="vm.phone"
+        class="double-info"
+        (click)="phoneClick()"
+      >
+        <div class="l">
+          <div class="ico-cont">
+            <fa-icon
+              class="ico"
+              [icon]="faPhone"
+              size="2x"
+            ></fa-icon>
+          </div>
+        </div>
+        <div class="r"><span class="linkable">{{vm.phone}}</span></div>
+      </div>
+
+      <div
+        *ngIf="vm.mail"
+        class="double-info"
+        (click)="mailClick()"
+      >
+        <div class="l">
+          <div class="ico-cont">
+            <fa-icon
+              class="ico"
+              [icon]="faEnvelope"
+              size="2x"
+            ></fa-icon>
+          </div>
+        </div>
+        <div class="r"><span class="linkable">{{vm.mail}}</span></div>
+      </div>
+
+      <div
+        *ngIf="vm.website"
+        class="double-info"
+        (click)="websiteClick()"
+      >
+        <div class="l">
+          <div class="ico-cont">
+            <fa-icon
+              class="ico"
+              [icon]="faGlobeAmericas"
+              size="2x"
+            ></fa-icon>
+          </div>
+        </div>
+        <div class="r"><span class="linkable">{{vm.website}}</span></div>
+      </div>
+
+      <div
+        *ngIf="vm.location.text"
+        class="double-info"
+        (click)="locationClick()"
+      >
+        <div class="l">
+          <div class="ico-cont">
+            <fa-icon
+              class="ico"
+              [icon]="faMapMarkerAlt"
+              size="2x"
+            ></fa-icon>
+          </div>
+        </div>
+        <div class="r"><span class="linkable">{{vm.location.text}}</span></div>
+      </div>
+    </div>
+
+
+  </div>
+
+</div>

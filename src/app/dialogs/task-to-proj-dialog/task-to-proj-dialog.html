@@ -1,0 +1,28 @@
+<app-base-dialog title="Assign task to project">
+
+  <div class="dlg-cont">
+    <div
+      *ngIf="hasProject"
+      class="remove-cont"
+    >
+      <span
+        (click)="removeClick()"
+        class="remove-btn"
+      >Remove current project</span>
+    </div>
+
+    <div class="desc">Pick a project to assign</div>
+    <div
+      *ngFor="let item of items"
+      class="projects"
+    >
+      <div class="project-cont">
+        <span
+          (click)="projectClick(item.id)"
+          class="project"
+        >{{item.name}}</span>
+      </div>
+    </div>
+  </div>
+
+</app-base-dialog>

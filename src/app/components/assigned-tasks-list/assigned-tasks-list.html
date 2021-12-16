@@ -1,0 +1,15 @@
+<div class="items-cont">
+  <div
+    *ngFor="let item of items"
+    class="item"
+    (click)="taskLinkClick(item.res)"
+  >
+
+    <div class="name">{{item.name}}</div>
+    <div class="info-cont">
+      <div class="l">{{item.date}}</div>
+      <div class="r">{{item.load}}</div>
+    </div>
+
+  </div>
+</div>

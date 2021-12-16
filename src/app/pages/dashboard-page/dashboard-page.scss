@@ -1,0 +1,49 @@
+@import "../../scss/values";
+
+app-dashboard-page {
+  .page-all {
+  }
+
+  .dashboard-page-all {
+    .link-name {
+      color: darkblue;
+      font-weight: bold;
+      cursor: pointer;
+      text-decoration: underline;
+      line-height: 1.5rem;
+    }
+
+    .block-title {
+      font-weight: bold;
+    }
+
+    .hotkeys-cont {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+
+      .hot-btn {
+        background-color: $c-yellow;
+        color: white;
+        padding: 1rem;
+        cursor: pointer;
+        font-size: 1.1rem;
+        align-items: center;
+
+        .tbl {
+          display: flex;
+
+          .l {
+          }
+
+          .r {
+            padding-left: 0.5rem;
+          }
+        }
+      }
+    }
+
+
+  }
+}

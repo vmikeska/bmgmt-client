@@ -1,0 +1,39 @@
+@import '../../scss/values';
+
+.add-actions {
+  margin-right: 1rem;
+  margin-left: 1rem;
+
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
+
+  .item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    margin-top: 1rem;
+
+    .l {
+      .btn {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+
+        $s: 42px;
+        width: $s;
+        height: $s;
+
+        background-color: $c-green;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+    }
+
+    .r {
+      font-size: 1.1rem;
+      padding-left: 1rem;
+    }
+  }
+}

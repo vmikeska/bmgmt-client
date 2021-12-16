@@ -1,0 +1,53 @@
+<div class="page-all">
+  <app-header-container [showTitle]="false">
+
+    <div class="title-action-cont">
+
+      <div class="l">
+        <div class="title-name">{{title}}</div>
+      </div>
+      <div class="r">
+
+        <button
+          class="left-rounded-btn"
+          (click)="editClick()"
+        >
+          <fa-icon
+            class="ico"
+            [icon]="faPen"
+            size="2x"
+          ></fa-icon>
+        </button>
+
+      </div>
+
+    </div>
+
+  </app-header-container>
+
+  <div
+    *ngIf="desc"
+    class="desc"
+  >{{desc}}</div>
+
+  <app-unassigned-tasks-block
+    *ngIf="showUnassignedTasks"
+    [tasks]="unassignedTasks"
+  ></app-unassigned-tasks-block>
+
+  <app-assigned-tasks-block
+    *ngIf="showAssignedTasks"
+    [tasks]="assignedTasks"
+  ></app-assigned-tasks-block>
+
+  <div class="split-block-title">Add to your project</div>
+  <app-add-actions [items]="addActions"></app-add-actions>
+
+  <app-chat
+    *ngIf="messages"
+    [messages]="messages"
+    [postCallback]="msgPostCallback"
+    [deleteCalback]="msgDeleteCallback"
+  ></app-chat>
+
+</div>

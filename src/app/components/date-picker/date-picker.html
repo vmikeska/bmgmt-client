@@ -1,0 +1,16 @@
+
+<mat-form-field appearance="fill">
+  <mat-label>{{label}}</mat-label>
+  <input
+    [(ngModel)]="model"
+    matInput
+    (dateChange)="innerChangeEvent()"
+    [matDatepicker]="dpt"
+  >
+  <mat-datepicker-toggle
+    matSuffix
+    [for]="dpt"
+  ></mat-datepicker-toggle>
+  <mat-datepicker #dpt></mat-datepicker>
+</mat-form-field>
+

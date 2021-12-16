@@ -1,0 +1,42 @@
+<div class="tagger-cont">
+  <span
+    *ngFor="let tag of tags"
+    class="tag"
+  >
+    <span class="txt">{{tag.name}}</span>
+    <span
+      *ngIf="editable"
+      class="remove-btn"
+      (click)="removeClick(tag)"
+    >
+      <fa-icon
+        class="ico"
+        [icon]="faTimes"
+        size="1x"
+      ></fa-icon>
+    </span>
+  </span>
+
+  <span
+    *ngIf="editable"
+    class="search-cont"
+  >
+    <div
+      *ngIf="isOpened"
+      class="drop-cont"
+    >
+      <div class="options">
+        <div
+          *ngFor="let o of options"
+          class="option"
+          (click)="optionClick(o)"
+        >{{o.name}}</div>
+      </div>
+    </div>
+    <input
+      [(ngModel)]="search"
+      (keyup)="searchChange()"
+    />
+
+  </span>
+</div>

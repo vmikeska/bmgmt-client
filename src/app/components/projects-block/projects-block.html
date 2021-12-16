@@ -1,0 +1,15 @@
+<div class="split-block-title">{{title}}</div>
+
+    <div class="split-block">
+
+      <div class="projects-block">
+        <div
+          *ngFor="let item of items"
+          class="item"
+          (click)="projLinkClick(item)"
+        >
+          {{item.name}}
+        </div>
+      </div>
+
+    </div>

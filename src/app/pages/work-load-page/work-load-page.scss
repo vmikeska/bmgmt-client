@@ -1,0 +1,186 @@
+@import "../../scss/values";
+
+app-work-load-page {
+  .fillter-all {
+    padding-bottom: 3rem;
+  }
+
+  .dates-and-days-cont {
+    display: flex;
+    align-items: center;
+    padding-left: 1rem;
+    padding-right: 1rem;
+
+    .dates-cont {
+      width: 50%;
+    }
+
+    .days-cont {
+      width: 50%;
+    }
+
+    .main-control-cont {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+
+      .ico {
+        color: white;
+      }
+
+      .l {
+        padding-right: 0.5rem;
+
+        .btn {
+          padding: 0.7rem;
+          background-color: $c-green;
+          display: inline-block;
+        }
+      }
+
+      .r {
+        font-size: 20px;
+        color: white;
+      }
+    }
+  }
+
+  .days-tbl {
+    display: flex;
+
+    .l {
+      width: 50%;
+    }
+
+    .r {
+      width: 50%;
+    }
+  }
+
+  .dates-and-days-context-cont {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    margin-top: 1rem;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 4px;
+    font-size: 20px;
+
+    .days-cont {
+      mat-checkbox {
+        margin-right: 1rem;
+      }
+    }
+  }
+
+  .month-all {
+    .month-content-cont {
+      padding: 1rem;
+    }
+
+    .split-block-title {
+      padding-bottom: 0;
+    }
+
+    .month-stats {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      padding-bottom: 1rem;
+    }
+
+  }
+
+  .inline-tasks-all {
+    margin-top: 0.5rem;
+
+    .tasks-cont {
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+
+
+      .item {
+        display: inline-block;
+        padding: 0.5rem;
+        background-color: $c-violete;
+        color: white;
+        margin-right: 3px;
+        margin-bottom: 3px;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .weeks-table {
+    border: 0;
+
+    width: 100%;
+
+    .week-info-row {
+      .week-title {
+        font-weight: bold;
+        font-size: 18px;
+        color: $c-violete;
+      }
+
+      .week-load {
+        margin-left: 0.5rem;
+      }
+
+      .each-day-load {
+        margin-left: 0.5rem;
+      }
+
+      .cell {
+        text-align: left;
+        padding-top: 0.5rem;
+      }
+    }
+
+    .events-row {
+
+      .event {
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+
+        color: white;
+
+        margin-left: 3px;
+        text-align: center;
+        background-color: $c-violete;
+        cursor: pointer;
+
+        &.empty {
+          cursor: none;
+          background-color: transparent;
+        }
+      }
+
+    }
+
+    .week-all {
+      .day-all {
+        vertical-align: top;
+        // border: 1px solid black;
+        padding: 2px;
+        width: 50px;
+        color: $c-violete;
+
+        .num {
+          text-align: center;
+          font-size: 2rem;
+          padding-top: 1rem;
+        }
+
+        .hours {
+          // font-size: 1.2rem;
+          text-align: center;
+          padding-top: 1rem;
+        }
+      }
+    }
+  }
+}
+

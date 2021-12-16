@@ -1,0 +1,65 @@
+@import "../../scss/values";
+
+app-log-in-page {
+  font-size: 20px;
+
+  .page-cont {
+    background-color: $c-violete;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .mat-form-field {
+    width: 100%;
+  }
+
+  .mat-form-field-flex {
+    background-color: white !important;
+    border-radius: 0 !important;
+  }
+
+  .mat-form-field-infix {
+    width: 100%;
+  }
+
+  .controls-cont {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 400px;
+  }
+
+  .input-cont {
+    width: 400px;
+  }
+
+  .button-cont {
+    margin-top: 2rem;
+
+    .btn {
+      color: white;
+      background-color: $c-yellow;
+      padding: 1rem;
+      cursor: pointer;
+    }
+  }
+
+  .register-cont {
+    padding-top: 2rem;
+
+    .register-btn {
+      color: $c-green;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+
+}

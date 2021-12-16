@@ -1,0 +1,22 @@
+@import '../../scss/values';
+
+app-projects-block {
+  .projects-block {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+
+    .item {
+      font-size: 1.4rem;
+      line-height: 2rem;
+      color: $c-black;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+        color: $c-green;
+      }
+    }
+  }
+}

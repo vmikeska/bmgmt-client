@@ -1,0 +1,39 @@
+<!-- <button (click)="test()">test</button> -->
+
+ <div class="page-cont">
+
+  <div class="controls-cont">
+
+    <div class="input-cont">
+      <app-input
+        label="Mail"
+        [(model)]="vm.mail"
+      ></app-input>
+    </div>
+
+    <div class="input-cont">
+      <app-input
+        label="Password"
+        [(model)]="vm.password"
+      ></app-input>
+    </div>
+
+    <div class="button-cont">
+      <span
+        class="btn"
+        (click)="loginClick()"
+      >Log in</span>
+    </div>
+
+    <div class="register-cont">
+      <span
+        class="register-btn"
+        (click)="registerClick()"
+      >Register</span>
+
+    </div>
+
+  </div>
+
+</div>
+

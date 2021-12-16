@@ -1,0 +1,37 @@
+@import '../../scss/values';
+
+.items-cont {
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  .item {
+
+    .name {
+      font-size: 1.4rem;
+      line-height: 2rem;
+      color: $c-black;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+        color: $c-green;
+      }
+    }
+
+    .info-cont {
+      display: flex;
+      font-size: 0.8rem;
+      color: $c-violete;
+
+      .l,.r {
+        width: 50%;
+      }
+
+      .r {
+        text-align: right;
+      }
+
+    }
+
+  }
+}

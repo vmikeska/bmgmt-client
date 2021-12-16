@@ -1,0 +1,138 @@
+@import '../../scss/values';
+
+.search-str-block {
+  margin-left: 1rem;
+
+  .input-cont {
+    padding-top: 1rem;
+    padding-left: 1.5rem;
+    padding-bottom: 1rem;
+
+    .input {
+      height: 2.5rem;
+      font-size: 1.2rem;
+      width: 320px;
+      padding-left: 1rem;
+    }
+  }
+
+  .mat-radio-button {
+    margin-right: 25px;
+  }
+
+  .mat-radio-label {
+    color: white;
+  }
+
+  .mat-radio-outer-circle {
+    border-color: white;
+  }
+
+  .mat-radio-button.mat-accent .mat-radio-inner-circle {
+    background-color: $c-green;
+  }
+
+  .mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+    border-color: $c-green;
+  }
+}
+
+.results-info-block {
+  background-color: $c-gray;
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+
+  padding-left: 1rem;
+  padding-right: 1rem;
+
+  margin-top: 2rem;
+
+  text-align: center;
+
+  .main-row {
+    color: $c-violete;
+    font-size: 1.4rem;
+    line-height: 2rem;
+  }
+
+  .secondary-row {
+    color: $c-gray-darker;
+  }
+}
+
+.results {
+  .result {
+    padding: 1rem;
+
+    .name-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .l {
+        width: 38px;
+        cursor: pointer;
+        color: $c-gray-darker;
+      }
+
+      .m {
+        padding-left: 0.7rem;
+        font-size: 1.4rem;
+        color: $c-violete;
+        text-align: left;
+        flex-grow: 1;
+        cursor: pointer;
+      }
+
+      .r {
+        text-align: right;
+
+        .comm-item {
+          margin-left: 7px;
+          color: $c-green;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .bottom-actions-cont {
+
+      .tbl {
+        margin-top: 1rem;
+        padding-left: 1rem;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+        background-color: $c-gray;
+      }
+
+      .act-item {
+        color: $c-yellow;
+        cursor: pointer;
+        display: inline-block;
+        margin-right: 2rem;
+
+
+
+      }
+    }
+
+    .tags-cont {
+      margin-top: 1rem;
+
+      .tag {
+        display: inline-block;
+
+        background-color: $c-green;
+        color: white;
+
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+
+        margin-bottom: 5px;
+        margin-right: 5px;
+      }
+    }
+  }
+}

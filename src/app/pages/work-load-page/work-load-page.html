@@ -1,0 +1,226 @@
+<div class="page-all">
+
+  <app-header-container>
+
+    <div class="fillter-all">
+
+      <div class="dates-and-days-cont">
+        <div
+          class="dates-cont"
+          (click)="datesClick()"
+        >
+
+          <div class="main-control-cont">
+            <div class="l">
+              <span class="btn">
+                <fa-icon
+                  class="ico"
+                  [icon]="faCalendarAlt"
+                  size="2x"
+                ></fa-icon>
+              </span>
+            </div>
+            <div class="r">
+              <div>{{workloadFilterSvc.displayDateFrom}}</div>
+              <div>{{workloadFilterSvc.displayDateTo}}</div>
+            </div>
+          </div>
+
+        </div>
+        <div
+          class="days-cont"
+          (click)="daysClick()"
+        >
+
+          <div class="main-control-cont">
+            <span class="l">
+              <span class="btn">
+                <fa-icon
+                  class="ico"
+                  [icon]="faBriefcase"
+                  size="2x"
+                ></fa-icon>
+              </span>
+            </span>
+            <span class="r">{{this.workloadFilterSvc.displayDaysUsed}}</span>
+          </div>
+
+        </div>
+      </div>
+      <div
+        *ngIf="showDatesOrDays !== null"
+        class="dates-and-days-context-cont"
+      >
+
+        <div
+          *ngIf="showDatesOrDays === true"
+          class="dates-cont"
+        >
+
+          <div class="days-tbl">
+            <div class="l">
+              <mat-form-field>
+                <mat-label>Choose a date</mat-label>
+                <input
+                  [(ngModel)]="workloadFilterSvc.from"
+                  matInput
+                  (dateChange)="dateRangeChange()"
+                  [matDatepicker]="fromPicker"
+                >
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="fromPicker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #fromPicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+            <div class="r">
+              <mat-form-field>
+                <mat-label>Choose a date</mat-label>
+                <input
+                  [(ngModel)]="workloadFilterSvc.to"
+                  matInput
+                  (dateChange)="dateRangeChange()"
+                  [matDatepicker]="toPicker"
+                >
+                <mat-datepicker-toggle
+                  matSuffix
+                  [for]="toPicker"
+                ></mat-datepicker-toggle>
+                <mat-datepicker #toPicker></mat-datepicker>
+              </mat-form-field>
+            </div>
+          </div>
+
+        </div>
+
+        <div
+          *ngIf="showDatesOrDays === false"
+          class="days-cont"
+        >
+          <span
+            *ngFor="let day of workloadFilterSvc.filterDays"
+            class="day-all"
+          >
+            <mat-checkbox
+              [(ngModel)]="day.selected"
+              (change)="useWeekendChange()"
+            >{{day.label}}</mat-checkbox>
+          </span>
+
+        </div>
+
+      </div>
+
+      <app-people-filter></app-people-filter>
+
+    </div>
+
+  </app-header-container>
+
+  <div class="calendar-all">
+    <div
+      *ngFor="let month of months"
+      class="month-all"
+    >
+      <div class="split-block-title">{{month.title}}</div>
+      <div class="month-stats">
+        <span class="week-load">Total: {{month.workloadStr}}</span>
+      </div>
+      <div class="split-block">
+
+        <div class="month-content-cont">
+
+          <table class="weeks-table">
+
+            <ng-container *ngFor="let week of month.weeks">
+
+              <tr class="week-info-row">
+                <td
+                  class="cell"
+                  colspan="7"
+                >
+                  <span class="week-title">{{week.no}}. week</span>
+                  <span class="week-load">Total: {{week.workloadStr}}</span>
+                  <span class="each-day-load">A day: {{week.workloadDayStr}}</span>
+                </td>
+              </tr>
+
+              <tr class="week-all">
+
+                <td
+                  *ngFor="let day of week.days"
+                  class="day-all"
+                  [style.background-color]="day.color"
+                >
+                  <div class="num">{{day.dayOfMonth}}</div>
+                  <div class="hours">{{day.totalHours | number: '1.1-1'}}h</div>
+                </td>
+
+              </tr>
+
+              <tr
+                *ngFor="let eventBlock of week.eventBlocks"
+                class="events-row"
+              >
+                <td
+                  *ngFor="let bar of eventBlock.bars"
+                  class="event"
+                  [ngClass]="{'empty': !bar.taskId}"
+                  [attr.colspan]="bar.days"
+                  (click)="taskDetailClick(bar.taskId)"
+                >
+                  {{bar.name}}
+                </td>
+
+              </tr>
+
+              <tr>
+                <td colspan="7">
+                  <div
+                    *ngIf="!!week.tasks.length"
+                    class="inline-tasks-all"
+                  >
+
+                    <div class="split-block-title">Other week tasks</div>
+
+                    <div class="tasks-cont">
+                      <span
+                        *ngFor="let task of week.tasks"
+                        class="item"
+                        (click)="taskDetailClick(task.id)"
+                      >{{task.name}}</span>
+                    </div>
+
+                  </div>
+                </td>
+              </tr>
+
+            </ng-container>
+
+          </table>
+
+          <div
+            *ngIf="!!month.tasks.length"
+            class="inline-tasks-all"
+          >
+
+            <div class="split-block-title">Other month tasks</div>
+
+            <div class="tasks-cont">
+              <span
+                *ngFor="let task of month.tasks"
+                class="item"
+                (click)="taskDetailClick(task.id)"
+              >{{task.name}}</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,99 @@
+<div class="page-all">
+
+  <app-header-container>
+
+    <div class="quick-item-block">
+
+      <mat-radio-group
+        aria-label="What do you want to create?"
+        [(ngModel)]="creationType"
+      >
+        <mat-radio-button
+          *ngFor="let item of creationTypes"
+          [value]="item.value"
+        >{{item.label}}</mat-radio-button>
+      </mat-radio-group>
+
+      <div class="quick-input-cont">
+
+        <div class="quick-item-table">
+          <span class="input-cell">
+
+            <input
+              [(ngModel)]="creationName"
+              [placeholder]="newInputText"
+              class="input"
+            />
+
+          </span>
+          <span class="button-cell">
+
+            <button
+              class="left-rounded-btn"
+              (click)="createItemClick()"
+            >
+              <fa-icon
+                class="ico"
+                [icon]="faPlus"
+                size="2x"
+              ></fa-icon>
+            </button>
+
+          </span>
+        </div>
+
+      </div>
+    </div>
+
+  </app-header-container>
+
+  <div class="dashboard-page-all">
+
+    <app-unassigned-tasks-block [tasks]="unassignedTasks"></app-unassigned-tasks-block>
+
+    <!-- <app-assigned-tasks-block [tasks]="assignedTasks"></app-assigned-tasks-block> -->
+
+    <app-projects-block
+      title="Projects"
+      [items]="projects"
+    ></app-projects-block>
+
+    <div class="hotkeys-cont">
+
+      <div class="hot-btn">
+        <div class="tbl">
+          <div class="l">
+            <fa-icon
+              class="ico"
+              [icon]="faCamera"
+              size="3x"
+            ></fa-icon>
+          </div>
+          <div class="r">
+            Add photo to<br>task
+          </div>
+
+        </div>
+      </div>
+
+      <div class="hot-btn">
+        <div class="tbl">
+          <div class="l">
+            <fa-icon
+              class="ico"
+              [icon]="faCamera"
+              size="3x"
+            ></fa-icon>
+          </div>
+          <div class="r">
+            Add photo to<br>project
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
