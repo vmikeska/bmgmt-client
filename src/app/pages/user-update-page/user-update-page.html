@@ -3,7 +3,10 @@
   class="page-all"
 >
 
-  <app-header-container customTitle="User edit">
+  <app-header-container
+    customTitle="User edit"
+    [activeId]="activeId"
+  >
 
   </app-header-container>
 
@@ -79,15 +82,15 @@
 
   <div class="split-block-title">Capabilites</div>
 
-    <div class="split-block">
+  <div class="split-block">
 
-      <app-list-tagger
-        [entityId]="vm.id"
-        [removeCallback]="userTagsRemoveCallback"
-        [addCallback]="userTagsAddCallback"
-        [loadCallback]="userTagsLoadCallback"
-        [searchCallback]="userTagsSearchCallback"
-      ></app-list-tagger>
-    </div>
+    <app-list-tagger
+      [entityId]="vm.id"
+      [removeCallback]="userTagsRemoveCallback"
+      [addCallback]="userTagsAddCallback"
+      [loadCallback]="userTagsLoadCallback"
+      [searchCallback]="userTagsSearchCallback"
+    ></app-list-tagger>
+  </div>
 
 </div>

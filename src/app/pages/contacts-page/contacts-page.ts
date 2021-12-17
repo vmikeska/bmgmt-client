@@ -34,6 +34,8 @@ export class ContactsPageComponent implements OnInit {
   faInfoCircle = faInfoCircle;
   faPhone = faPhone;
 
+  public activeId = PageIdEnum.Contacts;
+
   public searchType = ContactsSerachTypeEnum.MyContacts;
 
   public serachStr = '';

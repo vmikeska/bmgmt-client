@@ -4,6 +4,7 @@ import { faSave } from '@fortawesome/free-solid-svg-icons';
 import { ProjectApiService } from 'src/app/api/project/project-api.service';
 import { ProjectResponse } from 'src/app/api/project/project-ints';
 import { UrlParamUtils } from 'src/lib/utils/url-utils';
+import { PageIdEnum } from '../page-id';
 
 @Component({
   selector: 'app-project-edit-page',
@@ -21,6 +22,8 @@ export class ProjectEditPageComponent implements OnInit {
   ngOnInit() {
     this.initAsync();
   }
+
+  public activeId = PageIdEnum.Projects;
 
   public vm: ProjEditVM;
 

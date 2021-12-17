@@ -35,6 +35,8 @@ export class TaskDetailPageComponent implements OnInit {
     this.initAsync();
   }
 
+  public activeId = PageIdEnum.Dashboard;
+
   private async initAsync() {
     await this.loadTaskAsync();
     await this.reloadChatMessages();

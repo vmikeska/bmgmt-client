@@ -30,6 +30,8 @@ export class DashboardPageComponent implements OnInit {
     this.loadProjectsAsync();
   }
 
+  public activeId = PageIdEnum.Dashboard;
+
   faPlus = faPlus;
   faCamera = faCamera;
 

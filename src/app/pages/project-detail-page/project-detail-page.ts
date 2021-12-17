@@ -36,6 +36,8 @@ export class ProjectDetailPageComponent implements OnInit {
     this.initAsync();
   }
 
+  public activeId = PageIdEnum.Projects;
+
   private async initAsync() {
     await this.loadProjectAsync();
     await this.reloadChatMessages();

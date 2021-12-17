@@ -19,6 +19,8 @@ export class ProjectsPageComponent implements OnInit {
     private router: Router
   ) { }
 
+  public activeId = PageIdEnum.Projects;
+
   faPlus = faPlus;
 
   public ngOnInit() {

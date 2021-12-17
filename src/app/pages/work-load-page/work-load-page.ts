@@ -29,6 +29,8 @@ export class WorkLoadComponent implements OnInit {
     private dlgSvc: DialogService
   ) { }
 
+  public activeId = PageIdEnum.Workload;
+
   faCalendarAlt = faCalendarAlt;
   faBriefcase = faBriefcase;
 

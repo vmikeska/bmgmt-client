@@ -7,6 +7,7 @@ import { NewTagBindingResponse, SearchTagResponse, TagBindingResponse } from 'sr
 import { UserSkillsApiService } from 'src/app/api/tags/user-skills-api.service';
 import { UserApiService } from 'src/app/api/user/user-api.service';
 import { LocationSaveResponse, UserRequest } from 'src/app/api/user/user-ints';
+import { PageIdEnum } from '../page-id';
 
 @Component({
   selector: 'app-user-update-page',
@@ -21,6 +22,8 @@ export class UserUpdatePageComponent implements OnInit {
     private router: Router,
     private userSkillsApiSvc: UserSkillsApiService
   ) { }
+
+  public activeId = PageIdEnum.UserDetail;
 
   public vm: UserVM;
 

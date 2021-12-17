@@ -21,6 +21,8 @@ export class UserDetailPageComponent implements OnInit {
     private userSkillsApiSvc: UserSkillsApiService
   ) { }
 
+  public activeId: string;
+
   faPen = faPen;
   faUser = faUser;
   faEnvelope = faEnvelope;
@@ -30,6 +32,10 @@ export class UserDetailPageComponent implements OnInit {
 
   ngOnInit() {
     this.loadAsync();
+
+    if (!this.id) {
+      this.activeId = PageIdEnum.UserDetail;
+    }
   }
 
   public vm: UserDetailVM;
