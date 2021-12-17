@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseApi: "https://bmgmt-test.azurewebsites.net/api/"
+  baseApi: "https://bmgmt-server.azurewebsites.net/api/"
 };
