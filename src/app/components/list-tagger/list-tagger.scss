@@ -6,6 +6,11 @@ app-list-tagger {
     padding-left: 1rem;
     padding-bottom: 1rem;
 
+    .empty-placeholder {
+      font-size: 18px;
+      color: $c-violete;
+    }
+
     .tag {
       background-color: $c-green;
       color: white;

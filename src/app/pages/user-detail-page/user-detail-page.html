@@ -64,6 +64,7 @@
         [entityId]="realId"
         [loadCallback]="userTagsLoadCallback"
         [editable]="false"
+        emptyPlaceholder="Nothing specified yet"
       ></app-list-tagger>
     </div>
 
@@ -71,11 +72,8 @@
 
     <div class="split-block">
 
-      <div
-        *ngIf="vm.phone"
-        class="double-info"
-        (click)="phoneClick()"
-      >
+      <!-- (click)="phoneClick()" -->
+      <div class="double-info">
         <div class="l">
           <div class="ico-cont">
             <fa-icon
@@ -85,14 +83,33 @@
             ></fa-icon>
           </div>
         </div>
-        <div class="r"><span class="linkable">{{vm.phone}}</span></div>
+        <div class="r">
+
+          <app-add-or-edit-line [saveCallback]="phoneSaveCallback">
+            <ng-container display>
+              <span
+                *ngIf="isMe"
+                class="displayable"
+              >{{vm.phone}}</span>
+              <span
+                *ngIf="!isMe"
+                class="linkable"
+              >{{vm.phone}}</span>
+            </ng-container>
+
+            <ng-container edit>
+              <input
+                [(ngModel)]="vm.phone"
+                class="bmgmt-input"
+              />
+            </ng-container>
+          </app-add-or-edit-line>
+
+        </div>
       </div>
 
-      <div
-        *ngIf="vm.mail"
-        class="double-info"
-        (click)="mailClick()"
-      >
+      <!-- (click)="mailClick()" -->
+      <div class="double-info">
         <div class="l">
           <div class="ico-cont">
             <fa-icon
@@ -102,14 +119,33 @@
             ></fa-icon>
           </div>
         </div>
-        <div class="r"><span class="linkable">{{vm.mail}}</span></div>
+        <div class="r">
+
+          <app-add-or-edit-line [saveCallback]="mailSaveCallback">
+            <ng-container display>
+              <span
+                *ngIf="isMe"
+                class="displayable"
+              >{{vm.mail}}</span>
+              <span
+                *ngIf="!isMe"
+                class="linkable"
+              >{{vm.mail}}</span>
+            </ng-container>
+
+            <ng-container edit>
+              <input
+                [(ngModel)]="vm.mail"
+                class="bmgmt-input"
+              />
+            </ng-container>
+          </app-add-or-edit-line>
+
+        </div>
       </div>
 
-      <div
-        *ngIf="vm.website"
-        class="double-info"
-        (click)="websiteClick()"
-      >
+      <!-- (click)="websiteClick()" -->
+      <div class="double-info">
         <div class="l">
           <div class="ico-cont">
             <fa-icon
@@ -119,7 +155,29 @@
             ></fa-icon>
           </div>
         </div>
-        <div class="r"><span class="linkable">{{vm.website}}</span></div>
+        <div class="r">
+
+          <app-add-or-edit-line [saveCallback]="websiteSaveCallback">
+            <ng-container display>
+              <span
+                *ngIf="isMe"
+                class="displayable"
+              >{{vm.website}}</span>
+              <span
+                *ngIf="!isMe"
+                class="linkable"
+              >{{vm.website}}</span>
+            </ng-container>
+
+            <ng-container edit>
+              <input
+                [(ngModel)]="vm.website"
+                class="bmgmt-input"
+              />
+            </ng-container>
+          </app-add-or-edit-line>
+
+        </div>
       </div>
 
       <div

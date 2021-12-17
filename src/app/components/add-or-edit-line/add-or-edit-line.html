@@ -1,0 +1,24 @@
+<div class="cont">
+  <div class="l">
+    <ng-content
+      *ngIf="!editing"
+      select="[display]"
+    ></ng-content>
+    <ng-content
+      *ngIf="editing"
+      select="[edit]"
+    ></ng-content>
+  </div>
+  <div class="r">
+    <span
+      class="btn"
+      (click)="btnClick()"
+    >
+      <fa-icon
+        class="ico"
+        [icon]="ico"
+        size="1x"
+      ></fa-icon>
+    </span>
+  </div>
+</div>

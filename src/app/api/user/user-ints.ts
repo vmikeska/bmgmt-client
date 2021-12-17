@@ -23,3 +23,8 @@ export interface LocationSaveResponse {
   text: string;
   coords: number[];
 }
+
+export interface UpdatePropRequest {
+  item: string;
+  value: string;
+}

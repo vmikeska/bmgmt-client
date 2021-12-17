@@ -1,4 +1,10 @@
 <div class="tagger-cont">
+
+  <div
+    *ngIf="showPlaceholder"
+    class="empty-placeholder"
+  >{{emptyPlaceholder}}</div>
+
   <span
     *ngFor="let tag of tags"
     class="tag"

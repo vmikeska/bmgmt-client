@@ -22,6 +22,10 @@ export class ListTaggerComponent implements OnInit {
     this.initItemsAsync();
   }
 
+  public get showPlaceholder() {
+    return !this.tags.length;
+  }
+
   public search = '';
 
   public options: TagResponse[] = [];
@@ -36,6 +40,9 @@ export class ListTaggerComponent implements OnInit {
   private async initItemsAsync() {
     this.tags = await this.loadCallback(this.entityId);
   }
+
+  @Input()
+  public emptyPlaceholder: string;
 
   @Input()
   public editable = true;

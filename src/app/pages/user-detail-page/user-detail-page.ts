@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { faEnvelope, faGlobeAmericas, faMapMarkerAlt, faPen, faPhone, faUser } from '@fortawesome/free-solid-svg-icons';
 import { UserSkillsApiService } from 'src/app/api/tags/user-skills-api.service';
 import { UserApiService } from 'src/app/api/user/user-api.service';
-import { LocationSaveResponse, UserResponse } from 'src/app/api/user/user-ints';
+import { LocationSaveResponse, UpdatePropRequest, UserResponse } from 'src/app/api/user/user-ints';
 import { UrlParamUtils } from 'src/lib/utils/url-utils';
 import { PageIdEnum } from '../page-id';
 
@@ -30,15 +30,47 @@ export class UserDetailPageComponent implements OnInit {
   faMapMarkerAlt = faMapMarkerAlt;
   faPhone = faPhone;
 
+  public isMe: boolean;
+
   ngOnInit() {
     this.loadAsync();
 
-    if (!this.id) {
+    this.isMe = !this.id;
+
+    if (this.isMe) {
       this.activeId = PageIdEnum.UserDetail;
     }
   }
 
   public vm: UserDetailVM;
+
+  public phoneSaveCallback = async () => {
+    let sucessful = await this.updateItem('phone', this.vm.phone);
+    return sucessful;
+  };
+
+  public mailSaveCallback = async () => {
+    let sucessful = await this.updateItem('mail', this.vm.mail);
+    return sucessful;
+  };
+
+  public websiteSaveCallback = async () => {
+    let sucessful = await this.updateItem('website', this.vm.website);
+    return sucessful;
+  };
+
+
+
+
+
+  private async updateItem(name: string, value: string) {
+    var req: UpdatePropRequest = {
+      item: name,
+      value: value
+    };
+    let sucessful = await this.userApiSvc.updateProp(req);
+    return sucessful;
+  }
 
   public get id() {
     let id = UrlParamUtils.getUrlParam<string>('id');

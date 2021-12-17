@@ -1,11 +1,16 @@
 import { Injectable } from '@angular/core';
 import { RestApiService } from 'src/lib/api/rest-api.service';
-import { UserRequest, UserResponse } from './user-ints';
+import { UpdatePropRequest, UserRequest, UserResponse } from './user-ints';
 
 @Injectable({ providedIn: 'root' })
 export class UserApiService {
 
   constructor(private restApiSvc: RestApiService) { }
+
+  public async updateProp(req: UpdatePropRequest) {
+    let res = await this.restApiSvc.putAsync<boolean>('user/prop', req);
+    return res;
+  }
 
   public async update(req: UserRequest) {
     let res = await this.restApiSvc.putAsync<boolean>('user', req);
