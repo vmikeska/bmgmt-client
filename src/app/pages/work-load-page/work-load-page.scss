@@ -1,6 +1,17 @@
 @import "../../scss/values";
 
 app-work-load-page {
+
+  .split-block-title {
+
+    position: sticky;
+    top: 0;
+
+    background-color: $c-gray;
+    padding-bottom: 0.5rem;
+  }
+
+
   .fillter-all {
     padding-bottom: 3rem;
   }
@@ -81,7 +92,18 @@ app-work-load-page {
     }
 
     .split-block-title {
-      padding-bottom: 0;
+      // padding-bottom: 0;
+    }
+
+    .other-weeks-title {
+      font-size: 1.4rem;
+      font-weight: normal;
+
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      padding-left: 1rem;
+
+      color: $c-violete;
     }
 
     .month-stats {

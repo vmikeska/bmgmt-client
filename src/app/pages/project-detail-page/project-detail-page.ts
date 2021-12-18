@@ -184,6 +184,8 @@ export class ProjectDetailPageComponent implements OnInit {
   private async reloadChatMessages() {
     let messages = await this.projChatApiSvc.getMessages(this.id);
     this.messages.next(messages);
+
+    this.showChat = !!messages.length;
   }
 }
 
