@@ -1,9 +1,9 @@
 <div class="tagger-cont">
 
-  <div
+  <span
     *ngIf="showPlaceholder"
     class="empty-placeholder"
-  >{{emptyPlaceholder}}</div>
+  >{{emptyPlaceholder}}</span>
 
   <span
     *ngFor="let tag of tags"
@@ -41,6 +41,7 @@
     </div>
     <input
       [(ngModel)]="search"
+      placeholder="Search"
       (keyup)="searchChange()"
     />
 

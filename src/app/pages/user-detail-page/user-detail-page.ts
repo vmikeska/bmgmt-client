@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { faEnvelope, faGlobeAmericas, faMapMarkerAlt, faPen, faPhone, faUser } from '@fortawesome/free-solid-svg-icons';
+import { NewTagBindingResponse, SearchTagResponse, TagBindingResponse } from 'src/app/api/tags/tags-ints';
 import { UserSkillsApiService } from 'src/app/api/tags/user-skills-api.service';
 import { UserApiService } from 'src/app/api/user/user-api.service';
 import { LocationSaveResponse, UpdatePropRequest, UserResponse } from 'src/app/api/user/user-ints';
@@ -32,6 +34,8 @@ export class UserDetailPageComponent implements OnInit {
 
   public isMe: boolean;
 
+  public addressFormControl = new FormControl();
+
   ngOnInit() {
     this.loadAsync();
 
@@ -59,9 +63,42 @@ export class UserDetailPageComponent implements OnInit {
     return sucessful;
   };
 
+  public firstNameSaveCallback = async () => {
+    let sucessful = await this.updateItem('firstName', this.vm.firstName);
 
+    if (sucessful) {
+      this.vm.fullName = this.getName(this.vm.firstName, this.vm.lastName);
+    }
 
+    return sucessful;
+  };
 
+  public lastNameSaveCallback = async () => {
+    let sucessful = await this.updateItem('lastName', this.vm.lastName);
+
+    if (sucessful) {
+      this.vm.fullName = this.getName(this.vm.firstName, this.vm.lastName);
+    }
+
+    return sucessful;
+  };
+
+  public descSaveCallback = async () => {
+    let sucessful = await this.updateItem('desc', this.vm.desc);
+    return sucessful;
+  };
+
+  public locationSaveCallback = async () => {
+    let fcv = <LocationSaveResponse>this.addressFormControl.value;
+    let value = `${fcv.text}||${fcv.coords[0]}||${fcv.coords[0]}`;
+    let sucessful = await this.updateItem('location', value);
+
+    if (sucessful) {
+      this.vm.location = fcv.text;
+    }
+
+    return sucessful;
+  };
 
   private async updateItem(name: string, value: string) {
     var req: UpdatePropRequest = {
@@ -91,14 +128,32 @@ export class UserDetailPageComponent implements OnInit {
 
     this.vm = {
       isMe: !this.id,
+      firstName: res.firstName,
+      lastName: res.lastName,
       fullName: this.getName(res.firstName, res.lastName),
       desc: res.desc,
       mail: res.mail,
       phone: res.phone,
       website: res.website,
-      location: res.location
+      location: res.location.text
     };
 
+    this.addressFormControl.setValue(res.location);
+
+  }
+
+  public userTagsRemoveCallback = async (item: TagBindingResponse) => {
+    let removed = await this.userSkillsApiSvc.remove(item.bindingId);
+    return removed;
+  }
+
+  public userTagsAddCallback = async (tagId: string, entityId: string) => {
+    let req: NewTagBindingResponse = {
+      tagId,
+      entityId
+    };
+    let bindingId = await this.userSkillsApiSvc.add(req);
+    return bindingId;
   }
 
   public userTagsLoadCallback = async (entityId: string) => {
@@ -106,13 +161,14 @@ export class UserDetailPageComponent implements OnInit {
     return items;
   }
 
-  public editClick() {
-    this.redirectToEdit();
-  }
+  public userTagsSearchCallback = async (str: string, entityId: string) => {
+    let req: SearchTagResponse = {
+      str,
+      entityId
+    };
 
-  private redirectToEdit() {
-    let url = PageIdEnum.UserUpdate;
-    this.router.navigate([url]);
+    let items = await this.userSkillsApiSvc.searchTags(req);
+    return items;
   }
 
   private getName(fn: string, ln: string) {
@@ -142,10 +198,12 @@ export class UserDetailPageComponent implements OnInit {
 
 export interface UserDetailVM {
   isMe: boolean
+  firstName: string;
+  lastName: string;
   fullName: string;
   desc: string;
   phone: string;
   mail: string;
   website: string;
-  location: LocationSaveResponse;
+  location: string;
 }

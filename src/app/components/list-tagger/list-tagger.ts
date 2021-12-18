@@ -51,13 +51,13 @@ export class ListTaggerComponent implements OnInit {
   public removeCallback: (item: TagBindingResponse) => Promise<boolean>;
 
   @Input()
-  public addCallback: (tagId: string) => Promise<string>;
+  public addCallback: (tagId: string, entityId: string) => Promise<string>;
 
   @Input()
   public loadCallback: (entityId: string) => Promise<TagBindingResponse[]>;
 
   @Input()
-  public searchCallback: (str: string) => Promise<TagResponse[]>;
+  public searchCallback: (str: string, entityId: string) => Promise<TagResponse[]>;
 
   public async removeClick(item: TagBindingResponse) {
     let deleted = await this.removeCallback(item);
@@ -68,7 +68,7 @@ export class ListTaggerComponent implements OnInit {
   }
 
   public async optionClick(option: TagResponse) {
-    let bindingId = await this.addCallback(option.id);
+    let bindingId = await this.addCallback(option.id, this.entityId);
 
     let newTag: TagBindingResponse = {
       bindingId,
@@ -83,7 +83,7 @@ export class ListTaggerComponent implements OnInit {
   }
 
   public async searchChange() {
-    let res = await this.searchCallback(this.search);
+    let res = await this.searchCallback(this.search, this.entityId);
     this.options = res;
     if (this.options.length) {
       this.isOpened = true;

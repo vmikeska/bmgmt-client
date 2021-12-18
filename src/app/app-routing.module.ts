@@ -10,7 +10,6 @@ import { ProjectEditPageComponent } from './pages/project-edit-page/project-edit
 import { ProjectDetailPageComponent } from './pages/project-detail-page/project-detail-page';
 import { ProjectsPageComponent } from './pages/projects-page/projects-page';
 import { TaskDetailPageComponent } from './pages/task-detail-page/task-detail-page';
-import { UserUpdatePageComponent } from './pages/user-update-page/user-update-page';
 import { WorkLoadComponent } from './pages/work-load-page/work-load-page';
 import { UserDetailPageComponent } from './pages/user-detail-page/user-detail-page';
 
@@ -26,10 +25,6 @@ const routes: Routes = [
   {
     path: `${PageIdEnum.TaskDetail}/id/:id`,
     component: TaskDetailPageComponent
-  },
-  {
-    path: PageIdEnum.UserUpdate,
-    component: UserUpdatePageComponent
   },
   {
     path: PageIdEnum.NewAccount,

@@ -11,13 +11,13 @@
   </div>
   <div class="r">
     <span
+      *ngIf="editable"
       class="btn"
       (click)="btnClick()"
     >
       <fa-icon
         class="ico"
         [icon]="ico"
-        size="1x"
       ></fa-icon>
     </span>
   </div>

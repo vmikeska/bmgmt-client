@@ -19,7 +19,6 @@ import { ContactsPageComponent } from './pages/contacts-page/contacts-page';
 import { TaskDetailPageComponent } from './pages/task-detail-page/task-detail-page';
 import { CreateAccountComponent } from './pages/create-account-page/create-account-page';
 import { LogInPageComponent } from './pages/log-in-page/log-in-page';
-import { UserUpdatePageComponent } from './pages/user-update-page/user-update-page';
 import { ProjectsPageComponent } from './pages/projects-page/projects-page';
 import { ProjectEditPageComponent } from './pages/project-edit-page/project-edit-page';
 import { ProjectDetailPageComponent } from './pages/project-detail-page/project-detail-page';
@@ -57,7 +56,6 @@ export function initFactory() {
     AppComponent,
 
     WorkLoadComponent,
-    UserUpdatePageComponent,
     DashboardPageComponent,
     ContactsPageComponent,
     TaskDetailPageComponent,

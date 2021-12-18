@@ -17,6 +17,9 @@ export class AddOrEditLineComponent implements OnInit {
   @Input()
   public saveCallback: () => Promise<boolean>;
 
+  @Input()
+  public editable = true;
+
   public get ico() {
     return this.editing ? faSave : faPen;
   }

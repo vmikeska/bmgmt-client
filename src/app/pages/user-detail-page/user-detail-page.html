@@ -24,35 +24,99 @@
 
       </div>
       <div class="r">
-
         <div class="name">{{vm.fullName}}</div>
-
-        <div class="btn-cont">
-
-          <button
-            class="left-rounded-btn"
-            (click)="editClick()"
-          >
-            <fa-icon
-              class="ico"
-              [icon]="faPen"
-              size="2x"
-            ></fa-icon>
-          </button>
-
-        </div>
-
-
       </div>
 
     </div>
 
   </app-header-container>
 
+  <ng-container *ngIf="isMe">
+
+    <div class="split-block-title">Personal</div>
+
+    <div class="split-block">
+
+      <div class="double-info">
+        <div class="l">
+          First name
+        </div>
+        <div class="r">
+
+          <app-add-or-edit-line [saveCallback]="firstNameSaveCallback">
+            <ng-container display>
+              <span class="displayable">{{vm.firstName}}</span>
+            </ng-container>
+
+            <ng-container edit>
+              <input
+                [(ngModel)]="vm.firstName"
+                class="bmgmt-input"
+              />
+            </ng-container>
+          </app-add-or-edit-line>
+
+        </div>
+      </div>
+
+      <div class="double-info">
+        <div class="l">
+          Last name
+        </div>
+        <div class="r">
+
+          <app-add-or-edit-line [saveCallback]="lastNameSaveCallback">
+            <ng-container display>
+              <span class="displayable">{{vm.lastName}}</span>
+            </ng-container>
+
+            <ng-container edit>
+              <input
+                [(ngModel)]="vm.lastName"
+                class="bmgmt-input"
+              />
+            </ng-container>
+          </app-add-or-edit-line>
+
+        </div>
+      </div>
+
+      <div class="desc-block">
+
+        <app-add-or-edit-line [saveCallback]="descSaveCallback">
+          <ng-container display>
+
+            <div
+              *ngIf="!vm.desc"
+              class="desc-placeholder"
+            >Add some description about yourself</div>
+
+            <div
+              *ngIf="vm.desc"
+              class="displayable-textarea"
+            >{{vm.desc}}</div>
+          </ng-container>
+
+          <ng-container edit>
+
+            <textarea
+              class="bmgmt-textarea"
+              [(ngModel)]="vm.desc"
+            ></textarea>
+
+          </ng-container>
+        </app-add-or-edit-line>
+
+      </div>
+
+    </div>
+
+  </ng-container>
+
   <div class="content-cont">
 
     <div
-      *ngIf="vm.desc"
+      *ngIf="vm.desc && !isMe"
       class="description"
     >{{vm.desc}}</div>
 
@@ -62,10 +126,14 @@
 
       <app-list-tagger
         [entityId]="realId"
+        [removeCallback]="userTagsRemoveCallback"
+        [addCallback]="userTagsAddCallback"
         [loadCallback]="userTagsLoadCallback"
-        [editable]="false"
+        [searchCallback]="userTagsSearchCallback"
+        [editable]="isMe"
         emptyPlaceholder="Nothing specified yet"
       ></app-list-tagger>
+
     </div>
 
     <div class="split-block-title">Contacts</div>
@@ -85,7 +153,10 @@
         </div>
         <div class="r">
 
-          <app-add-or-edit-line [saveCallback]="phoneSaveCallback">
+          <app-add-or-edit-line
+            [saveCallback]="phoneSaveCallback"
+            [editable]="isMe"
+          >
             <ng-container display>
               <span
                 *ngIf="isMe"
@@ -121,7 +192,10 @@
         </div>
         <div class="r">
 
-          <app-add-or-edit-line [saveCallback]="mailSaveCallback">
+          <app-add-or-edit-line
+            [saveCallback]="mailSaveCallback"
+            [editable]="isMe"
+          >
             <ng-container display>
               <span
                 *ngIf="isMe"
@@ -157,7 +231,10 @@
         </div>
         <div class="r">
 
-          <app-add-or-edit-line [saveCallback]="websiteSaveCallback">
+          <app-add-or-edit-line
+            [saveCallback]="websiteSaveCallback"
+            [editable]="isMe"
+          >
             <ng-container display>
               <span
                 *ngIf="isMe"
@@ -180,11 +257,8 @@
         </div>
       </div>
 
-      <div
-        *ngIf="vm.location.text"
-        class="double-info"
-        (click)="locationClick()"
-      >
+      <!-- (click)="locationClick()" -->
+      <div class="double-info">
         <div class="l">
           <div class="ico-cont">
             <fa-icon
@@ -194,7 +268,32 @@
             ></fa-icon>
           </div>
         </div>
-        <div class="r"><span class="linkable">{{vm.location.text}}</span></div>
+        <div class="r">
+
+          <app-add-or-edit-line
+            [saveCallback]="locationSaveCallback"
+            [editable]="isMe"
+          >
+            <ng-container display>
+              <span
+                *ngIf="isMe"
+                class="displayable"
+              >{{vm.location}}</span>
+              <span
+                *ngIf="!isMe"
+                class="linkable"
+              >{{vm.location}}</span>
+            </ng-container>
+
+            <ng-container edit>
+              <app-address-autocomplete
+                name="address"
+                [formControl]="addressFormControl"
+              ></app-address-autocomplete>
+            </ng-container>
+          </app-add-or-edit-line>
+
+        </div>
       </div>
     </div>
 

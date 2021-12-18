@@ -84,7 +84,7 @@ export class ContactsPageComponent implements OnInit {
   }
 
   private redirectToContactDetail(id: string) {
-    let url = `${PageIdEnum.ContactDetail}/id/${id}`;
+    let url = `${PageIdEnum.UserDetail}/id/${id}`;
     this.router.navigate([url]);
   }
 
@@ -134,7 +134,7 @@ export class ContactsPageComponent implements OnInit {
       {
         ico: faInfoCircle,
         callback: (item: ContactItemVM) => {
-          this.redirectToContactDetail('asdf');
+          this.redirectToContactDetail(item.id);
         }
       },
 

@@ -97,7 +97,13 @@ body {
   font-size: 20px;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+}
 
+.bmgmt-textarea {
+  border: 2px solid $c-violete;
+  font-size: 20px;
+  padding: 0.5rem;
+  font-family: inherit;
 }
 
 .left-rounded-btn {
