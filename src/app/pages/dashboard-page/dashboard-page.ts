@@ -30,6 +30,14 @@ export class DashboardPageComponent implements OnInit {
     this.loadProjectsAsync();
   }
 
+  public addPhotoTaskClick() {
+    alert('not implemented');
+  }
+
+  public addPhotoProjectClick() {
+    alert('not implemented');
+  }
+
   public activeId = PageIdEnum.Dashboard;
 
   faPlus = faPlus;
