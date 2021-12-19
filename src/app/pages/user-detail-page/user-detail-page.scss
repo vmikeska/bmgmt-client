@@ -1,4 +1,4 @@
-@import '../../scss/values';
+@import "../../scss/values";
 
 app-user-detail-page {
   .photo-name-cont {
@@ -14,7 +14,6 @@ app-user-detail-page {
     }
 
     .r {
-
     }
 
     .photo-cont {
@@ -39,11 +38,6 @@ app-user-detail-page {
       font-size: 40px;
       padding-right: 1rem;
     }
-
-    // .btn-cont {
-    //   margin-top: 3rem;
-    //   text-align: right;
-    // }
   }
 
   .description {
@@ -54,7 +48,6 @@ app-user-detail-page {
   }
 
   .desc-block {
-
     padding-right: 2rem;
     padding-left: 1rem;
     margin-top: 1rem;
@@ -117,12 +110,32 @@ app-user-detail-page {
 
       word-break: break-all;
       text-align: right;
-
     }
   }
 
   .linkable {
     color: $c-green;
     text-decoration: underline;
+  }
+
+  .logout-btn {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    color: $c-green;
+
+    .txt {
+      font-size: 20px;
+      padding-left: 0.5rem;
+    }
+  }
+
+  .comm-mail {
+    padding: 0.1rem;
+    border: 2px solid $c-yellow;
+    margin-top: 0.3rem;
+    font-size: 12px;
+    text-align: left;
   }
 }

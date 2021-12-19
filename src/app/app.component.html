@@ -1,16 +1,7 @@
 <app-dialog-placeholder></app-dialog-placeholder>
 
 <div class="frame">
-
-  <div *ngIf="isLoggedIn" class="top-ribbon-cont">
-
-    <span class="logout-btn" (click)="logoutClick()">Logout</span>
-
-  </div>
-
   <div class="dynamic-content-cont">
-
     <router-outlet (activate)="onActivate($event)"></router-outlet>
   </div>
-
 </div>

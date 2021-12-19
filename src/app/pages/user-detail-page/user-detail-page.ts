@@ -1,11 +1,13 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { faEnvelope, faGlobeAmericas, faMapMarkerAlt, faPen, faPhone, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope, faGlobeAmericas, faMapMarkerAlt, faPen, faPhone, faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
 import { NewTagBindingResponse, SearchTagResponse, TagBindingResponse } from 'src/app/api/tags/tags-ints';
 import { UserSkillsApiService } from 'src/app/api/tags/user-skills-api.service';
 import { UserApiService } from 'src/app/api/user/user-api.service';
 import { LocationSaveResponse, UpdatePropRequest, UserResponse } from 'src/app/api/user/user-ints';
+import { UserData } from 'src/app/user-data';
+import { CookieService } from 'src/app/utils/cookie.service';
 import { UrlParamUtils } from 'src/lib/utils/url-utils';
 import { PageIdEnum } from '../page-id';
 
@@ -20,7 +22,8 @@ export class UserDetailPageComponent implements OnInit {
   constructor(
     private userApiSvc: UserApiService,
     private router: Router,
-    private userSkillsApiSvc: UserSkillsApiService
+    private userSkillsApiSvc: UserSkillsApiService,
+    private cookieSvc: CookieService,
   ) { }
 
   public activeId: string;
@@ -31,6 +34,7 @@ export class UserDetailPageComponent implements OnInit {
   faGlobeAmericas = faGlobeAmericas;
   faMapMarkerAlt = faMapMarkerAlt;
   faPhone = faPhone;
+  faSignOutAlt = faSignOutAlt;
 
   public isMe: boolean;
 
@@ -177,6 +181,14 @@ export class UserDetailPageComponent implements OnInit {
     }
 
     return [fn, ln].join(' ');
+  }
+
+  public logoutClick() {
+    this.cookieSvc.deleteCookie('session');
+    UserData.isLoggedIn = false;
+
+    let url = PageIdEnum.LogIn;
+    this.router.navigate([url]);
   }
 
   public phoneClick() {

@@ -1,7 +1,7 @@
 import { T } from '@angular/cdk/keycodes';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { faBriefcase, faCalendarAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBriefcase, faCalendarAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as moment from 'moment';
 import { ConfigLoaderService } from 'src/app/api/account/config-loader.service';
 import { TaskResponse, TaskTypeEnum, WorkloadMonthResponse, WorkloadRequest } from 'src/app/api/task/task-ints';
@@ -33,11 +33,16 @@ export class WorkLoadComponent implements OnInit {
 
   faCalendarAlt = faCalendarAlt;
   faBriefcase = faBriefcase;
+  faPlus = faPlus;
 
   public months: Month[] = [];
 
   public get daysPerWeek() {
     return this.useDays.length;
+  }
+
+  public addCommonTaskClick() {
+    alert('not implemented');
   }
 
   public ngOnInit() {

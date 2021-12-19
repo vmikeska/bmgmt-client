@@ -11,6 +11,14 @@ export class WorkloadFilterService {
   public from = moment(`2021-12-01`);
   public to = moment('2022-03-30');
 
+  public get toDateMin() {
+    return this.from;
+  }
+
+  public get fromDateMax() {
+    return this.to;
+  }
+
   private dispayDateFormat = 'DD.MM.YYYY';
 
   public filterDays: DayFilterItem[] = [

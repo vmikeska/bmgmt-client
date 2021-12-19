@@ -1,9 +1,7 @@
 @import "../../scss/values";
 
 app-work-load-page {
-
   .split-block-title {
-
     position: sticky;
     top: 0;
 
@@ -11,9 +9,13 @@ app-work-load-page {
     padding-bottom: 0.5rem;
   }
 
-
   .fillter-all {
-    padding-bottom: 3rem;
+    // padding-bottom: 3rem;
+  }
+
+  .add-cont {
+    text-align: right;
+    padding-bottom: 1rem;
   }
 
   .dates-and-days-cont {
@@ -87,12 +89,50 @@ app-work-load-page {
   }
 
   .month-all {
-    .month-content-cont {
-      padding: 1rem;
+    .month-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      padding-left: 1rem;
+
+      .l {
+        font-size: 1.4rem;
+        font-weight: normal;
+
+        color: $c-violete;
+      }
+
+      .r {
+        padding-right: 1rem;
+
+        .btn-cont {
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+
+          border-radius: 50%;
+
+          $size: 40px;
+          width: $size;
+          height: $size;
+
+          background-color: $c-yellow;
+
+          cursor: pointer;
+
+          .ico {
+            color: white;
+            font-size: 20px;
+          }
+        }
+      }
     }
 
-    .split-block-title {
-      // padding-bottom: 0;
+    .month-content-cont {
+      padding: 1rem;
     }
 
     .other-weeks-title {
@@ -111,7 +151,6 @@ app-work-load-page {
       padding-right: 1rem;
       padding-bottom: 1rem;
     }
-
   }
 
   .inline-tasks-all {
@@ -121,7 +160,6 @@ app-work-load-page {
       display: flex;
       flex-wrap: wrap;
       margin-top: 0.5rem;
-
 
       .item {
         display: inline-block;
@@ -162,7 +200,6 @@ app-work-load-page {
     }
 
     .events-row {
-
       .event {
         padding-top: 0.5rem;
         padding-bottom: 0.5rem;
@@ -179,7 +216,6 @@ app-work-load-page {
           background-color: transparent;
         }
       }
-
     }
 
     .week-all {
@@ -205,4 +241,3 @@ app-work-load-page {
     }
   }
 }
-

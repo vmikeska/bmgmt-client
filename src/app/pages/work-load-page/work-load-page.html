@@ -66,7 +66,9 @@
                   matInput
                   (dateChange)="dateRangeChange()"
                   [matDatepicker]="fromPicker"
+                  [max]="workloadFilterSvc.fromDateMax"
                 >
+                <!-- [max]="maxDate" -->
                 <mat-datepicker-toggle
                   matSuffix
                   [for]="fromPicker"
@@ -82,6 +84,7 @@
                   matInput
                   (dateChange)="dateRangeChange()"
                   [matDatepicker]="toPicker"
+                  [min]="workloadFilterSvc.toDateMin"
                 >
                 <mat-datepicker-toggle
                   matSuffix
@@ -116,6 +119,19 @@
 
     </div>
 
+    <div class="add-cont">
+      <button
+        class="left-rounded-btn"
+        (click)="addCommonTaskClick()"
+      >
+        <fa-icon
+          class="ico"
+          [icon]="faPlus"
+          size="2x"
+        ></fa-icon>
+      </button>
+    </div>
+
   </app-header-container>
 
   <div class="calendar-all">
@@ -123,7 +139,18 @@
       *ngFor="let month of months"
       class="month-all"
     >
-      <div class="split-block-title">{{month.title}}</div>
+      <div class="month-title">
+        <div class="l">{{month.title}}</div>
+        <div class="r">
+          <span class="btn-cont">
+            <fa-icon
+            class="ico"
+            [icon]="faPlus"
+
+          ></fa-icon>
+          </span>
+        </div>
+      </div>
       <div class="month-stats">
         <span class="week-load">Total: {{month.workloadStr}}</span>
       </div>

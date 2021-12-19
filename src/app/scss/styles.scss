@@ -3,7 +3,7 @@
 html,
 body {
   height: 100vh;
-  
+
   margin-left: auto;
   margin-right: auto;
 
@@ -18,7 +18,7 @@ body {
 
 .frame {
   height: 100%;
-  
+
 
   overflow-y: auto;
 
@@ -162,6 +162,22 @@ body {
   $rad: 30px;
   border-top-right-radius: $rad;
   border-bottom-right-radius: $rad;
+
+  &.left-padding {
+    padding-left: 1rem;
+  }
+
+  &.top-padding {
+    padding-top: 1rem;
+  }
+
+  &.bottom-padding {
+    padding-bottom: 1rem;
+  }
+
+  &.right-padding {
+    padding-bottom: 1rem;
+  }
 }
 
 .split-block-title {
@@ -233,25 +249,6 @@ body {
     &:hover {
       color: $c-light-violete;
     }
-  }
-}
-
-.top-ribbon-cont {
-  text-align: right;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-
-  .logout-btn {
-    color: darkblue;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
-  .login-name-btn {
-    margin-right: 1rem;
-    color: darkblue;
-    text-decoration: underline;
-    cursor: pointer;
   }
 }
 
