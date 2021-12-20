@@ -19,17 +19,15 @@ body {
 .frame {
   height: 100%;
 
-
   overflow-y: auto;
 
   &::-webkit-scrollbar {
-    width: 0;  /* Remove scrollbar space */
-    background: transparent;  /* Optional: just make scrollbar invisible */
-}
+    width: 0; /* Remove scrollbar space */
+    background: transparent; /* Optional: just make scrollbar invisible */
+  }
 }
 
 .dynamic-content-cont {
-
 }
 
 .page-all {
@@ -89,8 +87,24 @@ body {
 .bmgmt-input {
   border: 2px solid $c-violete;
   font-size: 20px;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+
+  padding: 0.5rem;
+
+  box-sizing: border-box;
+
+  &.full-width {
+    width: 100%;
+  }
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 
 .bmgmt-textarea {
@@ -119,10 +133,6 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-
-  // border: 1px solid red;
-
-  // padding: 2rem;
 
   z-index: 10;
 
@@ -156,7 +166,6 @@ body {
 
 .split-block {
   background-color: white;
-  // margin-top: 2rem;
   margin-right: 1rem;
 
   $rad: 30px;
@@ -192,7 +201,6 @@ body {
 }
 
 .header-container {
-  // min-height: 200px;
   background-color: $c-violete;
   border-bottom-left-radius: 60px;
 
@@ -263,14 +271,28 @@ body {
     width: 100% !important;
   }
 
+  .item-title {
+    font-size: 20px;
+    padding-bottom: 0.5rem;
+    color: $c-violete;
+    text-align: left;
+  }
+
+  .single-line {
+    margin-bottom: 1rem;
+  }
+
   .double-line {
     display: flex;
+    margin-bottom: 1rem;
 
     .l {
       width: 50%;
+      padding-right: 0.5rem;
     }
 
     .r {
+      padding-left: 0.5rem;
       width: 50%;
     }
   }

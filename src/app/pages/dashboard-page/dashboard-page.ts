@@ -8,6 +8,8 @@ import { PageIdEnum } from '../page-id';
 import { faPlus, faCamera } from '@fortawesome/free-solid-svg-icons';
 import { TaskMapService } from 'src/app/components/assigned-tasks-list/tasksMap.service';
 import { CrationTypeEnum, CreationTypeItem, DatedBlockTasksVM, ProjItemVM } from 'src/app/components/comps-ints';
+import { ItemOption } from 'src/app/ints/common-ints';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -23,6 +25,23 @@ export class DashboardPageComponent implements OnInit {
     private router: Router,
     private taskMapSvc: TaskMapService
   ) { }
+
+  // public val = 'VAL1';
+
+  // public options = new BehaviorSubject<ItemOption[]>([
+  //   {
+  //     label: 'Value 1',
+  //     value: 'VAL1'
+  //   },
+  //   {
+  //     label: 'Value 2',
+  //     value: 'VAL2'
+  //   },
+  //   {
+  //     label: 'Value 3',
+  //     value: 'VAL3'
+  //   },
+  // ]);
 
   public ngOnInit() {
     this.loadUnassignedTasks();

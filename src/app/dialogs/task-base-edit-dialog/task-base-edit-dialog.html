@@ -7,58 +7,54 @@
 
     <div class="form-cont">
 
+      <div class="item-title">Task name</div>
       <div class="single-line">
-        <app-input
-          label="Task name"
-          [(model)]="vm.name"
-        ></app-input>
-      </div>
 
-      <div class="single-line">
-        <mat-form-field>
-          <mat-label>Description</mat-label>
-          <textarea
-            matInput
-            [(ngModel)]="vm.desc"
-          ></textarea>
-        </mat-form-field>
+        <input
+          [(ngModel)]="vm.name"
+          class="bmgmt-input full-width"
+        >
 
       </div>
 
+      <div class="item-title">Task type</div>
       <div class="single-line">
-        <app-select
-          label="Select task type"
-          [(model)]="vm.type"
-          [opts]="typeOptions"
-          (change)="taskTypeChange()"
-        ></app-select>
+        <app-drop-down
+          [(ngModel)]="vm.type"
+          [options]="typeOptions"
+          [directionDown]="true"
+        ></app-drop-down>
       </div>
 
       <ng-container *ngIf="isPeriodBased">
 
         <div class="double-line">
           <div class="l">
-            <app-select
-              *ngIf="isWeekBased"
-              label="Week"
-              [(model)]="vm.week"
-              [opts]="weekOptions"
-            ></app-select>
+            {{vm.week}},{{vm.month}},{{vm.year}}
+            <ng-container *ngIf="isWeekBased">
+              <div class="item-title">Week</div>
+              <app-drop-down
+                [(ngModel)]="vm.week"
+                [options]="weekOptions"
+              ></app-drop-down>
+            </ng-container>
 
-            <app-select
-              *ngIf="isMonthBased"
-              label="Month"
-              [(model)]="vm.month"
-              [opts]="monthOptions"
-            ></app-select>
+            <ng-container *ngIf="isMonthBased">
+              <div class="item-title">Month</div>
+              <app-drop-down
+                [(ngModel)]="vm.month"
+                [options]="monthOptions"
+              ></app-drop-down>
+            </ng-container>
+
           </div>
           <div class="r">
-            <app-select
-              label="Year"
-              [(model)]="vm.year"
-              [opts]="yearsOptions"
+            <div class="item-title">Year</div>
+            <app-drop-down
+              [(ngModel)]="vm.year"
+              [options]="yearsOptions"
               (change)="yearChange()"
-            ></app-select>
+            ></app-drop-down>
           </div>
         </div>
 
@@ -68,17 +64,17 @@
 
         <div class="double-line">
           <div class="l">
+            <div class="item-title">Date from</div>
             <app-date-picker
-              label="Date from"
-              [(model)]="vm.dateFrom"
-              (change)="dateRangeChange()"
+              [(ngModel)]="vm.dateFrom"
+              [max]="fromDateMax"
             ></app-date-picker>
           </div>
           <div class="r">
+            <div class="item-title">Date to</div>
             <app-date-picker
-              label="Date to"
-              [(model)]="vm.dateTo"
-              (change)="dateRangeChange()"
+              [(ngModel)]="vm.dateTo"
+              [min]="toDateMin"
             ></app-date-picker>
           </div>
         </div>
@@ -87,18 +83,20 @@
 
       <div class="double-line">
         <div class="l">
-          <app-input
-            label="Mandays"
+          <div class="item-title">Mandays</div>
+          <input
+            [(ngModel)]="vm.manDays"
             type="number"
-            [(model)]="vm.manDays"
-          ></app-input>
+            class="bmgmt-input full-width"
+          />
         </div>
         <div class="r">
-          <app-input
-            label="Manhours"
+          <div class="item-title">Manhours</div>
+          <input
+            [(ngModel)]="vm.manHours"
             type="number"
-            [(model)]="vm.manHours"
-          ></app-input>
+            class="bmgmt-input full-width"
+          />
         </div>
       </div>
 

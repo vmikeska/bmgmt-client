@@ -107,27 +107,27 @@ app-work-load-page {
 
       .r {
         padding-right: 1rem;
+      }
+    }
 
-        .btn-cont {
-          display: inline-flex;
-          justify-content: center;
-          align-items: center;
+    .add-btn-cont {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
 
-          border-radius: 50%;
+      border-radius: 50%;
 
-          $size: 40px;
-          width: $size;
-          height: $size;
+      $size: 40px;
+      width: $size;
+      height: $size;
 
-          background-color: $c-yellow;
+      background-color: $c-yellow;
 
-          cursor: pointer;
+      cursor: pointer;
 
-          .ico {
-            color: white;
-            font-size: 20px;
-          }
-        }
+      .ico {
+        color: white;
+        font-size: 20px;
       }
     }
 
@@ -173,20 +173,21 @@ app-work-load-page {
     }
   }
 
-  .weeks-table {
-    border: 0;
+  .week-title-cont {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
 
-    width: 100%;
-
-    .week-info-row {
-      .week-title {
+    .l {
+      .title {
         font-weight: bold;
         font-size: 18px;
         color: $c-violete;
       }
 
       .week-load {
-        margin-left: 0.5rem;
+
       }
 
       .each-day-load {
@@ -198,6 +199,15 @@ app-work-load-page {
         padding-top: 0.5rem;
       }
     }
+
+    .r {
+    }
+  }
+
+  .weeks-table {
+    border: 0;
+
+    width: 100%;
 
     .events-row {
       .event {

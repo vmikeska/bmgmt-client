@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { RestApiService } from 'src/lib/api/rest-api.service';
-import { TaskDetailResponse, TaskGroupsResponse, TaskResponse } from './task-ints';
+import { TaskDateTypeResponse, TaskDetailResponse, TaskGroupsResponse, TaskResponse } from './task-ints';
 
 @Injectable({ providedIn: 'root' })
 export class TaskApiService {
@@ -43,8 +43,13 @@ export class TaskApiService {
     return res;
   }
 
-  public async update(req: TaskResponse) {
-    let res = await this.restApiSvc.putAsync<string>('task', req);
+  // public async update(req: TaskResponse) {
+  //   let res = await this.restApiSvc.putAsync<string>('task', req);
+  //   return res;
+  // }
+
+  public async updateType(req: TaskDateTypeResponse) {
+    let res = await this.restApiSvc.putAsync<boolean>('task/type', req);
     return res;
   }
 

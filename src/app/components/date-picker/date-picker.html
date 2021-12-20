@@ -1,16 +1,24 @@
+<div class="all-cont">
+  <div class="date-cont">
 
-<mat-form-field appearance="fill">
-  <mat-label>{{label}}</mat-label>
-  <input
-    [(ngModel)]="model"
-    matInput
-    (dateChange)="innerChangeEvent()"
-    [matDatepicker]="dpt"
-  >
-  <mat-datepicker-toggle
-    matSuffix
-    [for]="dpt"
-  ></mat-datepicker-toggle>
+    <!-- matInput -->
+    <input
+      [(ngModel)]="value"
+      class="bmgmt-input full-width"
+      (dateChange)="innerChangeEvent()"
+      [matDatepicker]="dpt"
+      [max]="max"
+      [min]="min"
+    >
+
+    <div class="toggle-cont">
+      <mat-datepicker-toggle
+        matSuffix
+        [for]="dpt"
+      ></mat-datepicker-toggle>
+    </div>
+
+  </div>
+
   <mat-datepicker #dpt></mat-datepicker>
-</mat-form-field>
-
+</div>

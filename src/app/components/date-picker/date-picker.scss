@@ -1,0 +1,12 @@
+app-date-picker {
+  .date-cont {
+    position: relative;
+
+    .toggle-cont {
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+  }
+}

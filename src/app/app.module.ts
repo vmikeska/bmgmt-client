@@ -43,6 +43,7 @@ import { TaskBaseEditDialogComponent } from './dialogs/task-base-edit-dialog/tas
 import { UserDetailPageComponent } from './pages/user-detail-page/user-detail-page';
 import { ListTaggerComponent } from './components/list-tagger/list-tagger';
 import { AddOrEditLineComponent } from './components/add-or-edit-line/add-or-edit-line';
+import { DropDownComponent } from './components/drop-down/drop-down';
 
 export function initFactory() {
   return () => {
@@ -72,6 +73,7 @@ export function initFactory() {
     DatePickerComponent,
     InputComponent,
     AddOrEditLineComponent,
+    DropDownComponent,
 
     BaseDialogComponent,
     DialogPlaceholderComponent,

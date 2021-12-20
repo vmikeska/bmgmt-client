@@ -65,20 +65,21 @@ export interface RangeRequest {
 
 export enum TaskTypeEnum { Unassigned, ExactFlexible, ExactStatic, Week, Month }
 
-export interface TaskResponse {
-  id: string;
+export interface TaskResponse extends TaskDateTypeResponse {
   ownerId?: string;
   projId?: string;
+  desc?: string;
+}
+
+export interface TaskDateTypeResponse {
+  id?: string;
   name: string;
   type: TaskTypeEnum;
-  desc: string;
-
   dateFrom?: string;
   dateTo?: string;
   week?: number;
   year?: number;
   month?: number;
-
   manHours?: number;
   manDays?: number;
 }

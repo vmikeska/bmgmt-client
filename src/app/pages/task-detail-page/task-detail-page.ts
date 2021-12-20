@@ -41,6 +41,9 @@ export class TaskDetailPageComponent implements OnInit {
     await this.loadTaskAsync();
     await this.reloadChatMessages();
     this.reloadAddActions();
+
+    // show dialog at beginning
+    // this.editClick();
   }
 
   faPen = faPen;

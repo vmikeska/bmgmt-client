@@ -60,7 +60,6 @@
           <div class="days-tbl">
             <div class="l">
               <mat-form-field>
-                <mat-label>Choose a date</mat-label>
                 <input
                   [(ngModel)]="workloadFilterSvc.from"
                   matInput
@@ -78,7 +77,6 @@
             </div>
             <div class="r">
               <mat-form-field>
-                <mat-label>Choose a date</mat-label>
                 <input
                   [(ngModel)]="workloadFilterSvc.to"
                   matInput
@@ -142,12 +140,11 @@
       <div class="month-title">
         <div class="l">{{month.title}}</div>
         <div class="r">
-          <span class="btn-cont">
+          <span class="add-btn-cont">
             <fa-icon
-            class="ico"
-            [icon]="faPlus"
-
-          ></fa-icon>
+              class="ico"
+              [icon]="faPlus"
+            ></fa-icon>
           </span>
         </div>
       </div>
@@ -162,14 +159,38 @@
 
             <ng-container *ngFor="let week of month.weeks">
 
-              <tr class="week-info-row">
+              <tr>
                 <td
                   class="cell"
                   colspan="7"
                 >
-                  <span class="week-title">{{week.no}}. week</span>
-                  <span class="week-load">Total: {{week.workloadStr}}</span>
-                  <span class="each-day-load">A day: {{week.workloadDayStr}}</span>
+
+                  <div class="week-title-cont">
+                    <div class="l">
+                      <div class="title">{{week.no}}. week</div>
+                      <div class="info">
+                        <span
+                          *ngIf="week.workloadStr"
+                          class="week-load"
+                        >Total: {{week.workloadStr}}</span>
+                        <span
+                          *ngIf="week.workloadDayStr"
+                          class="each-day-load"
+                        >A day: {{week.workloadDayStr}}</span>
+                      </div>
+                    </div>
+                    <div class="r">
+                      <span class="add-btn-cont">
+                        <fa-icon
+                          class="ico"
+                          [icon]="faPlus"
+                        ></fa-icon>
+                      </span>
+                    </div>
+                  </div>
+
+
+
                 </td>
               </tr>
 

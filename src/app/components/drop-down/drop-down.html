@@ -1,0 +1,44 @@
+<div
+  class="control-cont"
+  [ngClass]="{'direction-down': directionDown, 'direction-up': !directionDown, 'is-dropdown': dropdownOrAutocomplete }"
+>
+
+  <div
+    class="input-cont"
+    (click)="inputClick()"
+  >
+    <input
+      [(ngModel)]="text"
+      [disabled]="disabled"
+      [placeholder]="placeholder"
+      (keyup)="searchChange()"
+    />
+
+    <fa-icon
+      *ngIf="!isOpened"
+      class="caret-ico"
+      [icon]="faCaretDown"
+    ></fa-icon>
+    <fa-icon
+      *ngIf="isOpened"
+      class="caret-ico"
+      [icon]="faCaretUp"
+    ></fa-icon>
+
+  </div>
+
+  <div
+    *ngIf="isOpened"
+    class="drop-cont"
+  >
+    <div class="options">
+      <div
+        *ngFor="let o of options | async"
+        class="option"
+        [ngClass]="{ 'active': o.value === value}"
+        (click)="optionClick(o)"
+      >{{o.label}}</div>
+    </div>
+  </div>
+
+</div>

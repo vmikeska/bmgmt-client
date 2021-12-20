@@ -1,0 +1,74 @@
+@import "../../scss/values";
+
+app-drop-down {
+  .control-cont {
+    font-size: inherit;
+    display: flex;
+  }
+
+  .drop-cont {
+    position: relative;
+  }
+
+  .direction-up {
+    flex-direction: column-reverse;
+
+    .options {
+      bottom: 0;
+    }
+  }
+
+  .direction-down {
+    flex-direction: column;
+
+    .options {
+      top: 0;
+    }
+  }
+
+  .input-cont {
+    position: relative;
+
+    .caret-ico {
+      font-size: 25px;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+
+      right: 0.5rem;
+    }
+  }
+
+  input {
+    width: 100%;
+    font-size: inherit;
+
+    box-sizing: border-box;
+
+    border: 2px solid $c-violete;
+    background-color: white;
+    padding: 0.5rem;
+  }
+
+  .options {
+    position: absolute;
+    background-color: white;
+    z-index: 20;
+
+    .option {
+      cursor: pointer;
+      padding: 1rem;
+
+      &:hover, &.active {
+        background-color: $c-violete;
+        color: white;
+      }
+    }
+  }
+
+  .is-dropdown {
+    input {
+      cursor: pointer;
+    }
+  }
+}
