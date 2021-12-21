@@ -6,7 +6,7 @@ import { CookieService } from '../utils/cookie.service';
 @Injectable({ providedIn: 'root' })
 export class ConfigDataService {
   constructor(
-    private configLoaderSvc: ConfigLoaderService,
+    private configSvc: ConfigLoaderService,
     private cookieSvc: CookieService
   ) { }
 
@@ -16,8 +16,8 @@ export class ConfigDataService {
   }
 
   public async load() {
-    await this.configLoaderSvc.refresh();
-    let r = this.configLoaderSvc.response;
+    await this.configSvc.refresh();
+    let r = this.configSvc.response;
     UserData.loginName = r.mail;
   }
 

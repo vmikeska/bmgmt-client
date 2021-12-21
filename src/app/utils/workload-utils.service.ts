@@ -4,12 +4,12 @@ import { ConfigLoaderService } from "../api/account/config-loader.service";
 @Injectable({ providedIn: 'root' })
 export class WorkloadUtilsService {
 
-  constructor(private configLoaderSvc: ConfigLoaderService) {
+  constructor(private configSvc: ConfigLoaderService) {
 
   }
 
   public daysHoursStr(days: number, hours: number) {
-    let dayWorkingHours = this.configLoaderSvc.response.dayWorkingHours;
+    let dayWorkingHours = this.configSvc.response.dayWorkingHours;
 
     let totalHours = (days * dayWorkingHours) + hours;
 

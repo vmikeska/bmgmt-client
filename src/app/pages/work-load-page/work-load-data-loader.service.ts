@@ -20,7 +20,7 @@ export class WorkLoadDataLoaderService {
 
   public response: WorkloadResponse;
 
-  public get dayWorkingHours() {
+  private get dayWorkingHours() {
     return this.configSvc.response.dayWorkingHours;
   }
 
@@ -34,6 +34,8 @@ export class WorkLoadDataLoaderService {
 
   public async loadDataAsync(req: WorkloadRequest) {
     this.workingDaysCount = req.useDays.length;
+
+    await this.configSvc.getValueAsync();
 
     this.response = await this.taskBusynessApiSvc.getWorkloadPageData(req);
 
@@ -101,7 +103,7 @@ export class WorkLoadDataLoaderService {
 
     let rWeek = this.findWeekFromResponse(year, no);
 
-    let hoursAday = rWeek.totalHours / this.workingDaysCount / this.configSvc.response.dayWorkingHours;
+    let hoursAday = rWeek.totalHours / this.workingDaysCount / this.dayWorkingHours;
 
     let nWeek: Week = {
       year,
