@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { ChatMessageResponse, DeleteChatMessageRequest, NewChatMessageRequest } from 'src/app/api/chat/chat-ints';
 import { TaskChatApiService } from 'src/app/api/chat/task-chat-api.service';
 import { TaskTypeEnum, TaskResponse } from 'src/app/api/task/task-ints';
-import { TaskDetailService } from 'src/app/services/task-detail.service';
+import { TaskDetailService, TaskUtils } from 'src/app/services/task-detail.service';
 import { DateUtils } from 'src/app/utils/date-utils';
 import { WorkloadUtilsService } from 'src/app/utils/workload-utils.service';
 import { UrlParamUtils } from 'src/lib/utils/url-utils';
@@ -13,7 +13,7 @@ import { PageIdEnum } from '../page-id';
 import { faPen, faUserFriends, faImage, faFile, faBuilding, faComments } from '@fortawesome/free-solid-svg-icons';
 import { AddActionVM } from 'src/app/components/add-actions/add-actions';
 import { DialogService } from 'src/app/dialogs/base/dialog.service';
-import { TaskBaseEditDialogComponent } from 'src/app/dialogs/task-base-edit-dialog/task-base-edit-dialog';
+import { TaskBaseEditDialogComponent, TaskEditTypeModeEnum } from 'src/app/dialogs/task-base-edit-dialog/task-base-edit-dialog';
 
 @Component({
   selector: 'app-task-detail-page',
@@ -118,37 +118,16 @@ export class TaskDetailPageComponent implements OnInit {
 
   public editClick() {
     let dlg = this.dlgSvc.create(TaskBaseEditDialogComponent, (m) => {
-      m.taskId = this.id;
+      m.id = this.id;
+      m.title = 'Edit task base';
+      m.mode = TaskEditTypeModeEnum.FullEdit;
       m.onSavedEvent.subscribe(() => {
         this.loadTaskAsync();
       });
     });
   }
 
-  private getTaskTypeDesc(t: TaskResponse) {
-    if (t.type === TaskTypeEnum.Month) {
-      let str = `${DateUtils.getMonthName(t.month)}, ${t.year}`;
-      return str;
-    }
 
-    if (t.type === TaskTypeEnum.Week) {
-      let date = moment().year(t.year).week(t.week).day('monday');
-      let str = `${t.week}. Week, ${DateUtils.getMonthName(date.month())}, ${t.year}`;
-      return str;
-    }
-
-    if (t.type === TaskTypeEnum.ExactFlexible) {
-      let str = `Working days between ${DateUtils.strFromStrDate(t.dateFrom)} and ${DateUtils.strFromStrDate(t.dateTo)}`;
-      return str;
-    }
-
-    if (t.type === TaskTypeEnum.ExactStatic) {
-      let str = `All days between ${DateUtils.strFromStrDate(t.dateFrom)} and ${DateUtils.strFromStrDate(t.dateTo)}`;
-      return str;
-    }
-
-    return '';
-  }
 
   public msgPostCallback = async (text: string) => {
     let req: NewChatMessageRequest = {
@@ -182,7 +161,7 @@ export class TaskDetailPageComponent implements OnInit {
 
     this.name = r.task.name;
     this.desc = r.task.desc;
-    let dateDesc = this.getTaskTypeDesc(r.task);
+    let dateDesc = TaskUtils.getTaskTypeDesc(r.task);
     let loadDesc = this.workloadUtilsSvc.daysHoursStr(r.task.manDays, r.task.manHours);
 
     this.dateAndLoad = [dateDesc, loadDesc].filter(i => !!i).join(', ');

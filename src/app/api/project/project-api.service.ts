@@ -41,6 +41,11 @@ export class ProjectApiService {
     return res;
   }
 
+  public async getListParticip() {
+    let res = await this.restApiSvc.getAsync<ProjectResponse[]>('project/list-particip');
+    return res;
+  }
+
   public async getProjectAssignedTasks(id: string) {
     let req = { id };
     let res = await this.restApiSvc.getAsync<TaskGroupsResponse>('project/assigned-tasks', req);

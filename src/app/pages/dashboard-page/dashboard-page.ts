@@ -132,8 +132,8 @@ export class DashboardPageComponent implements OnInit {
       desc: ''
     };
 
-    var taskId = await this.projApiSvc.create(req);
-    return taskId
+    var projId = await this.projApiSvc.create(req);
+    return projId
   }
 
   private async createTaskAsync() {

@@ -1,0 +1,31 @@
+<app-base-dialog [title]="title">
+
+  <div class="content-buttons-split">
+    <div class="cont">
+
+      <div class="workload">{{workloadStr}}</div>
+
+      <div class="tasks">
+        <div
+          *ngFor="let task of tasks"
+          class="task"
+        >
+          <div class="c l">
+            <span (click)="taskClick(task.id)">{{task.name}}</span>
+          </div>
+          <div class="c r">{{task.workload}}</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="btns">
+      <app-dialog-action-button
+        (click)="addTaskClick()"
+        [icon]="faPlus"
+      >Add task</app-dialog-action-button>
+    </div>
+  </div>
+
+
+
+</app-base-dialog>

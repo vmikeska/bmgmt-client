@@ -10,7 +10,7 @@ app-work-load-page {
   }
 
   .fillter-all {
-    // padding-bottom: 3rem;
+    padding-bottom: 2rem;
   }
 
   .add-cont {
@@ -146,6 +146,17 @@ app-work-load-page {
       color: $c-violete;
     }
 
+    .other-months-title {
+      font-size: 1.4rem;
+      font-weight: normal;
+
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      padding-left: 1rem;
+
+      color: $c-violete;
+    }
+
     .month-stats {
       padding-left: 1rem;
       padding-right: 1rem;
@@ -230,6 +241,7 @@ app-work-load-page {
 
     .week-all {
       .day-all {
+        cursor: pointer;
         vertical-align: top;
         // border: 1px solid black;
         padding: 2px;

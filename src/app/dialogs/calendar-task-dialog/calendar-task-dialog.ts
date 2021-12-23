@@ -5,6 +5,7 @@ import { Subject } from 'rxjs';
 import { TaskApiService } from 'src/app/api/task/task-api.service';
 import { TaskResponse } from 'src/app/api/task/task-ints';
 import { PageIdEnum } from 'src/app/pages/page-id';
+import { TaskUtils } from 'src/app/services/task-detail.service';
 import { WorkloadUtilsService } from 'src/app/utils/workload-utils.service';
 import { DialogService } from '../base/dialog.service';
 
@@ -37,7 +38,7 @@ export class CalendarTaskDialogComponent implements OnInit {
 
     this.title = this.taskRes.name;
     this.desc = this.taskRes.desc;
-    this.load = this.wlUtilsSvc.daysHoursStr(this.taskRes.manDays, this.taskRes.manHours);
+    this.load = TaskUtils.getTaskTypeDesc(this.taskRes);
   }
 
   public taskRes: TaskResponse;

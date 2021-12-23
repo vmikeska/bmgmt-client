@@ -25,11 +25,13 @@ export class ProjectsPageComponent implements OnInit {
 
   public ngOnInit() {
     this.loadOwnProjectsAsync();
+    this.loadParticipProjectsAsync();
   }
 
   public creationName = '';
 
   public ownProjects: ProjItemVM[] = [];
+  public paricipProjects: ProjItemVM[] = [];
 
   private async createProjectAsync() {
     if (!this.creationName) {
@@ -59,6 +61,19 @@ export class ProjectsPageComponent implements OnInit {
     let res = await this.projApiSvc.getList();
 
     this.ownProjects = res.map((i) => {
+      let item: ProjItemVM = {
+        id: i.id,
+        name: i.name
+      };
+      return item;
+    });
+
+  }
+
+  private async loadParticipProjectsAsync() {
+    let res = await this.projApiSvc.getListParticip();
+
+    this.paricipProjects = res.map((i) => {
       let item: ProjItemVM = {
         id: i.id,
         name: i.name

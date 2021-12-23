@@ -1,105 +1,113 @@
-<app-base-dialog title="Edit task base">
+<app-base-dialog [title]="title">
 
-  <div
-    *ngIf="initialized"
-    class="page-all"
-  >
 
-    <div class="form-cont">
+  <div class="content-buttons-split">
+    <div class="cont">
 
-      <div class="item-title">Task name</div>
-      <div class="single-line">
+      <div class="form-cont">
 
-        <input
-          [(ngModel)]="vm.name"
-          class="bmgmt-input full-width"
-        >
+        <div class="item-title">Task name</div>
+        <div class="single-line">
 
-      </div>
+          <input
+            [(ngModel)]="name"
+            class="bmgmt-input full-width"
+          >
 
-      <div class="item-title">Task type</div>
-      <div class="single-line">
-        <app-drop-down
-          [(ngModel)]="vm.type"
-          [options]="typeOptions"
-          [directionDown]="true"
-        ></app-drop-down>
-      </div>
+        </div>
 
-      <ng-container *ngIf="isPeriodBased">
-
-        <div class="double-line">
-          <div class="l">
-
-            <ng-container *ngIf="isWeekBased">
-              <div class="item-title">Week</div>
-              <app-drop-down
-                [(ngModel)]="vm.week"
-                [options]="weekOptions"
-              ></app-drop-down>
-            </ng-container>
-
-            <ng-container *ngIf="isMonthBased">
-              <div class="item-title">Month</div>
-              <app-drop-down
-                [(ngModel)]="vm.month"
-                [options]="monthOptions"
-              ></app-drop-down>
-            </ng-container>
-
-          </div>
-          <div class="r">
-            <div class="item-title">Year</div>
+        <ng-container *ngIf="showType">
+          <div class="item-title">Task type</div>
+          <div class="single-line">
             <app-drop-down
-              [(ngModel)]="vm.year"
-              [options]="yearsOptions"
-              (change)="yearChange()"
+              [(ngModel)]="type"
+              [options]="typeOptions"
+              [directionDown]="true"
             ></app-drop-down>
           </div>
-        </div>
+        </ng-container>
 
-      </ng-container>
+        <ng-container *ngIf="isPeriodBased">
 
-      <ng-container *ngIf="isDateRangeBased">
+          <div class="double-line">
+            <div class="l">
+
+              <ng-container *ngIf="isWeekBased">
+                <div class="item-title">Week</div>
+                <app-drop-down
+                  [(ngModel)]="week"
+                  [disabled]="weekDisabled"
+                  [options]="weekOptions"
+                ></app-drop-down>
+              </ng-container>
+
+              <ng-container *ngIf="isMonthBased">
+                <div class="item-title">Month</div>
+                <app-drop-down
+                  [(ngModel)]="month"
+                  [disabled]="monthDisabled"
+                  [options]="monthOptions"
+                ></app-drop-down>
+              </ng-container>
+
+            </div>
+            <div class="r">
+              <div class="item-title">Year</div>
+              <app-drop-down
+                [(ngModel)]="year"
+                [disabled]="yearDisabled"
+                [options]="yearsOptions"
+                (change)="yearChange()"
+              ></app-drop-down>
+            </div>
+          </div>
+
+        </ng-container>
+
+        <ng-container *ngIf="isDateRangeBased">
+
+          <div class="double-line">
+            <div class="l">
+              <div class="item-title">Date from</div>
+              <app-date-picker
+                [(ngModel)]="dateFrom"
+                [max]="fromDateMax"
+              ></app-date-picker>
+            </div>
+            <div class="r">
+              <div class="item-title">Date to</div>
+              <app-date-picker
+                [(ngModel)]="dateTo"
+                [min]="toDateMin"
+              ></app-date-picker>
+            </div>
+          </div>
+
+        </ng-container>
 
         <div class="double-line">
           <div class="l">
-            <div class="item-title">Date from</div>
-            <app-date-picker
-              [(ngModel)]="vm.dateFrom"
-              [max]="fromDateMax"
-            ></app-date-picker>
+            <div class="item-title">Mandays</div>
+            <input
+              [(ngModel)]="manDays"
+              type="number"
+              class="bmgmt-input full-width"
+            />
           </div>
           <div class="r">
-            <div class="item-title">Date to</div>
-            <app-date-picker
-              [(ngModel)]="vm.dateTo"
-              [min]="toDateMin"
-            ></app-date-picker>
+            <div class="item-title">Manhours</div>
+            <input
+              [(ngModel)]="manHours"
+              type="number"
+              class="bmgmt-input full-width"
+            />
           </div>
         </div>
 
-      </ng-container>
-
-      <div class="double-line">
-        <div class="l">
-          <div class="item-title">Mandays</div>
-          <input
-            [(ngModel)]="vm.manDays"
-            type="number"
-            class="bmgmt-input full-width"
-          />
-        </div>
-        <div class="r">
-          <div class="item-title">Manhours</div>
-          <input
-            [(ngModel)]="vm.manHours"
-            type="number"
-            class="bmgmt-input full-width"
-          />
-        </div>
       </div>
 
+    </div>
+    <div class="btns">
       <div class="btn-cont">
         <button
           class="left-rounded-btn"
@@ -107,15 +115,13 @@
         >
           <fa-icon
             class="ico"
-            [icon]="faSave"
+            [icon]="btnIco"
             size="2x"
           ></fa-icon>
         </button>
       </div>
-
     </div>
 
   </div>
-
 
 </app-base-dialog>

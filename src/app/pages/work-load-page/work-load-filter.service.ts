@@ -62,7 +62,7 @@ export class WorkloadFilterService {
   public get displayDaysUsed() {
     let str = this.filterDays
     .filter(d => d.selected)
-    .map(d => d.label.substr(0,3))
+    .map(d => d.label.substring(0,3))
     .join(', ');
     return str;
   }

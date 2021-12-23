@@ -3,11 +3,12 @@ import * as moment from 'moment';
 import { Moment } from 'moment';
 import { TopicParticipantEnum } from '../api/participant/particip-ints';
 import { TaskApiService } from '../api/task/task-api.service';
-import { ParticipantsOverviewReponse, TaskDetailResponse, TaskTypeEnum } from '../api/task/task-ints';
+import { ParticipantsOverviewReponse, TaskDetailResponse, TaskResponse, TaskTypeEnum } from '../api/task/task-ints';
 import { DialogService } from '../dialogs/base/dialog.service';
 import { ProjectParticipantDialogComponent } from '../dialogs/participants-dialog/project-participants-dialog';
 import { TaskParticipantDialogComponent } from '../dialogs/participants-dialog/task-participants-dialog';
 import { TaskToProjDialogComponent } from '../dialogs/task-to-proj-dialog/task-to-proj-dialog';
+import { DateUtils } from '../utils/date-utils';
 
 @Injectable({ providedIn: 'root' })
 export class TaskDetailService {
@@ -124,6 +125,33 @@ export class TaskDetailService {
     return 'no participants yet';
   }
 
+}
+
+export class TaskUtils {
+  public static getTaskTypeDesc(t: TaskResponse) {
+    if (t.type === TaskTypeEnum.Month) {
+      let str = `${DateUtils.getMonthName(t.month)}, ${t.year}`;
+      return str;
+    }
+
+    if (t.type === TaskTypeEnum.Week) {
+      let date = moment().year(t.year).week(t.week).day('monday');
+      let str = `${t.week}. Week, ${DateUtils.getMonthName(date.month())}, ${t.year}`;
+      return str;
+    }
+
+    if (t.type === TaskTypeEnum.ExactFlexible) {
+      let str = `Working days between ${DateUtils.strFromStrDate(t.dateFrom)} and ${DateUtils.strFromStrDate(t.dateTo)}`;
+      return str;
+    }
+
+    if (t.type === TaskTypeEnum.ExactStatic) {
+      let str = `All days between ${DateUtils.strFromStrDate(t.dateFrom)} and ${DateUtils.strFromStrDate(t.dateTo)}`;
+      return str;
+    }
+
+    return '';
+  }
 }
 
 export interface TaskVM {

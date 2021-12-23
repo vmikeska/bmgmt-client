@@ -12,32 +12,4 @@ app-calendar-task-dialog {
     font-weight: bold;
   }
 
-  .dlg-cont {
-    min-height: 500px;
-    position: relative;
-  }
-
-  .bottom-buttons {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-
-    .btn {
-      width: 80px;
-      display: inline-block;
-      padding: 1rem;
-      background-color: $c-green;
-      cursor: pointer;
-      text-align: center;
-
-      .ico {
-        color: white;
-      }
-    }
-  }
 }

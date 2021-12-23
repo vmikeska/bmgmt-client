@@ -6,7 +6,9 @@ import * as moment from 'moment';
 import { ConfigLoaderService } from 'src/app/api/account/config-loader.service';
 import { TaskResponse, TaskTypeEnum, WorkloadMonthResponse, WorkloadRequest } from 'src/app/api/task/task-ints';
 import { DialogService } from 'src/app/dialogs/base/dialog.service';
+import { CalendarDayDialogComponent } from 'src/app/dialogs/calendar-day-dialog/calendar-day-dialog';
 import { CalendarTaskDialogComponent } from 'src/app/dialogs/calendar-task-dialog/calendar-task-dialog';
+import { TaskBaseEditDialogComponent, TaskEditTypeModeEnum } from 'src/app/dialogs/task-base-edit-dialog/task-base-edit-dialog';
 import { WorkloadUtilsService } from 'src/app/utils/workload-utils.service';
 import { PageIdEnum } from '../page-id';
 import { Day, Month, TaskVM, Week, WorkLoadDataLoaderService } from './work-load-data-loader.service';
@@ -56,7 +58,6 @@ export class WorkLoadComponent implements OnInit {
         this.loadDataAsync();
       });
     });
-
   }
 
   private async loadDataAsync() {
@@ -128,6 +129,35 @@ export class WorkLoadComponent implements OnInit {
     console.log(day)
   }
 
+  public addMonthClick(month: Month) {
+    let dlg = this.dlgSvc.create(TaskBaseEditDialogComponent, (m) => {
+      m.mode = TaskEditTypeModeEnum.AddMonth;
+      m.title = "Add month task";
+      m.month = month.no;
+      m.year = month.year;
+      m.onSavedEvent.subscribe(() => {
+        this.loadDataAsync();
+      });
+    });
+  }
+
+  public addWeekClick(week: Week) {
+    let dlg = this.dlgSvc.create(TaskBaseEditDialogComponent, (m) => {
+      m.mode = TaskEditTypeModeEnum.AddWeek;
+      m.title = "Add week task";
+      m.week = week.no;
+      m.year = week.year;
+      m.onSavedEvent.subscribe(() => {
+        this.loadDataAsync();
+      });
+    });
+  }
+
+  public dayClick(day: Day) {
+    let dlg = this.dlgSvc.create(CalendarDayDialogComponent, (m) => {
+      m.day = day;
+    });
+  }
 
   private buildWorkloadView() {
     this.months = [];

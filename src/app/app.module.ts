@@ -44,6 +44,8 @@ import { UserDetailPageComponent } from './pages/user-detail-page/user-detail-pa
 import { ListTaggerComponent } from './components/list-tagger/list-tagger';
 import { AddOrEditLineComponent } from './components/add-or-edit-line/add-or-edit-line';
 import { DropDownComponent } from './components/drop-down/drop-down';
+import { CalendarDayDialogComponent } from './dialogs/calendar-day-dialog/calendar-day-dialog';
+import { DialogActionButtonComponent } from './components/dialog-action-button/dialog-action-button';
 
 export function initFactory() {
   return () => {
@@ -74,6 +76,7 @@ export function initFactory() {
     InputComponent,
     AddOrEditLineComponent,
     DropDownComponent,
+    DialogActionButtonComponent,
 
     BaseDialogComponent,
     DialogPlaceholderComponent,
@@ -82,6 +85,7 @@ export function initFactory() {
     TaskParticipantDialogComponent,
     CalendarTaskDialogComponent,
     TaskBaseEditDialogComponent,
+    CalendarDayDialogComponent,
 
     RoleTaggerComponent,
     ListTaggerComponent,

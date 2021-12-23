@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, Output } from '@angular/core';
-import { faSave } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSave, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import { clone, cloneDeep } from 'lodash-es';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { BehaviorSubject, Subject } from 'rxjs';
@@ -18,16 +19,77 @@ import { DialogService } from '../base/dialog.service';
 export class TaskBaseEditDialogComponent implements OnInit {
   constructor(
     public taskApiSvc: TaskApiService,
-    // private taskDetailSvc: TaskDetailService,
     private dialogSvc: DialogService
   ) { }
 
   @Input()
-  public taskId: string;
+  public title: string;
+
+  @Input()
+  public id: string;
+
+  @Input()
+  public type: TaskTypeEnum;
+
+  @Input()
+  public mode: TaskEditTypeModeEnum;
+
+  @Input()
+  public week: number;
+
+  @Input()
+  public year: number;
+
+  @Input()
+  public month: number;
+
+  @Input()
+  public dateFrom: Moment;
+
+  @Input()
+  public dateTo: Moment;
+
+  public name: string;
+  public manHours = 0;
+  public manDays = 0;
 
   faSave = faSave;
+  faPlus = faPlus;
+
+  public weekDisabled = false;
+  public monthDisabled = false;
+  public yearDisabled = false;
+
+  public btnIco: IconDefinition;
 
   public ngOnInit() {
+
+    let typeOptions = cloneDeep(this.allTypeOptions);
+
+    if (this.mode === TaskEditTypeModeEnum.AddMonth) {
+      this.type = TaskTypeEnum.Month;
+      this.monthDisabled = true;
+      this.yearDisabled = true;
+    }
+
+    if (this.mode === TaskEditTypeModeEnum.AddWeek) {
+      this.type = TaskTypeEnum.Week;
+      this.weekDisabled = true;
+      this.yearDisabled = true;
+      this.initWeeks(this.year);
+    }
+
+    if (this.mode === TaskEditTypeModeEnum.AddDay) {
+      this.type = TaskTypeEnum.ExactStatic;
+
+      typeOptions =
+        this.allTypeOptions.filter(i => [TaskTypeEnum.ExactStatic, TaskTypeEnum.ExactFlexible].includes(i.value));
+    }
+
+    this.typeOptions.next(typeOptions);
+
+    this.btnIco = this.mode === TaskEditTypeModeEnum.FullEdit ? faSave : faPlus;
+
     this.initYears();
     this.initMonths();
 
@@ -36,14 +98,17 @@ export class TaskBaseEditDialogComponent implements OnInit {
     }
   }
 
-  private async initEditAsync() {
-    var res = await this.taskApiSvc.getById(this.taskId);
+  public get showType() {
+    let t = TaskEditTypeModeEnum;
+    return [t.AddDay, t.FullEdit].includes(this.mode);
+  }
 
-    this.vm = {
-      id: res.id,
-      name: res.name,
-      type: res.type
-    };
+  private async initEditAsync() {
+    var res = await this.taskApiSvc.getById(this.id);
+
+    this.name = res.name;
+    this.type = res.type;
+
 
     if (res.type === TaskTypeEnum.Unassigned) {
       this.initUnassignedEdit();
@@ -51,9 +116,9 @@ export class TaskBaseEditDialogComponent implements OnInit {
       this.initAssignedEdit(res);
     }
 
-    this.initWeeks(this.vm.year);
+    this.initWeeks(this.year);
 
-    this.initialized = true;
+    // this.initialized = true;
   }
 
   private initUnassignedEdit() {
@@ -65,13 +130,13 @@ export class TaskBaseEditDialogComponent implements OnInit {
     let dateFrom = now.clone();
     let dateTo = dateFrom.clone().add(2, 'd');
 
-    this.vm.manDays = 0;
-    this.vm.manHours = 0;
-    this.vm.week = week;
-    this.vm.month = month;
-    this.vm.year = year;
-    this.vm.dateFrom = dateFrom;
-    this.vm.dateTo = dateTo;
+    this.manDays = 0;
+    this.manHours = 0;
+    this.week = week;
+    this.month = month;
+    this.year = year;
+    this.dateFrom = dateFrom;
+    this.dateTo = dateTo;
   }
 
   private initAssignedEdit(res: TaskResponse) {
@@ -83,37 +148,34 @@ export class TaskBaseEditDialogComponent implements OnInit {
     let dateFrom = moment.utc(res.dateFrom);
     let dateTo = moment.utc(res.dateTo);
 
-    this.vm.manDays = res.manDays;
-    this.vm.manHours = res.manHours;
-    this.vm.week = res.week;
-    this.vm.month = res.month;
-    this.vm.year = res.year;
-    this.vm.dateFrom = dateFrom.isValid() ? dateFrom : dateFromDefault;
-    this.vm.dateTo = dateTo.isValid() ? dateTo : dateToDefault;
+    this.manDays = res.manDays;
+    this.manHours = res.manHours;
+    this.week = res.week;
+    this.month = res.month;
+    this.year = res.year;
+    this.dateFrom = dateFrom.isValid() ? dateFrom : dateFromDefault;
+    this.dateTo = dateTo.isValid() ? dateTo : dateToDefault;
   }
 
   private get isEdit() {
-    return !!this.taskId;
+    return !!this.id;
   }
 
-  public initialized = false;
-
-  public vm: TaskEditVM;
+  // public initialized = false;
 
   public get toDateMin() {
-    return this.vm.dateFrom;
+    return this.dateFrom;
   }
 
   public get fromDateMax() {
-    return this.vm.dateTo;
+    return this.dateTo;
   }
 
   public yearsOptions = new BehaviorSubject<ItemOption[]>([]);
   public monthOptions = new BehaviorSubject<ItemOption[]>([]);
   public weekOptions = new BehaviorSubject<ItemOption[]>([]);
 
-
-  public typeOptions = new BehaviorSubject<ItemOption[]>([
+  public allTypeOptions: ItemOption[] = [
     {
       label: 'Simple task',
       value: TaskTypeEnum.Unassigned
@@ -134,13 +196,15 @@ export class TaskBaseEditDialogComponent implements OnInit {
       label: 'Month',
       value: TaskTypeEnum.Month
     },
-  ]);
+  ];
+
+  public typeOptions = new BehaviorSubject<ItemOption[]>([]);
 
   @Output()
   public onSavedEvent = new Subject();
 
   public yearChange() {
-    this.initWeeks(this.vm.year);
+    this.initWeeks(this.year);
   }
 
   private initMonths() {
@@ -182,43 +246,59 @@ export class TaskBaseEditDialogComponent implements OnInit {
   }
 
   public get isDateRangeBased() {
-    return [TaskTypeEnum.ExactFlexible, TaskTypeEnum.ExactStatic].includes(this.vm.type);
+    return [TaskTypeEnum.ExactFlexible, TaskTypeEnum.ExactStatic].includes(this.type);
   }
 
   public get isPeriodBased() {
-    return [TaskTypeEnum.Month, TaskTypeEnum.Week].includes(this.vm.type);
+    return [TaskTypeEnum.Month, TaskTypeEnum.Week].includes(this.type);
   }
 
   public get isMonthBased() {
-    return TaskTypeEnum.Month === this.vm.type;
+    return TaskTypeEnum.Month === this.type;
   }
 
   public get isWeekBased() {
-    return TaskTypeEnum.Week === this.vm.type;
+    return TaskTypeEnum.Week === this.type;
   }
 
   public updateClick() {
-    this.updateTaskAsync();
+    this.sendDataAsync();
   }
 
-  private async updateTaskAsync() {
-    let req: TaskDateTypeResponse = {
-      id: this.vm.id,
-      name: this.vm.name,
-      type: this.vm.type,
-      manDays: this.vm.manDays,
-      manHours: this.vm.manHours,
-      month: this.vm.month,
-      week: this.vm.week,
-      year: this.vm.year,
-      dateFrom: this.vm.dateFrom.isValid() ? this.vm.dateFrom.format('YYYY-MM-DD') : null,
-      dateTo: this.vm.dateTo.isValid() ? this.vm.dateTo.format('YYYY-MM-DD') : null
-    };
+  private async sendDataAsync() {
+    let req = this.buildRequest();
 
-    await this.taskApiSvc.updateType(req);
+    if (this.id) {
+      await this.taskApiSvc.updateType(req);
+    } else {
+      await this.taskApiSvc.create(req);
+    }
+
     this.onSavedEvent.next();
     this.closeDialog();
   }
+
+  private buildRequest() {
+
+    let dfValid = this.dateFrom && this.dateFrom.isValid();
+    let dtValid = this.dateTo && this.dateTo.isValid();
+
+    let req: TaskDateTypeResponse = {
+      id: this.id,
+      name: this.name,
+      type: this.type,
+      manDays: this.manDays,
+      manHours: this.manHours,
+      month: this.month,
+      week: this.week,
+      year: this.year,
+      dateFrom: dfValid ? this.dateFrom.format('YYYY-MM-DD') : null,
+      dateTo: dtValid ? this.dateTo.format('YYYY-MM-DD') : null
+    };
+
+    return req;
+  }
+
 
   private closeDialog() {
     this.dialogSvc.destroy();
@@ -226,19 +306,5 @@ export class TaskBaseEditDialogComponent implements OnInit {
 
 }
 
-export enum TaskTypeEditEnum { AddFull, AddWeek, AddMonth, EditFull, }
+export enum TaskEditTypeModeEnum { AddMonth, AddWeek, AddDay, FullEdit }
 
-export interface TaskEditVM {
-  id: string;
-  name: string;
-  type: TaskTypeEnum;
-
-  dateFrom?: Moment;
-  dateTo?: Moment;
-  week?: number;
-  year?: number;
-  month?: number;
-
-  manHours?: number;
-  manDays?: number;
-}

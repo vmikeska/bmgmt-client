@@ -51,8 +51,8 @@ export class DropDownComponent implements OnInit, ControlValueAccessor {
     }
   }
 
-  public get disabled() {
-    return this.dropdownOrAutocomplete;
+  public get internalDisabled() {
+    return this.disabled || this.dropdownOrAutocomplete;
   }
 
   public dropdownOrAutocomplete = true;
@@ -70,6 +70,9 @@ export class DropDownComponent implements OnInit, ControlValueAccessor {
 
   @Input()
   public placeholder = '';
+
+  @Input()
+  public disabled = false;
 
   public value: any;
   public text: string;

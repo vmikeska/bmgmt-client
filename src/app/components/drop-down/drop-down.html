@@ -1,6 +1,6 @@
 <div
   class="control-cont"
-  [ngClass]="{'direction-down': directionDown, 'direction-up': !directionDown, 'is-dropdown': dropdownOrAutocomplete }"
+  [ngClass]="{'direction-down': directionDown, 'direction-up': !directionDown, 'is-dropdown': dropdownOrAutocomplete, 'disabled': disabled }"
 >
 
   <div
@@ -9,7 +9,7 @@
   >
     <input
       [(ngModel)]="text"
-      [disabled]="disabled"
+      [disabled]="internalDisabled"
       [placeholder]="placeholder"
       (keyup)="searchChange()"
     />

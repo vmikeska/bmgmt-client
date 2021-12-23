@@ -67,7 +67,7 @@
                   [matDatepicker]="fromPicker"
                   [max]="workloadFilterSvc.fromDateMax"
                 >
-                <!-- [max]="maxDate" -->
+
                 <mat-datepicker-toggle
                   matSuffix
                   [for]="fromPicker"
@@ -117,7 +117,7 @@
 
     </div>
 
-    <div class="add-cont">
+    <!-- <div class="add-cont">
       <button
         class="left-rounded-btn"
         (click)="addCommonTaskClick()"
@@ -128,7 +128,7 @@
           size="2x"
         ></fa-icon>
       </button>
-    </div>
+    </div> -->
 
   </app-header-container>
 
@@ -140,7 +140,10 @@
       <div class="month-title">
         <div class="l">{{month.title}}</div>
         <div class="r">
-          <span class="add-btn-cont">
+          <span
+            class="add-btn-cont"
+            (click)="addMonthClick(month)"
+          >
             <fa-icon
               class="ico"
               [icon]="faPlus"
@@ -184,12 +187,11 @@
                         <fa-icon
                           class="ico"
                           [icon]="faPlus"
+                          (click)="addWeekClick(week)"
                         ></fa-icon>
                       </span>
                     </div>
                   </div>
-
-
 
                 </td>
               </tr>
@@ -200,6 +202,7 @@
                   *ngFor="let day of week.days"
                   class="day-all"
                   [style.background-color]="day.color"
+                  (click)="dayClick(day)"
                 >
                   <div class="num">{{day.dayOfMonth}}</div>
                   <div class="hours">{{day.totalHours | number: '1.1-1'}}h</div>
@@ -253,7 +256,7 @@
             class="inline-tasks-all"
           >
 
-            <div class="split-block-title">Other month tasks</div>
+            <div class="other-months-title">Other month tasks</div>
 
             <div class="tasks-cont">
               <span
