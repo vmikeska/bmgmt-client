@@ -2,7 +2,7 @@ import * as moment from "moment";
 
 export class DateUtils {
   public static strFromStrDate(strDate: string) {
-    let m = moment(strDate);
+    let m = moment.utc(strDate);
     let str = m.format('DD.MM.YYYY');
     return str;
   }

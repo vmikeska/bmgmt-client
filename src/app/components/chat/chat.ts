@@ -54,7 +54,7 @@ export class ChatComponent implements OnInit {
     let msgs = this.messages.value;
     this.vms = msgs.map((m) => {
 
-      let md = moment(m.date);
+      let md = moment.utc(m.date);
       let date = md.format('HH:MM DD.MM.YYYY');
 
       let vm: ChatMessageVM = {

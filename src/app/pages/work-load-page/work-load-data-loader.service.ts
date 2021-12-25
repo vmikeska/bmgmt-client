@@ -4,11 +4,12 @@ import * as moment from 'moment';
 import { Moment } from 'moment';
 import { ConfigLoaderService } from 'src/app/api/account/config-loader.service';
 import { TaskBusynessApiService } from 'src/app/api/task/task-busyness-api.service';
-import { TaskTypeEnum, WorkloadDayResponse, WorkloadRequest, WorkloadResponse } from 'src/app/api/task/task-ints';
+import { DayLoadResponse, TaskTypeEnum, WorkloadDayResponse, WorkloadRequest, WorkloadResponse } from 'src/app/api/task/task-ints';
 import { ColorUtils } from 'src/app/utils/color-utils';
 import { WorkloadUtilsService } from 'src/app/utils/workload-utils.service';
 import { AssignTaskEvents } from './assign-task-events';
 import { GenerateEventBlocks } from './generate-event-blocks';
+import { GenerateEventBlocks2 } from './generate-event-blocks2';
 
 @Injectable({ providedIn: 'root' })
 export class WorkLoadDataLoaderService {
@@ -42,14 +43,17 @@ export class WorkLoadDataLoaderService {
     this.generateTimerRange();
 
     let dr = this.response.dateRange;
-    this.minDay = moment(dr.from);
-    this.maxDay = moment(dr.to);
+    this.minDay = moment.utc(dr.from);
+    this.maxDay = moment.utc(dr.to);
 
     let ate = new AssignTaskEvents(this.response, this.days, this.weeks);
     ate.assign();
 
     let geb = new GenerateEventBlocks(this.weeks, this.response.tasks);
     geb.assign();
+
+    let geb2 = new GenerateEventBlocks2(this.weeks, this.response.tasks);
+    geb2.assign();
   }
 
   private generateTimerRange() {
@@ -58,7 +62,7 @@ export class WorkLoadDataLoaderService {
     this.weeks = [];
 
     this.response.days.forEach((d) => {
-      let md = moment(d.date);
+      let md = moment.utc(d.date);
       this.addDay(md);
     })
   }
@@ -71,7 +75,7 @@ export class WorkLoadDataLoaderService {
     let week = this.getCurrentWeek(year, weekNo);
 
     let rDay = this.response.days.find((res) => {
-      let resDate = moment(res.date);
+      let resDate = moment.utc(res.date);
       let matches = resDate.isSame(d);
       return matches;
     });
@@ -82,7 +86,8 @@ export class WorkLoadDataLoaderService {
       dayOfWeek: d.day(),
       dayOfMonth: parseInt(d.format('D')),
       response: rDay,
-      eventPositions: []
+      eventPositions: [],
+      tempLoads: []
     };
 
     if (rDay) {
@@ -146,9 +151,13 @@ export interface EventBlock {
 }
 
 export interface EventBar {
-  name: string;
-  taskId: string;
-  days: number;
+  name?: string;
+  taskId?: string;
+  days?: number;
+  startDay?: Day;
+  endDay?: Day;
+  sd?: string;
+  ed?: string;
 }
 
 
@@ -160,8 +169,9 @@ export interface Week {
   totalHours: number;
   workloadStr: string;
   workloadDayStr: string;
-  eventBlocks: EventBlock[];
   tasks: TaskVM[];
+
+  eventBlocks: EventBlock[];
 }
 
 export interface Day {
@@ -173,6 +183,9 @@ export interface Day {
   busyIndex?: number;
   color?: string;
   response?: WorkloadDayResponse;
+
+  tempLoads: DayLoadResponse[];
+
   eventPositions: EventPosition[];
 }
 

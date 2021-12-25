@@ -6,10 +6,10 @@ import { DayFilterItem } from './work-load-page';
 export class WorkloadFilterService {
   constructor() { }
 
-  private now = moment();
+  private now = moment().utc();
 
-  public from = moment(`2021-12-01`);
-  public to = moment('2022-03-30');
+  public from = moment.utc(`2021-12-01`);
+  public to = moment.utc('2022-03-30');
 
   public get toDateMin() {
     return this.from;

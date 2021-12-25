@@ -7,7 +7,7 @@ export const environment = {
   doLogging: true,
   // baseApi: "http://host.docker.internal:6001/api/"
   // baseApi: "http://localhost:5001/api/"
-   baseApi: "https://bmgmt-server.azurewebsites.net/api/"
+  baseApi: "https://bmgmt-server.azurewebsites.net/api/"
 
 };
 

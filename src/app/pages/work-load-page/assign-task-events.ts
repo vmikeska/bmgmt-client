@@ -18,9 +18,9 @@ export class AssignTaskEvents {
       let isDateRangeType = [TaskTypeEnum.ExactFlexible, TaskTypeEnum.ExactStatic].includes(task.type);
       if (isDateRangeType) {
 
-        let dateFrom = moment(task.dateFrom).startOf('d');
+        let dateFrom = moment.utc(task.dateFrom).startOf('d');
         let dateFromSafe = this.getDateFromSafe(dateFrom);
-        let dateTo = moment(task.dateTo).startOf('d');
+        let dateTo = moment.utc(task.dateTo).startOf('d');
 
         let firstDay = this.getDayByDate(dateFromSafe);
         let currentDate = firstDay.day.clone();
