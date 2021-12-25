@@ -96,6 +96,11 @@ export class WorkLoadDataLoaderService {
   }
 
   private getCurrentWeek(year: number, no: number) {
+
+    if (no === 52) {
+      var a = 'c';
+    }
+
     let week = this.weeks.find((w) => { return w.no === no && w.year === year; });
     if (week) {
       return week;

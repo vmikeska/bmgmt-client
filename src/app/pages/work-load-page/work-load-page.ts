@@ -156,6 +156,7 @@ export class WorkLoadComponent implements OnInit {
   public dayClick(day: Day) {
     let dlg = this.dlgSvc.create(CalendarDayDialogComponent, (m) => {
       m.day = day;
+      m.workloadRef = this;
     });
   }
 
@@ -275,14 +276,25 @@ export class WorkLoadComponent implements OnInit {
       vmMonth.tasks = monthlyResTasks;
 
       vmMonth.weeks.forEach((vmWeek) => {
-        let weeklyResTasks = tasks.filter(t =>
-          t.type === TaskTypeEnum.Week
-          &&
-          t.year === vmWeek.year
-          &&
-          t.week === vmWeek.no
-        );
-        vmWeek.tasks = weeklyResTasks;
+
+        if (vmWeek.no === 52) {
+          var a = 'dsfd';
+        }
+
+        //this is more like bugfix, coz there are not comming data from the same week that takes place in two monts, fix later
+        let hasAlreadyLoadadDataForThisWeek = !!vmWeek.tasks.length;
+
+        if (!hasAlreadyLoadadDataForThisWeek) {
+          let weeklyResTasks = tasks.filter(t =>
+            t.type === TaskTypeEnum.Week
+            &&
+            t.year === vmWeek.year
+            &&
+            t.week === vmWeek.no
+          );
+          vmWeek.tasks = weeklyResTasks;
+        }
+
       });
     });
 

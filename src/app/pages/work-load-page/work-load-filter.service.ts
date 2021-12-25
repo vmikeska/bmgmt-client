@@ -7,9 +7,11 @@ export class WorkloadFilterService {
   constructor() { }
 
   private now = moment().utc();
+  private firstDay = this.now.startOf('month');
 
-  public from = moment.utc(`2021-12-01`);
-  public to = moment.utc('2022-03-30');
+  public from = this.firstDay.clone();
+  //moment.utc(`2021-12-01`);
+  public to = this.firstDay.clone().add(3, 'month');
 
   public get toDateMin() {
     return this.from;

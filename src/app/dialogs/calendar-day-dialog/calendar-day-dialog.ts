@@ -37,6 +37,9 @@ export class CalendarDayDialogComponent implements OnInit {
 
   public workloadStr: string;
 
+  //current hack before refactoring workload page/ workload load service that the reload can be rached easirer
+  public workloadRef: any;
+
   public tasks: TaskInfoVM[] = [];
 
   public ngOnInit() {
@@ -63,16 +66,16 @@ export class CalendarDayDialogComponent implements OnInit {
 
   public addTaskClick() {
     let thisDlgRef = this.dlgSvc.componentRef;
+    let workloadRef = thisDlgRef.instance.workloadRef;
 
     let dlg = this.dlgSvc.create(TaskBaseEditDialogComponent, (m) => {
       m.mode = TaskEditTypeModeEnum.AddDay;
       m.title = "Add day task";
       m.dateFrom = this.day.day;
       m.dateTo = this.day.day;
-
-      // m.onSavedEvent.subscribe(() => {
-      //   this.loadDataAsync();
-      // });
+      m.onSavedEvent.subscribe(() => {
+        workloadRef.loadDataAsync();
+      });
     });
 
     thisDlgRef.destroy();
