@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { max } from 'lodash';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { ConfigLoaderService } from 'src/app/api/account/config-loader.service';
@@ -9,7 +8,6 @@ import { ColorUtils } from 'src/app/utils/color-utils';
 import { WorkloadUtilsService } from 'src/app/utils/workload-utils.service';
 import { AssignTaskEvents } from './assign-task-events';
 import { GenerateEventBlocks } from './generate-event-blocks';
-import { GenerateEventBlocks2 } from './generate-event-blocks2';
 
 @Injectable({ providedIn: 'root' })
 export class WorkLoadDataLoaderService {
@@ -49,11 +47,8 @@ export class WorkLoadDataLoaderService {
     let ate = new AssignTaskEvents(this.response, this.days, this.weeks);
     ate.assign();
 
-    let geb = new GenerateEventBlocks(this.weeks, this.response.tasks);
+    let geb = new GenerateEventBlocks(this.days, this.weeks, this.response.tasks);
     geb.assign();
-
-    let geb2 = new GenerateEventBlocks2(this.weeks, this.response.tasks);
-    geb2.assign();
   }
 
   private generateTimerRange() {
