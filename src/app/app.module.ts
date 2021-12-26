@@ -20,7 +20,6 @@ import { TaskDetailPageComponent } from './pages/task-detail-page/task-detail-pa
 import { CreateAccountComponent } from './pages/create-account-page/create-account-page';
 import { LogInPageComponent } from './pages/log-in-page/log-in-page';
 import { ProjectsPageComponent } from './pages/projects-page/projects-page';
-import { ProjectEditPageComponent } from './pages/project-edit-page/project-edit-page';
 import { ProjectDetailPageComponent } from './pages/project-detail-page/project-detail-page';
 import { BaseDialogComponent } from './dialogs/base/base-dialog';
 import { TaskToProjDialogComponent } from './dialogs/task-to-proj-dialog/task-to-proj-dialog';
@@ -66,7 +65,6 @@ export function initFactory() {
     LogInPageComponent,
     ProjectsPageComponent,
     ProjectDetailPageComponent,
-    ProjectEditPageComponent,
     ContactDetailPageComponent,
     UserDetailPageComponent,
 

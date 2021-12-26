@@ -1,4 +1,5 @@
 import { ParticipantsOverviewReponse } from "../task/task-ints";
+import { LocationSaveResponse } from "../user/user-ints";
 
 export interface ProjectDetailResponse
 {
@@ -10,6 +11,7 @@ export interface ProjectResponse {
   id: string;
   name: string;
   desc: string;
+  location?: LocationSaveResponse;
 }
 
 export interface ProjectTaskBindingRequest {

@@ -16,6 +16,15 @@ app-drop-down {
     position: relative;
   }
 
+  .scroll-cont {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 200px;
+
+    overflow-y: auto;
+  }
+
   .direction-up {
     flex-direction: column-reverse;
 
@@ -57,7 +66,6 @@ app-drop-down {
   }
 
   .options {
-    position: absolute;
     background-color: white;
     z-index: 20;
 

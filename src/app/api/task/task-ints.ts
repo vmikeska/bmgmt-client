@@ -1,4 +1,5 @@
 import { TopicParticipantEnum } from "../participant/particip-ints";
+import { LocationSaveResponse } from "../user/user-ints";
 
 export interface TaskDetailResponse {
   task: TaskResponse;
@@ -69,6 +70,7 @@ export interface TaskResponse extends TaskDateTypeResponse {
   ownerId?: string;
   projId?: string;
   desc?: string;
+  location?: LocationSaveResponse;
 }
 
 export interface TaskDateTypeResponse {

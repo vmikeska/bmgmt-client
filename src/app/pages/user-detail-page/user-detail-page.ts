@@ -177,7 +177,7 @@ export class UserDetailPageComponent implements OnInit {
 
   private getName(fn: string, ln: string) {
     if (!fn && !ln) {
-      return '[no name listed]'
+      return 'no name listed'
     }
 
     return [fn, ln].join(' ');

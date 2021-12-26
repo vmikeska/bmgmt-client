@@ -31,14 +31,17 @@
     *ngIf="isOpened"
     class="drop-cont"
   >
-    <div class="options">
-      <div
-        *ngFor="let o of options | async"
-        class="option"
-        [ngClass]="{ 'active': o.value === value}"
-        (click)="optionClick(o)"
-      >{{o.label}}</div>
+    <div class="scroll-cont">
+      <div class="options">
+        <div
+          *ngFor="let o of options | async"
+          class="option"
+          [ngClass]="{ 'active': o.value === value}"
+          (click)="optionClick(o)"
+        >{{o.label}}</div>
+      </div>
     </div>
+
   </div>
 
 </div>

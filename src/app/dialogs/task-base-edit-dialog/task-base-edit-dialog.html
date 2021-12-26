@@ -6,15 +6,15 @@
 
       <div class="form-cont">
 
-        <div class="item-title">Task name</div>
-        <div class="single-line">
-
-          <input
-            [(ngModel)]="name"
-            class="bmgmt-input full-width"
-          >
-
-        </div>
+        <ng-container *ngIf="showName">
+          <div class="item-title">Task name</div>
+          <div class="single-line">
+            <input
+              [(ngModel)]="name"
+              class="bmgmt-input full-width"
+            >
+          </div>
+        </ng-container>
 
         <ng-container *ngIf="showType">
           <div class="item-title">Task type</div>

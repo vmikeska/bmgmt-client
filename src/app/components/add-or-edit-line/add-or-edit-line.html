@@ -11,14 +11,26 @@
   </div>
   <div class="r">
     <span
-      *ngIf="editable"
-      class="btn"
+      *ngIf="editable && smallButton"
+      class="rectangle-btn"
+      (click)="btnClick()"
+    >
+      <fa-icon
+        class="btn-ico"
+        [icon]="ico"
+      ></fa-icon>
+    </span>
+
+    <button
+      *ngIf="editable && !smallButton"
+      class="left-rounded-btn"
       (click)="btnClick()"
     >
       <fa-icon
         class="ico"
         [icon]="ico"
+        size="2x"
       ></fa-icon>
-    </span>
+    </button>
   </div>
 </div>

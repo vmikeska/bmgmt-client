@@ -10,10 +10,13 @@ import { DateUtils } from 'src/app/utils/date-utils';
 import { WorkloadUtilsService } from 'src/app/utils/workload-utils.service';
 import { UrlParamUtils } from 'src/lib/utils/url-utils';
 import { PageIdEnum } from '../page-id';
-import { faPen, faUserFriends, faImage, faFile, faBuilding, faComments } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faUserFriends, faImage, faFile, faBuilding, faComments, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import { AddActionVM } from 'src/app/components/add-actions/add-actions';
 import { DialogService } from 'src/app/dialogs/base/dialog.service';
 import { TaskBaseEditDialogComponent, TaskEditTypeModeEnum } from 'src/app/dialogs/task-base-edit-dialog/task-base-edit-dialog';
+import { LocationSaveResponse, UpdatePropRequest } from 'src/app/api/user/user-ints';
+import { TaskApiService } from 'src/app/api/task/task-api.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-task-detail-page',
@@ -28,7 +31,8 @@ export class TaskDetailPageComponent implements OnInit {
     private workloadUtilsSvc: WorkloadUtilsService,
     private taskDetailSvc: TaskDetailService,
     private taskChatApiSvc: TaskChatApiService,
-    private dlgSvc: DialogService
+    private dlgSvc: DialogService,
+    private taskApiSvc: TaskApiService
   ) { }
 
   public ngOnInit() {
@@ -41,12 +45,14 @@ export class TaskDetailPageComponent implements OnInit {
     await this.loadTaskAsync();
     await this.reloadChatMessages();
     this.reloadAddActions();
-
-    // show dialog at beginning
-    // this.editClick();
   }
 
   faPen = faPen;
+  faMapMarkerAlt = faMapMarkerAlt;
+
+  public addressFormControl = new FormControl();
+
+  public location: string;
 
   public name = '';
   public dateAndLoad = '';
@@ -127,7 +133,28 @@ export class TaskDetailPageComponent implements OnInit {
     });
   }
 
+  public nameSaveCallback = async () => {
+    let sucessful = await this.updateItem('name', this.name);
 
+    return sucessful;
+  };
+
+  public locationSaveCallback = async () => {
+    let fcv = <LocationSaveResponse>this.addressFormControl.value;
+    let value = `${fcv.text}||${fcv.coords[0]}||${fcv.coords[0]}`;
+    let sucessful = await this.updateItem('location', value);
+
+    if (sucessful) {
+      this.location = fcv.text;
+    }
+
+    return sucessful;
+  };
+
+  public descSaveCallback = async () => {
+    let sucessful = await this.updateItem('desc', this.desc);
+    return sucessful;
+  };
 
   public msgPostCallback = async (text: string) => {
     let req: NewChatMessageRequest = {
@@ -150,6 +177,16 @@ export class TaskDetailPageComponent implements OnInit {
     await this.reloadChatMessages();
   }
 
+  private async updateItem(name: string, value: string) {
+    var req: UpdatePropRequest = {
+      id: this.id,
+      item: name,
+      value: value
+    };
+    let sucessful = await this.taskApiSvc.updateProp(req);
+    return sucessful;
+  }
+
   private async loadTaskAsync() {
     if (!this.id) {
       return;
@@ -161,9 +198,10 @@ export class TaskDetailPageComponent implements OnInit {
 
     this.name = r.task.name;
     this.desc = r.task.desc;
+    this.location = r.task.location.text;
+
     let dateDesc = TaskUtils.getTaskTypeDesc(r.task);
     let loadDesc = this.workloadUtilsSvc.daysHoursStr(r.task.manDays, r.task.manHours);
-
     this.dateAndLoad = [dateDesc, loadDesc].filter(i => !!i).join(', ');
   }
 

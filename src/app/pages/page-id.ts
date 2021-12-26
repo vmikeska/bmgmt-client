@@ -7,7 +7,6 @@ export enum PageIdEnum {
   Contacts = "contacts",
   LogIn = "log-in",
   Projects = "projects",
-  ProjectEdit = "project-edit",
   ProjectDetail = "project-detail",
   ContactDetail = "contact-detail"
 }

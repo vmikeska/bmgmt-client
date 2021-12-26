@@ -45,16 +45,8 @@ export class DatePickerComponent implements OnInit, ControlValueAccessor {
   @Output()
   public change = new EventEmitter<any>();
 
-  // @Output()
-  // public modelChange = new EventEmitter<Moment>();
-
   public innerChangeEvent() {
-    // this.modelChange.emit(this.model);
-    this.change.emit(this.value);
     this.onChange(this.value);
+    this.change.emit(this.value);
   }
-
-  // public dateChange() {
-
-  // }
 }

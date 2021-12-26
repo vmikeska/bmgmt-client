@@ -1,33 +1,112 @@
 <div class="page-all">
-  <app-header-container [showTitle]="false" [activeId]="activeId">
+  <app-header-container
+    [showTitle]="false"
+    [activeId]="activeId"
+  >
 
-    <div class="title-action-cont">
+    <div class="header-wrap">
 
-      <div class="l">
-        <div class="title-name">{{title}}</div>
-      </div>
-      <div class="r">
+      <app-add-or-edit-line
+        [saveCallback]="nameSaveCallback"
+        [smallButton]="false"
+      >
+        <ng-container display>
+          <div class="display-name">{{title}}</div>
+        </ng-container>
 
-        <button class="left-rounded-btn" (click)="editClick()">
-          <fa-icon class="ico" [icon]="faPen" size="2x"></fa-icon>
-        </button>
+        <ng-container edit>
+          <input
+            [(ngModel)]="name"
+            class="bmgmt-input full-width"
+          />
 
-      </div>
+        </ng-container>
+      </app-add-or-edit-line>
 
     </div>
 
   </app-header-container>
 
-  <div *ngIf="desc" class="desc">{{desc}}</div>
+  <!-- [editable]="isMe" -->
 
-  <app-unassigned-tasks-block *ngIf="showUnassignedTasks" [tasks]="unassignedTasks"></app-unassigned-tasks-block>
+  <div class="split-block">
+    <div class="desc-block">
 
-  <app-assigned-tasks-block *ngIf="showAssignedTasks" [tasks]="assignedTasks"></app-assigned-tasks-block>
+      <app-add-or-edit-line [saveCallback]="descSaveCallback">
+        <ng-container display>
+
+          <div
+            *ngIf="!desc"
+            class="desc-placeholder"
+          >Add some description about the project</div>
+
+          <div
+            *ngIf="desc"
+            class="displayable-textarea"
+          >{{desc}}</div>
+        </ng-container>
+
+        <ng-container edit>
+
+          <textarea
+            class="bmgmt-textarea"
+            [(ngModel)]="desc"
+          ></textarea>
+
+        </ng-container>
+      </app-add-or-edit-line>
+
+    </div>
+
+    <div class="double-info">
+      <div class="l">
+        <div class="ico-cont">
+          <fa-icon
+            class="ico"
+            [icon]="faMapMarkerAlt"
+            size="2x"
+          ></fa-icon>
+        </div>
+      </div>
+      <div class="r">
+
+        <!-- [editable]="isMe" -->
+        <app-add-or-edit-line [saveCallback]="locationSaveCallback">
+          <ng-container display>
+            <span class="linkable">{{location}}</span>
+          </ng-container>
+
+          <ng-container edit>
+            <app-address-autocomplete
+              name="address"
+              [formControl]="addressFormControl"
+            ></app-address-autocomplete>
+          </ng-container>
+        </app-add-or-edit-line>
+
+      </div>
+    </div>
+  </div>
+
+  <app-unassigned-tasks-block
+    *ngIf="showUnassignedTasks"
+    [tasks]="unassignedTasks"
+  ></app-unassigned-tasks-block>
+
+  <app-assigned-tasks-block
+    *ngIf="showAssignedTasks"
+    [tasks]="assignedTasks"
+  ></app-assigned-tasks-block>
 
   <div class="split-block-title">Add to your project</div>
   <app-add-actions [items]="addActions"></app-add-actions>
 
-  <app-chat *ngIf="showChat" [messages]="messages" [postCallback]="msgPostCallback" [deleteCalback]="msgDeleteCallback">
+  <app-chat
+    *ngIf="showChat"
+    [messages]="messages"
+    [postCallback]="msgPostCallback"
+    [deleteCalback]="msgDeleteCallback"
+  >
   </app-chat>
 
 </div>

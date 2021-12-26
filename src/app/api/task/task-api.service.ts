@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { RestApiService } from 'src/lib/api/rest-api.service';
+import { UpdatePropRequest } from '../user/user-ints';
 import { TaskDateTypeResponse, TaskDetailResponse, TaskGroupsResponse, TaskResponse } from './task-ints';
 
 @Injectable({ providedIn: 'root' })
@@ -16,7 +17,10 @@ export class TaskApiService {
     return res;
   }
 
-
+  public async updateProp(req: UpdatePropRequest) {
+    let res = await this.restApiSvc.putAsync<boolean>('task/prop', req);
+    return res;
+  }
 
 
   public async getDetailById(id: string) {

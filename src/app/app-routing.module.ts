@@ -6,7 +6,6 @@ import { CreateAccountComponent } from './pages/create-account-page/create-accou
 import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page';
 import { LogInPageComponent } from './pages/log-in-page/log-in-page';
 import { PageIdEnum } from './pages/page-id';
-import { ProjectEditPageComponent } from './pages/project-edit-page/project-edit-page';
 import { ProjectDetailPageComponent } from './pages/project-detail-page/project-detail-page';
 import { ProjectsPageComponent } from './pages/projects-page/projects-page';
 import { TaskDetailPageComponent } from './pages/task-detail-page/task-detail-page';
@@ -53,10 +52,6 @@ const routes: Routes = [
   {
     path:  PageIdEnum.UserDetail,
     component: UserDetailPageComponent
-  },
-  {
-    path:  `${PageIdEnum.ProjectEdit}/id/:id`,
-    component: ProjectEditPageComponent
   },
   {
     path:  `${PageIdEnum.ContactDetail}/id/:id`,

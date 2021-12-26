@@ -20,6 +20,9 @@ export class AddOrEditLineComponent implements OnInit {
   @Input()
   public editable = true;
 
+  @Input()
+  public smallButton = true;
+
   public get ico() {
     return this.editing ? faSave : faPen;
   }

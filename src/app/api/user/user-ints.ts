@@ -25,6 +25,7 @@ export interface LocationSaveResponse {
 }
 
 export interface UpdatePropRequest {
+  id?: string;
   item: string;
   value: string;
 }

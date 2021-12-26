@@ -62,13 +62,16 @@ app-work-load-page {
 
   .days-tbl {
     display: flex;
+    font-size: 18px;
 
     .l {
       width: 50%;
+      padding-right: 0.5rem;
     }
 
     .r {
       width: 50%;
+      padding-left: 0.5rem;
     }
   }
 

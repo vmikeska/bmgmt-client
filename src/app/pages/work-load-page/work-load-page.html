@@ -59,37 +59,22 @@
 
           <div class="days-tbl">
             <div class="l">
-              <mat-form-field>
-                <input
-                  [(ngModel)]="workloadFilterSvc.from"
-                  matInput
-                  (dateChange)="dateRangeChange()"
-                  [matDatepicker]="fromPicker"
-                  [max]="workloadFilterSvc.fromDateMax"
-                >
 
-                <mat-datepicker-toggle
-                  matSuffix
-                  [for]="fromPicker"
-                ></mat-datepicker-toggle>
-                <mat-datepicker #fromPicker></mat-datepicker>
-              </mat-form-field>
+              <app-date-picker
+                [(ngModel)]="workloadFilterSvc.from"
+                [max]="workloadFilterSvc.fromDateMax"
+                (change)="dateRangeChange()"
+              ></app-date-picker>
+
             </div>
             <div class="r">
-              <mat-form-field>
-                <input
-                  [(ngModel)]="workloadFilterSvc.to"
-                  matInput
-                  (dateChange)="dateRangeChange()"
-                  [matDatepicker]="toPicker"
-                  [min]="workloadFilterSvc.toDateMin"
-                >
-                <mat-datepicker-toggle
-                  matSuffix
-                  [for]="toPicker"
-                ></mat-datepicker-toggle>
-                <mat-datepicker #toPicker></mat-datepicker>
-              </mat-form-field>
+
+              <app-date-picker
+                [(ngModel)]="workloadFilterSvc.to"
+                [min]="workloadFilterSvc.toDateMin"
+                (change)="dateRangeChange()"
+              ></app-date-picker>
+
             </div>
           </div>
 
@@ -222,10 +207,7 @@
                   (click)="taskDetailClick(bar.taskId)"
                   title="({{bar.sd}}-{{bar.ed}})  ({{bar.days}})"
                 >
-
                   {{bar.name}}
-                  <!-- ({{bar.sd}}-{{bar.ed}})  -->
-                  <!-- ({{bar.days}}) -->
                 </td>
 
               </tr>

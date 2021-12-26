@@ -49,9 +49,14 @@ export class TaskBaseEditDialogComponent implements OnInit {
   @Input()
   public dateTo: Moment;
 
-  public name: string;
+  @Input()
   public manHours = 0;
+
+  @Input()
   public manDays = 0;
+
+  public name: string;
+
 
   faSave = faSave;
   faPlus = faPlus;
@@ -98,6 +103,10 @@ export class TaskBaseEditDialogComponent implements OnInit {
     }
   }
 
+  public get showName() {
+    return this.mode !== TaskEditTypeModeEnum.FullEdit;
+  }
+
   public get showType() {
     let t = TaskEditTypeModeEnum;
     return [t.AddDay, t.FullEdit].includes(this.mode);
@@ -108,7 +117,8 @@ export class TaskBaseEditDialogComponent implements OnInit {
 
     this.name = res.name;
     this.type = res.type;
-
+    this.manDays = res.manDays;
+    this.manHours = res.manHours;
 
     if (res.type === TaskTypeEnum.Unassigned) {
       this.initUnassignedEdit();
@@ -117,8 +127,6 @@ export class TaskBaseEditDialogComponent implements OnInit {
     }
 
     this.initWeeks(this.year);
-
-    // this.initialized = true;
   }
 
   private initUnassignedEdit() {
@@ -130,8 +138,6 @@ export class TaskBaseEditDialogComponent implements OnInit {
     let dateFrom = now.clone();
     let dateTo = dateFrom.clone().add(2, 'd');
 
-    this.manDays = 0;
-    this.manHours = 0;
     this.week = week;
     this.month = month;
     this.year = year;
@@ -148,8 +154,6 @@ export class TaskBaseEditDialogComponent implements OnInit {
     let dateFrom = moment.utc(res.dateFrom);
     let dateTo = moment.utc(res.dateTo);
 
-    this.manDays = res.manDays;
-    this.manHours = res.manHours;
     this.week = res.week;
     this.month = res.month;
     this.year = res.year;

@@ -4,7 +4,7 @@ import { ChatMessageResponse, DeleteChatMessageRequest, NewChatMessageRequest } 
 import { ProjectChatApiService } from 'src/app/api/chat/project-chat-api.service';
 import { ProjectApiService } from 'src/app/api/project/project-api.service';
 import { UrlParamUtils } from 'src/lib/utils/url-utils';
-import { faComments, faEdit, faFile, faImage, faPen, faUserFriends } from '@fortawesome/free-solid-svg-icons';
+import { faComments, faEdit, faFile, faImage, faMapMarkerAlt, faPen, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import { PageIdEnum } from '../page-id';
 import { Router } from '@angular/router'
 import { TaskMapService } from 'src/app/components/assigned-tasks-list/tasksMap.service';
@@ -12,6 +12,8 @@ import { TaskResponse } from 'src/app/api/task/task-ints';
 import { DatedBlockTasksVM } from 'src/app/components/comps-ints';
 import { AddActionVM } from 'src/app/components/add-actions/add-actions';
 import { ProjectDetailService } from 'src/app/services/project-detail.service';
+import { LocationSaveResponse, UpdatePropRequest } from 'src/app/api/user/user-ints';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-project-detail-page',
@@ -31,12 +33,20 @@ export class ProjectDetailPageComponent implements OnInit {
 
   faEdit = faEdit;
   faPen = faPen;
+  faMapMarkerAlt = faMapMarkerAlt;
 
   public ngOnInit() {
     this.initAsync();
   }
 
   public activeId = PageIdEnum.Projects;
+
+  public addressFormControl = new FormControl();
+
+  public location: string;
+  public title = '';
+  public desc = '';
+  public name = '';
 
   private async initAsync() {
     await this.loadProjectAsync();
@@ -70,17 +80,47 @@ export class ProjectDetailPageComponent implements OnInit {
     return at && (at.dates.length || at.months.length || at.weeks.length);
   }
 
-  public title = '';
-  public desc = '';
-
   public get hasMessages() {
     return !!this.messages.value.length;
   }
 
   public showChat = false;
 
-  public editClick() {
-    this.redirectToProjectEdit(this.id);
+  public nameSaveCallback = async () => {
+    let sucessful = await this.updateItem('name', this.name);
+
+    if (sucessful) {
+      this.title = this.name;
+    }
+
+    return sucessful;
+  };
+
+  public locationSaveCallback = async () => {
+    let fcv = <LocationSaveResponse>this.addressFormControl.value;
+    let value = `${fcv.text}||${fcv.coords[0]}||${fcv.coords[0]}`;
+    let sucessful = await this.updateItem('location', value);
+
+    if (sucessful) {
+      this.location = fcv.text;
+    }
+
+    return sucessful;
+  };
+
+  public descSaveCallback = async () => {
+    let sucessful = await this.updateItem('desc', this.desc);
+    return sucessful;
+  };
+
+  private async updateItem(name: string, value: string) {
+    var req: UpdatePropRequest = {
+      id: this.id,
+      item: name,
+      value: value
+    };
+    let sucessful = await this.projApiSvc.updateProp(req);
+    return sucessful;
   }
 
   private async loadProjectAsync() {
@@ -94,6 +134,8 @@ export class ProjectDetailPageComponent implements OnInit {
 
     this.title = r.project.name;
     this.desc = r.project.desc;
+    this.name = r.project.name;
+    this.location = r.project.location.text;
   }
 
   private async loadAssignedTasks() {
@@ -116,11 +158,6 @@ export class ProjectDetailPageComponent implements OnInit {
 
   private redirectToTaskDetail(id: string) {
     let url = `${PageIdEnum.TaskDetail}/id/${id}`;
-    this.router.navigate([url]);
-  }
-
-  private redirectToProjectEdit(id: string) {
-    let url = `${PageIdEnum.ProjectEdit}/id/${id}`;
     this.router.navigate([url]);
   }
 

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { RestApiService } from 'src/lib/api/rest-api.service';
 import { TaskGroupsResponse, TaskResponse } from '../task/task-ints';
+import { UpdatePropRequest } from '../user/user-ints';
 import { ProjectDetailResponse, ProjectResponse, ProjectTaskBindingRequest } from './project-ints';
 
 @Injectable({ providedIn: 'root' })
@@ -31,8 +32,13 @@ export class ProjectApiService {
     return res;
   }
 
-  public async update(req: ProjectResponse) {
-    let res = await this.restApiSvc.putAsync<string>('project', req);
+  // public async update(req: ProjectResponse) {
+  //   let res = await this.restApiSvc.putAsync<string>('project', req);
+  //   return res;
+  // }
+
+  public async updateProp(req: UpdatePropRequest) {
+    let res = await this.restApiSvc.putAsync<boolean>('project/prop', req);
     return res;
   }
 

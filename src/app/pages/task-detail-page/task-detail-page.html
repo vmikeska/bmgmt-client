@@ -5,7 +5,7 @@
     [activeId]="activeId"
   >
 
-    <div class="title-action-cont">
+    <!-- <div class="title-action-cont">
 
       <div class="l">
         <div class="local-title-name">{{name}}</div>
@@ -27,16 +27,116 @@
         </button>
       </div>
 
+    </div> -->
+
+    <div class="header-wrap">
+
+      <app-add-or-edit-line
+        [saveCallback]="nameSaveCallback"
+        [smallButton]="false"
+      >
+        <ng-container display>
+          <div class="display-name">{{name}}</div>
+        </ng-container>
+
+        <ng-container edit>
+          <input
+            [(ngModel)]="name"
+            class="bmgmt-input full-width"
+          />
+
+        </ng-container>
+      </app-add-or-edit-line>
+
     </div>
 
   </app-header-container>
 
+  <div class="split-block top-edit-block">
+    <div class="desc-block">
 
+      <app-add-or-edit-line [saveCallback]="descSaveCallback">
+        <ng-container display>
 
-  <div
-    *ngIf="desc"
-    class="desc"
-  >{{desc}}</div>
+          <div
+            *ngIf="!desc"
+            class="desc-placeholder"
+          >Add some description about the project</div>
+
+          <div
+            *ngIf="desc"
+            class="displayable-textarea"
+          >{{desc}}</div>
+        </ng-container>
+
+        <ng-container edit>
+
+          <textarea
+            class="bmgmt-textarea"
+            [(ngModel)]="desc"
+          ></textarea>
+
+        </ng-container>
+      </app-add-or-edit-line>
+
+    </div>
+
+    <div class="double-info">
+      <div class="l">
+        <div class="ico-cont">
+          <fa-icon
+            class="ico"
+            [icon]="faMapMarkerAlt"
+            size="2x"
+          ></fa-icon>
+        </div>
+      </div>
+      <div class="r">
+
+        <!-- [editable]="isMe" -->
+        <app-add-or-edit-line [saveCallback]="locationSaveCallback">
+          <ng-container display>
+            <span class="linkable">{{location}}</span>
+          </ng-container>
+
+          <ng-container edit>
+            <app-address-autocomplete
+              name="address"
+              [formControl]="addressFormControl"
+            ></app-address-autocomplete>
+          </ng-container>
+        </app-add-or-edit-line>
+
+      </div>
+    </div>
+
+    <div class="double-info load-line">
+      <div class="l">
+        <div class="ico-cont">
+          <fa-icon
+            class="ico"
+            [icon]="faMapMarkerAlt"
+            size="2x"
+          ></fa-icon>
+        </div>
+      </div>
+
+      <div class="m">{{dateAndLoad}}</div>
+
+      <div class="r">
+        <span
+          class="rectangle-btn"
+          (click)="editClick()"
+        >
+          <fa-icon
+            class="btn-ico"
+            [icon]="faPen"
+          ></fa-icon>
+        </span>
+      </div>
+    </div>
+
+  </div>
 
   <app-add-actions [items]="addActions"></app-add-actions>
 
