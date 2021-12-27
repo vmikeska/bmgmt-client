@@ -6,7 +6,6 @@ export enum PageIdEnum {
   Dashboard = "dashboard",
   Contacts = "contacts",
   LogIn = "log-in",
-  Projects = "projects",
   ProjectDetail = "project-detail",
   ContactDetail = "contact-detail"
 }

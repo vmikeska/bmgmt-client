@@ -7,7 +7,6 @@ import { DashboardPageComponent } from './pages/dashboard-page/dashboard-page';
 import { LogInPageComponent } from './pages/log-in-page/log-in-page';
 import { PageIdEnum } from './pages/page-id';
 import { ProjectDetailPageComponent } from './pages/project-detail-page/project-detail-page';
-import { ProjectsPageComponent } from './pages/projects-page/projects-page';
 import { TaskDetailPageComponent } from './pages/task-detail-page/task-detail-page';
 import { WorkLoadComponent } from './pages/work-load-page/work-load-page';
 import { UserDetailPageComponent } from './pages/user-detail-page/user-detail-page';
@@ -36,10 +35,6 @@ const routes: Routes = [
   {
     path: PageIdEnum.LogIn,
     component: LogInPageComponent
-  },
-  {
-    path: PageIdEnum.Projects,
-    component: ProjectsPageComponent
   },
   {
     path:  `${PageIdEnum.ProjectDetail}/id/:id`,

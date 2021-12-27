@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">builder-mgmt</string>
+    <string name="title_activity_main">builder-mgmt</string>
+    <string name="package_name">client.bmgmt.com</string>
+    <string name="custom_url_scheme">client.bmgmt.com</string>
+</resources>

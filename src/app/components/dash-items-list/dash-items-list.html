@@ -1,0 +1,13 @@
+<div class="dash-list">
+
+  <div class="items">
+    <div
+      *ngFor="let item of items"
+      class="item"
+      (click)="itemClick(item)"
+    >
+      {{item.name}}
+    </div>
+  </div>
+
+</div>

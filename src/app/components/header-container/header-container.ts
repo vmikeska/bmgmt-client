@@ -67,15 +67,6 @@ export class HeaderContainerComponent implements OnInit {
       }
     },
     {
-      label: 'Projects',
-      ico: faBuilding,
-      id: PageIdEnum.Projects,
-      callback: () => {
-        let url = PageIdEnum.Projects;
-        this.router.navigate([url]);
-      }
-    },
-    {
       label: 'Contacts',
       ico: faAddressBook,
       id: PageIdEnum.Contacts,

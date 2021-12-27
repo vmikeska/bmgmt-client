@@ -1,0 +1,6 @@
+{
+	"appId": "client.bmgmt.com",
+	"appName": "builder-mgmt",
+	"webDir": "dist/builder-mgmt",
+	"bundledWebRuntime": false
+}

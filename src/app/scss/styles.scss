@@ -72,14 +72,19 @@ body {
 
   .quick-input-cont {
     padding-top: 1rem;
-    padding-left: 1.5rem;
+    padding-left: 1rem;
     padding-bottom: 1rem;
+
+    .input-cell {
+      padding-right: 1rem;
+    }
 
     .input {
       height: 2.5rem;
       font-size: 1.2rem;
       width: 100%;
       padding-left: 1rem;
+      box-sizing: border-box;
     }
   }
 }
@@ -121,7 +126,7 @@ input[type="number"] {
   height: 3rem;
   border-top-left-radius: 25px;
   border-bottom-left-radius: 25px;
-  width: 100px;
+  width: 80px;
   cursor: pointer;
 }
 
@@ -176,6 +181,13 @@ input[type="number"] {
   border-top-right-radius: $rad;
   border-bottom-right-radius: $rad;
 
+  &.padding {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
   &.left-padding {
     padding-left: 1rem;
   }
@@ -189,7 +201,7 @@ input[type="number"] {
   }
 
   &.right-padding {
-    padding-bottom: 1rem;
+    padding-right: 1rem;
   }
 }
 

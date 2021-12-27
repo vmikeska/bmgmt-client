@@ -1,0 +1,1 @@
+ng build & npx cap sync & npx cap run android --target pixel_5_-_api_30

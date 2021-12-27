@@ -1,15 +1,17 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Injectable, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProjectApiService } from 'src/app/api/project/project-api.service';
-import { ProjectResponse } from 'src/app/api/project/project-ints';
 import { TaskApiService } from 'src/app/api/task/task-api.service';
-import { TaskTypeEnum, TaskResponse } from 'src/app/api/task/task-ints';
+import { TaskResponse, TaskTypeEnum } from 'src/app/api/task/task-ints';
 import { PageIdEnum } from '../page-id';
 import { faPlus, faCamera } from '@fortawesome/free-solid-svg-icons';
 import { TaskMapService } from 'src/app/components/assigned-tasks-list/tasksMap.service';
-import { CrationTypeEnum, CreationTypeItem, DatedBlockTasksVM, ProjItemVM } from 'src/app/components/comps-ints';
-import { ItemOption } from 'src/app/ints/common-ints';
-import { BehaviorSubject } from 'rxjs';
+import { DatedBlockTasksVM, ProjItemVM } from 'src/app/components/comps-ints';
+import { DashboardQuickActionsService } from './dashboard-quick-actions.service';
+import { DashProjResponse, DashResultRequest, DashTaskResponse } from 'src/app/api/dashboard/dashboard-ints';
+import { DashListItem } from 'src/app/components/dash-items-list/dash-items-list';
+import { DashboardApiService } from 'src/app/api/dashboard/dashboard-api.service';
+import { RedirectService } from 'src/app/services/redirect.service';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -22,31 +24,19 @@ export class DashboardPageComponent implements OnInit {
   constructor(
     private taskApiSvc: TaskApiService,
     private projApiSvc: ProjectApiService,
-    private router: Router,
-    private taskMapSvc: TaskMapService
+    private taskMapSvc: TaskMapService,
+    private dashApiSvc: DashboardApiService,
+
+    private redirSvc: RedirectService,
+    public dashQuickSvc: DashboardQuickActionsService,
+    public dashDataSvc: DashboardDataService
   ) { }
 
-  // public val = 'VAL1';
-
-  // public options = new BehaviorSubject<ItemOption[]>([
-  //   {
-  //     label: 'Value 1',
-  //     value: 'VAL1'
-  //   },
-  //   {
-  //     label: 'Value 2',
-  //     value: 'VAL2'
-  //   },
-  //   {
-  //     label: 'Value 3',
-  //     value: 'VAL3'
-  //   },
-  // ]);
-
   public ngOnInit() {
-    this.loadUnassignedTasks();
-    this.loadAssignedTasks();
-    this.loadProjectsAsync();
+    this.dashDataSvc.loadDataAsync();
+    // this.loadUnassignedTasks();
+    // this.loadAssignedTasks();
+    // this.loadProjectsAsync();
   }
 
   public addPhotoTaskClick() {
@@ -62,127 +52,100 @@ export class DashboardPageComponent implements OnInit {
   faPlus = faPlus;
   faCamera = faCamera;
 
-  public get newButtonText() {
-    if (this.creationType === CrationTypeEnum.Project) {
-      return 'New Project';
-    }
-
-    return 'New Task';
+  public taskItemClick(id: string) {
+    this.redirSvc.toTask(id);
   }
 
-  public get newInputText() {
-    if (this.creationType === CrationTypeEnum.Project) {
-      return 'Project name';
-    }
-
-    return 'Task name';
+  public projItemClick(id: string) {
+    this.redirSvc.toProject(id);
   }
 
-
-  public creationName = '';
-
-  public creationType = CrationTypeEnum.SimpleTask;
-
-  public creationTypes: CreationTypeItem[] = [
-    {
-      label: 'Quick task',
-      value: CrationTypeEnum.SimpleTask
-    },
-    {
-      label: 'Full task',
-      value: CrationTypeEnum.FullTask
-    },
-    {
-      label: 'Project',
-      value: CrationTypeEnum.Project
-    },
-  ];
-
-  public unassignedTasks: TaskResponse[] = [];
-  public assignedTasks: DatedBlockTasksVM;
-  public projects: ProjItemVM[] = [];
-
-  public createItemClick() {
-    this.createItemAsync();
+  public filterChange() {
+    this.dashDataSvc.loadDataAsync();
   }
 
 
 
-  private async createItemAsync() {
+  // public unassignedTasks: TaskResponse[] = [];
+  // public assignedTasks: DatedBlockTasksVM;
+  // public projects: ProjItemVM[] = [];
 
-    if (this.creationType === CrationTypeEnum.Project) {
-      let id = await this.createProjectAsync();
-      this.redirectToProjectDetail(id);
-    } else {
-      let taskId = await this.createTaskAsync();
-      if (this.creationType === CrationTypeEnum.FullTask) {
-        this.redirectToTaskDetail(taskId);
-      } else {
-        this.loadUnassignedTasks();
-      }
-    }
 
-    this.creationName = '';
-  }
+  // private async loadUnassignedTasks() {
+  //   let tasks = await this.taskApiSvc.getUnassignedTasks();
+  //   this.unassignedTasks = tasks;
+  // }
 
-  private async createProjectAsync() {
-    let req: ProjectResponse = {
-      id: null,
-      name: this.creationName,
-      desc: ''
+  // private async loadAssignedTasks() {
+  //   let tasks = await this.taskApiSvc.getDashboardTasks();
+  //   this.assignedTasks = {
+  //     dates: tasks.dates.map(i => this.taskMapSvc.mapTaskVM(i)),
+  //     months: tasks.months.map(i => this.taskMapSvc.mapTaskVM(i)),
+  //     weeks: tasks.weeks.map(i => this.taskMapSvc.mapTaskVM(i))
+  //   }
+  // }
+
+  // private async loadProjectsAsync() {
+  //   let res = await this.projApiSvc.getList();
+
+  //   this.projects = res.map((i) => {
+  //     let item: ProjItemVM = {
+  //       id: i.id,
+  //       name: i.name
+  //     };
+  //     return item;
+  //   });
+
+  // }
+
+}
+
+@Injectable({ providedIn: 'root'})
+export class DashboardDataService {
+  constructor(
+    private dashApiSvc: DashboardApiService,
+  ) {}
+
+  public filter = '';
+
+  public simpleTasks: DashListItem[] = [];
+  public calendarTasks: DashListItem[] = [];
+  public projects: DashListItem[] = [];
+
+  public async loadDataAsync() {
+    let req: DashResultRequest = {
+      onlyUnfinished: true,
+      search: this.filter
     };
 
-    var projId = await this.projApiSvc.create(req);
-    return projId
+    let res = await this.dashApiSvc.dashboardData(req);
+
+    let simpleTasksRes = res.tasks.filter(t => t.type === TaskTypeEnum.Unassigned);
+    let otherTasksRes = res.tasks.filter(t => t.type !== TaskTypeEnum.Unassigned);
+
+    this.simpleTasks = this.mapTasksToListItems(simpleTasksRes);
+    this.calendarTasks = this.mapTasksToListItems(otherTasksRes);
+    this.projects = this.mapProjsToListItems(res.projs);
   }
 
-  private async createTaskAsync() {
-    let req: TaskResponse = {
-      id: null,
-      name: this.creationName,
-      type: TaskTypeEnum.Unassigned,
-      desc: ''
-    };
-
-    var taskId = await this.taskApiSvc.create(req);
-    return taskId;
-  }
-
-  private redirectToTaskDetail(id: string) {
-    let url = `${PageIdEnum.TaskDetail}/id/${id}`;
-    this.router.navigate([url]);
-  }
-
-  private redirectToProjectDetail(id: string) {
-    let url = `${PageIdEnum.ProjectDetail}/id/${id}`;
-    this.router.navigate([url]);
-  }
-
-  private async loadUnassignedTasks() {
-    let tasks = await this.taskApiSvc.getUnassignedTasks();
-    this.unassignedTasks = tasks;
-  }
-
-  private async loadAssignedTasks() {
-    let tasks = await this.taskApiSvc.getDashboardTasks();
-    this.assignedTasks = {
-      dates: tasks.dates.map(i => this.taskMapSvc.mapTaskVM(i)),
-      months: tasks.months.map(i => this.taskMapSvc.mapTaskVM(i)),
-      weeks: tasks.weeks.map(i => this.taskMapSvc.mapTaskVM(i))
-    }
-  }
-
-  private async loadProjectsAsync() {
-    let res = await this.projApiSvc.getList();
-
-    this.projects = res.map((i) => {
-      let item: ProjItemVM = {
-        id: i.id,
-        name: i.name
+  private mapTasksToListItems(tasks: DashTaskResponse[]) {
+    return tasks.map( t => {
+      let task: DashListItem = {
+        id: t.id,
+        name: t.name
       };
-      return item;
+      return task;
     });
+  }
 
+  private mapProjsToListItems(projs: DashProjResponse[]) {
+    return projs.map( t => {
+      let task: DashListItem = {
+        id: t.id,
+        name: t.name
+      };
+      return task;
+    });
   }
 
 }

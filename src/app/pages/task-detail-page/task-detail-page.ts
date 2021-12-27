@@ -10,7 +10,7 @@ import { DateUtils } from 'src/app/utils/date-utils';
 import { WorkloadUtilsService } from 'src/app/utils/workload-utils.service';
 import { UrlParamUtils } from 'src/lib/utils/url-utils';
 import { PageIdEnum } from '../page-id';
-import { faPen, faUserFriends, faImage, faFile, faBuilding, faComments, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import { faPen, faUserFriends, faImage, faFile, faBuilding, faComments, faMapMarkerAlt, faClock } from '@fortawesome/free-solid-svg-icons';
 import { AddActionVM } from 'src/app/components/add-actions/add-actions';
 import { DialogService } from 'src/app/dialogs/base/dialog.service';
 import { TaskBaseEditDialogComponent, TaskEditTypeModeEnum } from 'src/app/dialogs/task-base-edit-dialog/task-base-edit-dialog';
@@ -49,6 +49,7 @@ export class TaskDetailPageComponent implements OnInit {
 
   faPen = faPen;
   faMapMarkerAlt = faMapMarkerAlt;
+  faClock = faClock;
 
   public addressFormControl = new FormControl();
 

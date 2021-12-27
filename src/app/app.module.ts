@@ -19,7 +19,6 @@ import { ContactsPageComponent } from './pages/contacts-page/contacts-page';
 import { TaskDetailPageComponent } from './pages/task-detail-page/task-detail-page';
 import { CreateAccountComponent } from './pages/create-account-page/create-account-page';
 import { LogInPageComponent } from './pages/log-in-page/log-in-page';
-import { ProjectsPageComponent } from './pages/projects-page/projects-page';
 import { ProjectDetailPageComponent } from './pages/project-detail-page/project-detail-page';
 import { BaseDialogComponent } from './dialogs/base/base-dialog';
 import { TaskToProjDialogComponent } from './dialogs/task-to-proj-dialog/task-to-proj-dialog';
@@ -45,6 +44,7 @@ import { AddOrEditLineComponent } from './components/add-or-edit-line/add-or-edi
 import { DropDownComponent } from './components/drop-down/drop-down';
 import { CalendarDayDialogComponent } from './dialogs/calendar-day-dialog/calendar-day-dialog';
 import { DialogActionButtonComponent } from './components/dialog-action-button/dialog-action-button';
+import { DashItemsListComponent } from './components/dash-items-list/dash-items-list';
 
 export function initFactory() {
   return () => {
@@ -63,7 +63,6 @@ export function initFactory() {
     TaskDetailPageComponent,
     CreateAccountComponent,
     LogInPageComponent,
-    ProjectsPageComponent,
     ProjectDetailPageComponent,
     ContactDetailPageComponent,
     UserDetailPageComponent,
@@ -75,6 +74,7 @@ export function initFactory() {
     AddOrEditLineComponent,
     DropDownComponent,
     DialogActionButtonComponent,
+    DashItemsListComponent,
 
     BaseDialogComponent,
     DialogPlaceholderComponent,

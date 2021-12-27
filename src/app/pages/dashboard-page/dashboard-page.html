@@ -6,10 +6,10 @@
 
       <mat-radio-group
         aria-label="What do you want to create?"
-        [(ngModel)]="creationType"
+        [(ngModel)]="dashQuickSvc.creationType"
       >
         <mat-radio-button
-          *ngFor="let item of creationTypes"
+          *ngFor="let item of dashQuickSvc.creationTypes"
           [value]="item.value"
         >{{item.label}}</mat-radio-button>
       </mat-radio-group>
@@ -20,8 +20,8 @@
           <span class="input-cell">
 
             <input
-              [(ngModel)]="creationName"
-              [placeholder]="newInputText"
+              [(ngModel)]="dashQuickSvc.creationName"
+              [placeholder]="dashQuickSvc.newInputText"
               class="input"
             />
 
@@ -30,7 +30,7 @@
 
             <button
               class="left-rounded-btn"
-              (click)="createItemClick()"
+              (click)="dashQuickSvc.createItemClick()"
             >
               <fa-icon
                 class="ico"
@@ -49,16 +49,49 @@
 
   <div class="dashboard-page-all">
 
-    <app-unassigned-tasks-block [tasks]="unassignedTasks"></app-unassigned-tasks-block>
+    <div class="filter-cont">
+      <input
+        [(ngModel)]="dashDataSvc.filter"
+        placeholder="Filter"
+        class="bmgmt-input"
+        (keyup)="filterChange()"
+      />
+    </div>
 
-    <!-- <app-assigned-tasks-block [tasks]="assignedTasks"></app-assigned-tasks-block> -->
+    <ng-container *ngIf="dashDataSvc.simpleTasks.length">
+      <div class="split-block-title">Simple tasks</div>
 
-    <app-projects-block
-      title="Projects"
-      [items]="projects"
-    ></app-projects-block>
+      <div class="split-block padding">
+        <app-dash-items-list
+          [items]="dashDataSvc.simpleTasks"
+          (itemClickEvent)="taskItemClick($event)"
+        ></app-dash-items-list>
+      </div>
+    </ng-container>
 
-    <div class="hotkeys-cont">
+    <ng-container *ngIf="dashDataSvc.calendarTasks.length">
+      <div class="split-block-title">Tasks from calendar</div>
+
+      <div class="split-block padding">
+        <app-dash-items-list
+          [items]="dashDataSvc.calendarTasks"
+          (itemClickEvent)="taskItemClick($event)"
+        ></app-dash-items-list>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="dashDataSvc.projects.length">
+      <div class="split-block-title">Projects</div>
+
+      <div class="split-block padding">
+        <app-dash-items-list
+          [items]="dashDataSvc.projects"
+          (itemClickEvent)="projItemClick($event)"
+        ></app-dash-items-list>
+      </div>
+    </ng-container>
+
+    <!-- <div class="hotkeys-cont">
 
       <div
         class="hot-btn"
@@ -98,7 +131,7 @@
         </div>
       </div>
 
-    </div>
+    </div> -->
 
   </div>
 

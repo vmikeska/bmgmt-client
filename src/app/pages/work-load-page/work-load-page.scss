@@ -220,6 +220,7 @@ app-work-load-page {
 
   .weeks-table {
     border: 0;
+    table-layout: fixed;
 
     width: 100%;
 
@@ -246,9 +247,9 @@ app-work-load-page {
       .day-all {
         cursor: pointer;
         vertical-align: top;
-        // border: 1px solid black;
         padding: 2px;
-        width: 50px;
+        // width: 50px;
+        width: 14%;
         color: $c-violete;
 
         .num {
@@ -258,7 +259,6 @@ app-work-load-page {
         }
 
         .hours {
-          // font-size: 1.2rem;
           text-align: center;
           padding-top: 1rem;
         }

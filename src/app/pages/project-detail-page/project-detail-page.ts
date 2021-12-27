@@ -39,8 +39,6 @@ export class ProjectDetailPageComponent implements OnInit {
     this.initAsync();
   }
 
-  public activeId = PageIdEnum.Projects;
-
   public addressFormControl = new FormControl();
 
   public location: string;
