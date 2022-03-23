@@ -1,14 +1,13 @@
 import { Component, Input, OnInit, Output } from '@angular/core';
 import { faPlus, faSave, IconDefinition } from '@fortawesome/free-solid-svg-icons';
-import { clone, cloneDeep } from 'lodash-es';
+import { cloneDeep } from 'lodash-es';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { BehaviorSubject, Subject } from 'rxjs';
-import { TaskApiService } from 'src/app/api/task/task-api.service';
-import { TaskDateTypeResponse, TaskResponse, TaskTypeEnum } from 'src/app/api/task/task-ints';
+import { TaskTypeEnum } from 'src/app/api/task/task-ints';
+import { TaskEntity } from 'src/app/data/entities/entities';
+import { TaskEntityOperations } from 'src/app/data/entity-operations';
 import { ItemOption } from 'src/app/ints/common-ints';
-import { TaskDetailService } from 'src/app/services/task-detail.service';
-import { UrlParamUtils } from 'src/lib/utils/url-utils';
 import { DialogService } from '../base/dialog.service';
 
 @Component({
@@ -18,8 +17,8 @@ import { DialogService } from '../base/dialog.service';
 })
 export class TaskBaseEditDialogComponent implements OnInit {
   constructor(
-    public taskApiSvc: TaskApiService,
-    private dialogSvc: DialogService
+    private dialogSvc: DialogService,
+    private taskEntSvc: TaskEntityOperations
   ) { }
 
   @Input()
@@ -67,7 +66,14 @@ export class TaskBaseEditDialogComponent implements OnInit {
 
   public btnIco: IconDefinition;
 
+  public te: TaskEntity;
+
   public ngOnInit() {
+
+    this.te = this.taskEntSvc.getById(this.id);
+    if (!this.te) {
+      return;
+    }
 
     let typeOptions = cloneDeep(this.allTypeOptions);
 
@@ -113,17 +119,15 @@ export class TaskBaseEditDialogComponent implements OnInit {
   }
 
   private async initEditAsync() {
-    var res = await this.taskApiSvc.getById(this.id);
+    this.name = this.te.name;
+    this.type = this.te.type;
+    this.manDays = this.te.manDays;
+    this.manHours = this.te.manHours;
 
-    this.name = res.name;
-    this.type = res.type;
-    this.manDays = res.manDays;
-    this.manHours = res.manHours;
-
-    if (res.type === TaskTypeEnum.Unassigned) {
+    if (this.te.type === TaskTypeEnum.Unassigned) {
       this.initUnassignedEdit();
     } else {
-      this.initAssignedEdit(res);
+      this.initAssignedEdit();
     }
 
     this.initWeeks(this.year);
@@ -145,18 +149,18 @@ export class TaskBaseEditDialogComponent implements OnInit {
     this.dateTo = dateTo;
   }
 
-  private initAssignedEdit(res: TaskResponse) {
+  private initAssignedEdit() {
     let now = moment().utc().startOf('d');
 
     let dateFromDefault = now.clone();
     let dateToDefault = dateFromDefault.clone().add(2, 'd');
 
-    let dateFrom = moment.utc(res.dateFrom);
-    let dateTo = moment.utc(res.dateTo);
+    let dateFrom = this.te.dateFrom;
+    let dateTo = this.te.dateTo;
 
-    this.week = res.week;
-    this.month = res.month;
-    this.year = res.year;
+    this.week = this.te.week;
+    this.month = this.te.month;
+    this.year = this.te.year;
     this.dateFrom = dateFrom.isValid() ? dateFrom : dateFromDefault;
     this.dateTo = dateTo.isValid() ? dateTo : dateToDefault;
   }
@@ -164,8 +168,6 @@ export class TaskBaseEditDialogComponent implements OnInit {
   private get isEdit() {
     return !!this.id;
   }
-
-  // public initialized = false;
 
   public get toDateMin() {
     return this.dateFrom;
@@ -270,24 +272,7 @@ export class TaskBaseEditDialogComponent implements OnInit {
   }
 
   private async sendDataAsync() {
-    let req = this.buildRequest();
-
-    if (this.id) {
-      await this.taskApiSvc.updateType(req);
-    } else {
-      await this.taskApiSvc.create(req);
-    }
-
-    this.onSavedEvent.next();
-    this.closeDialog();
-  }
-
-  private buildRequest() {
-
-    let dfValid = this.dateFrom && this.dateFrom.isValid();
-    let dtValid = this.dateTo && this.dateTo.isValid();
-
-    let req: TaskDateTypeResponse = {
+    let e: TaskEntity = {
       id: this.id,
       name: this.name,
       type: this.type,
@@ -296,13 +281,15 @@ export class TaskBaseEditDialogComponent implements OnInit {
       month: this.month,
       week: this.week,
       year: this.year,
-      dateFrom: dfValid ? this.dateFrom.format('YYYY-MM-DD') : null,
-      dateTo: dtValid ? this.dateTo.format('YYYY-MM-DD') : null
+      dateFrom: this.dateFrom,
+      dateTo: this.dateTo
     };
 
-    return req;
-  }
+    this.taskEntSvc.updateById(e)
 
+    this.onSavedEvent.next();
+    this.closeDialog();
+  }
 
   private closeDialog() {
     this.dialogSvc.destroy();

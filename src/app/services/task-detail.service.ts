@@ -15,7 +15,6 @@ import { TaskToProjDialogComponent } from '../dialogs/task-to-proj-dialog/task-t
 export class TaskDetailService {
 
   constructor(
-    // private taskApiSvc: TaskApiService,
     private taskEntSvc: TaskEntityOperations,
     private taskParticipEntSvc: TaskParticipantEntityOperations,
     private projectBindingSvc: ProjectsTaskEntityOperations,

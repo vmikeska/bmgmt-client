@@ -1,8 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { ChatMessageResponse, DeleteChatMessageRequest, NewChatMessageRequest } from 'src/app/api/chat/chat-ints';
-import { TaskChatApiService } from 'src/app/api/chat/task-chat-api.service';
 import { TaskDetailService } from 'src/app/services/task-detail.service';
 import { TaskUtils } from "src/app/services/task-utils";
 import { WorkloadUtilsService } from 'src/app/utils/workload-utils.service';
@@ -13,7 +11,6 @@ import { AddActionVM } from 'src/app/components/add-actions/add-actions';
 import { DialogService } from 'src/app/dialogs/base/dialog.service';
 import { TaskBaseEditDialogComponent, TaskEditTypeModeEnum } from 'src/app/dialogs/task-base-edit-dialog/task-base-edit-dialog';
 import { LocationSaveResponse, UpdatePropRequest } from 'src/app/api/user/user-ints';
-import { TaskApiService } from 'src/app/api/task/task-api.service';
 import { FormControl } from '@angular/forms';
 import { TaskChatMessagesEntityOperations, TaskEntityOperations } from 'src/app/data/entity-operations';
 import { BaseChatMessagesEntity, TaskChatMessagesEntity } from 'src/app/data/entities/entities';
@@ -136,19 +133,26 @@ export class TaskDetailPageComponent implements OnInit {
   }
 
   public nameSaveCallback = () => {
-    this.updateItem('name', this.name);
+    let task = this.taskEntSvc.getById(this.id);
+    task.name = this.name;
+    this.taskEntSvc.updateById(task);
   };
 
   public locationSaveCallback = () => {
     let fcv = <LocationSaveResponse>this.addressFormControl.value;
-    let value = `${fcv.text}||${fcv.coords[0]}||${fcv.coords[0]}`;
-    this.updateItem('location', value);
-    this.location = fcv.text;
+    let task = this.taskEntSvc.getById(this.id);
+    task.location = {
+      text: fcv.text,
+      coords: fcv.coords
+    };
+    this.taskEntSvc.updateById(task);
+    this.location = task.location.text;
   };
 
   public descSaveCallback = async () => {
-    let sucessful = await this.updateItem('desc', this.desc);
-    return sucessful;
+    let task = this.taskEntSvc.getById(this.id);
+    task.desc = this.desc;
+    this.taskEntSvc.updateById(task);
   };
 
   public msgPostCallback = (text: string) => {
@@ -169,14 +173,6 @@ export class TaskDetailPageComponent implements OnInit {
   public msgDeleteCallback = (id: string) => {
     this.taskChatEntSvc.deleteById(id);
     this.reloadChatMessages();
-  }
-
-  private updateItem(name: string, value: string) {
-
-    let item = <any>this.taskEntSvc.getById(this.id);
-
-    item[name] = value;
-    this.taskEntSvc.markEntityAsUpdated(item);
   }
 
   private loadTask() {

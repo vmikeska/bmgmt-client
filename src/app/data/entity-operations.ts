@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ProjectEntity, ProjectsTaskEntity, TaskChatMessagesEntity, TaskEntity, TaskParticipantEntity, UserEntity, UserSettingsEntity } from "./entities/entities";
+import { ProjectEntity, ProjectParticipantEntity, ProjectsTaskEntity, TaskChatMessagesEntity, TaskEntity, TaskParticipantEntity, UserEntity, UserSettingsEntity } from "./entities/entities";
 import { EntityOperationsBase } from "./entity-operation-base";
 
 @Injectable({ providedIn: 'root' })
@@ -24,6 +24,15 @@ export class TaskParticipantEntityOperations extends EntityOperationsBase<TaskPa
 
   public get fullName() {
     return 'TaskParticipantEntity';
+  }
+
+}
+
+@Injectable({ providedIn: 'root' })
+export class ProjectParticipantEntityOperations extends EntityOperationsBase<ProjectParticipantEntity> {
+
+  public get fullName() {
+    return 'ProjectParticipantEntity';
   }
 
 }
@@ -64,5 +73,7 @@ export class TaskChatMessagesEntityOperations extends EntityOperationsBase<TaskC
   }
 
 }
+
+
 
 

@@ -9,6 +9,10 @@ export class EntityOperationsBase<T extends EntityBase> {
 
   public list: T[] = [];
 
+  public get ulist() {
+    return this.list.filter(i => !i.deleted);
+  }
+
   public onCreateEvent = new Subject<T>();
   public onUpdateEvent = new Subject<T>();
   public onRemoveItem = new Subject<T>();
@@ -64,10 +68,27 @@ export class EntityOperationsBase<T extends EntityBase> {
 
   public deleteById(id: string) {
     let removedItem = this.list.find(i => i.id === id);
+    if (!removedItem) {
+      return null;
+    }
+
     removedItem.deleted = true;
     removedItem.synced = false;
-    // let newList = this.list.filter(i => i.id !== id);
-    // this.list = newList;
+
     this.onRemoveItem.next(removedItem);
+    return removedItem;
+  }
+
+  public deleteByFind(filter: (item: T) => boolean) {
+    let removedItem = this.list.find(i => filter(i));
+    if (!removedItem) {
+      return null;
+    }
+
+    removedItem.deleted = true;
+    removedItem.synced = false;
+
+    this.onRemoveItem.next(removedItem);
+    return removedItem;
   }
 }

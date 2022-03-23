@@ -3,9 +3,11 @@ import { Component, ElementRef, Input, OnInit, ViewChild, ViewEncapsulation } fr
 import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { cloneDeep, pull } from 'lodash';
-import { TopicParticipantEnum, TopicParticipantResponse } from 'src/app/api/participant/particip-ints';
+import { cloneDeep, pull } from 'lodash-es';
+import { TopicParticipantEnum } from 'src/app/api/participant/particip-ints';
 import { UserApiService } from 'src/app/api/user/user-api.service';
+import { TopicParticipantEntity } from 'src/app/data/entities/entities';
+import { UsersService } from 'src/app/services/users.service';
 
 @Component({
   selector: 'app-role-tagger',
@@ -17,6 +19,7 @@ import { UserApiService } from 'src/app/api/user/user-api.service';
 export class RoleTaggerComponent implements OnInit {
   constructor(
     private userApiSvc: UserApiService,
+    private usersSvc: UsersService
   ) { }
 
   @Input()
@@ -56,15 +59,15 @@ export class RoleTaggerComponent implements OnInit {
   }
 
   public async loadSelectedAsync() {
-    let res = await this.loadCallback(this.topicId);
+    let es = this.loadCallback(this.topicId);
 
-    let categoryUsers = res.filter(t => t.role === this.role);
+    let categoryUsers = es.filter(t => t.role === this.role);
 
     let tags = categoryUsers.map((i) => {
       let ti: TagItem = {
-        name: `${i.firstName} ${i.lastName}`,
-        bindingId: i.bindingId,
-        userId: i.userId,
+        name: `${this.usersSvc.getNameByUserId(this.topicId)} ${this.usersSvc.getSurnameByUserId(this.topicId)}`,
+        bindingId: i.id,
+        userId: i.user_id,
       };
       return ti;
     });
@@ -74,13 +77,13 @@ export class RoleTaggerComponent implements OnInit {
   public add(event: MatChipInputEvent) { }
 
   @Input()
-  public removeCallback: (item: TagItem) => Promise<boolean>;
+  public removeCallback: (item: TagItem) => boolean;
 
   @Input()
-  public addCallback: (userId: string, role: TopicParticipantEnum) => Promise<string>;
+  public addCallback: (userId: string, role: TopicParticipantEnum) => string;
 
   @Input()
-  public loadCallback: (topicId: string) => Promise<TopicParticipantResponse[]>;
+  public loadCallback: (topicId: string) => TopicParticipantEntity[];
 
   public async removeClick(item: TagItem) {
     let deleted = await this.removeCallback(item)

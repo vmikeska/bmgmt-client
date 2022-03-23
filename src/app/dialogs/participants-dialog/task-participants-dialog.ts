@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
-import { TopicNewParticipantRequest, TopicParticipantEnum } from 'src/app/api/participant/particip-ints';
-import { TaskParticipantApiService } from 'src/app/api/participant/task-participant-api.service';
+import { TopicParticipantEnum } from 'src/app/api/participant/particip-ints';
 import { TagItem } from 'src/app/components/role-tagger/role-tagger';
-
+import { ProjectParticipantEntity } from 'src/app/data/entities/entities';
+import { ProjectParticipantEntityOperations } from 'src/app/data/entity-operations';
 
 @Component({
   selector: 'app-task-participants-dialog',
@@ -12,8 +12,9 @@ import { TagItem } from 'src/app/components/role-tagger/role-tagger';
 })
 
 export class TaskParticipantDialogComponent implements OnInit {
+
   constructor(
-    private taskParticApiSvc: TaskParticipantApiService
+    private projParEntSvc: ProjectParticipantEntityOperations
   ) { }
 
   public ngOnInit() { }
@@ -23,24 +24,26 @@ export class TaskParticipantDialogComponent implements OnInit {
 
   public TopicParticipantEnum = TopicParticipantEnum;
 
-  public removeCallback = async (item: TagItem) => {
-    let deleted = await this.taskParticApiSvc.remove(item.bindingId);
-    return deleted;
+  public removeCallback = (item: TagItem) => {
+    let e = this.projParEntSvc.deleteById(item.bindingId);
+    return !!e;
   };
 
-  public addCallback = async (userId: string, role: TopicParticipantEnum) => {
-    let req: TopicNewParticipantRequest = {
+  public addCallback = (userId: string, role: TopicParticipantEnum) => {
+    let e: ProjectParticipantEntity = {
       role: role,
-      topicId: this.topicId,
-      userId
+      topic_id: this.topicId,
+      user_id: userId
     };
-    let bindingId = await this.taskParticApiSvc.add(req);
-    return bindingId;
+
+    this.projParEntSvc.create(e);
+    return e.id;
   };
 
-  public loadCallback = async (topicId: string) => {
-    let res = await this.taskParticApiSvc.getList(topicId);
-    return res;
+  public loadCallback = (topicId: string) => {
+    let e = this.projParEntSvc.ulist.filter(i => i.topic_id === topicId);
+    return e;
   }
 
 }
+
