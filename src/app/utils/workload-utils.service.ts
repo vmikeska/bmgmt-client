@@ -1,15 +1,15 @@
 import { Injectable } from "@angular/core";
-import { ConfigLoaderService } from "../api/account/config-loader.service";
+import { ConfigService } from "../services/config.service";
 
 @Injectable({ providedIn: 'root' })
 export class WorkloadUtilsService {
 
-  constructor(private configSvc: ConfigLoaderService) {
+  constructor(private configSvc: ConfigService) {
 
   }
 
   public daysHoursStr(days: number, hours: number) {
-    let dayWorkingHours = this.configSvc.response.dayWorkingHours;
+    let dayWorkingHours = this.configSvc.dayWorkingHours;
 
     let totalHours = (days * dayWorkingHours) + hours;
 

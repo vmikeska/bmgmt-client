@@ -1,6 +1,10 @@
 <app-dialog-placeholder></app-dialog-placeholder>
 
-<div class="frame">
+
+<div
+  *ngIf="initialized"
+  class="frame"
+>
   <div class="dynamic-content-cont">
     <router-outlet (activate)="onActivate($event)"></router-outlet>
   </div>

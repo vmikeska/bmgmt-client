@@ -6,7 +6,7 @@ import { TaskApiService } from 'src/app/api/task/task-api.service';
 import { TaskResponse } from 'src/app/api/task/task-ints';
 import { PageIdEnum } from 'src/app/pages/page-id';
 import { Day, WorkLoadDataLoaderService } from 'src/app/pages/work-load-page/work-load-data-loader.service';
-import { TaskUtils } from 'src/app/services/task-detail.service';
+import { TaskUtils } from "src/app/services/task-utils";
 import { WorkloadUtilsService } from 'src/app/utils/workload-utils.service';
 import { DialogService } from '../base/dialog.service';
 import { CalendarTaskDialogComponent } from '../calendar-task-dialog/calendar-task-dialog';

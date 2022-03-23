@@ -7,6 +7,11 @@ export class DateUtils {
     return str;
   }
 
+  public static strFromDate(m: moment.Moment) {
+    let str = m.format('DD.MM.YYYY');
+    return str;
+  }
+
   public static getMonthName(no: number) {
     let n = moment().month(no).format('MMMM');
     return n;

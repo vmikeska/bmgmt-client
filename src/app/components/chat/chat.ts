@@ -3,6 +3,7 @@ import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs';
 import { ChatMessageResponse } from 'src/app/api/chat/chat-ints';
 import { faEnvelope, faUser } from '@fortawesome/free-solid-svg-icons';
+import { BaseChatMessagesEntity } from 'src/app/data/entities/entities';
 
 @Component({
   selector: 'app-chat',
@@ -28,7 +29,7 @@ export class ChatComponent implements OnInit {
   public text = '';
 
   @Input()
-  public messages: BehaviorSubject<ChatMessageResponse[]>;
+  public messages: BehaviorSubject<BaseChatMessagesEntity[]>;
 
   @Input()
   public postCallback: (txt: string) => void;
@@ -41,8 +42,8 @@ export class ChatComponent implements OnInit {
     return !!this.messages.value.length;
   }
 
-  public async postClick() {
-    await this.postCallback(this.text);
+  public postClick() {
+    this.postCallback(this.text);
     this.text = '';
   }
 
@@ -54,8 +55,7 @@ export class ChatComponent implements OnInit {
     let msgs = this.messages.value;
     this.vms = msgs.map((m) => {
 
-      let md = moment.utc(m.date);
-      let date = md.format('HH:MM DD.MM.YYYY');
+      let date = m.posted.format('HH:MM DD.MM.YYYY');
 
       let vm: ChatMessageVM = {
         id: m.id,

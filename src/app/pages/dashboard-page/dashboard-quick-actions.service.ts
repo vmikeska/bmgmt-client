@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
-import { ProjectApiService } from 'src/app/api/project/project-api.service';
-import { ProjectResponse } from 'src/app/api/project/project-ints';
-import { TaskApiService } from 'src/app/api/task/task-api.service';
-import { TaskTypeEnum, TaskResponse } from 'src/app/api/task/task-ints';
-import { CrationTypeEnum, CreationTypeItem } from 'src/app/components/comps-ints';
+import { TaskTypeEnum } from 'src/app/api/task/task-ints';
+import { CrationTypeEnum as CreationTypeEnum, CreationTypeItem } from 'src/app/components/comps-ints';
+import { ProjectEntityOperations, TaskEntityOperations } from 'src/app/data/entity-operations';
+import { ProjectDO } from 'src/app/models/project/project-model-ints';
+import { ProjectModelService } from 'src/app/models/project/project-model.service';
+import { TaskDO } from 'src/app/models/task/task-model-ints';
+import { TaskModelService } from 'src/app/models/task/task-model.service';
 import { RedirectService } from 'src/app/services/redirect.service';
 import { DashboardDataService } from './dashboard-page';
 
@@ -13,33 +15,36 @@ export class DashboardQuickActionsService {
 
   constructor(
     private redirSvc: RedirectService,
-    private projApiSvc: ProjectApiService,
-    private taskApiSvc: TaskApiService,
-    private dashDataSvc: DashboardDataService
+    private dashDataSvc: DashboardDataService,
+
+    private projectEntSvc: ProjectEntityOperations,
+    private taskEntSvc: TaskEntityOperations,
+    private taskModelSvc: TaskModelService,
+    private projModelSvc: ProjectModelService
   ) {
   }
 
   public creationName = '';
 
-  public creationType = CrationTypeEnum.SimpleTask;
+  public creationType = CreationTypeEnum.SimpleTask;
 
   public creationTypes: CreationTypeItem[] = [
     {
       label: 'Quick task',
-      value: CrationTypeEnum.SimpleTask
+      value: CreationTypeEnum.SimpleTask
     },
     {
       label: 'Full task',
-      value: CrationTypeEnum.FullTask
+      value: CreationTypeEnum.FullTask
     },
     {
       label: 'Project',
-      value: CrationTypeEnum.Project
+      value: CreationTypeEnum.Project
     },
   ];
 
   public get newButtonText() {
-    if (this.creationType === CrationTypeEnum.Project) {
+    if (this.creationType === CreationTypeEnum.Project) {
       return 'New Project';
     }
 
@@ -47,7 +52,7 @@ export class DashboardQuickActionsService {
   }
 
   public get newInputText() {
-    if (this.creationType === CrationTypeEnum.Project) {
+    if (this.creationType === CreationTypeEnum.Project) {
       return 'Project name';
     }
 
@@ -60,42 +65,42 @@ export class DashboardQuickActionsService {
 
   private async createItemAsync() {
 
-    if (this.creationType === CrationTypeEnum.Project) {
-      let id = await this.createProjectAsync();
-      this.redirSvc.toProject(id);
+    if (this.creationType === CreationTypeEnum.Project) {
+      let projEntity = this.createProject();
+      this.redirSvc.toProject(projEntity.id);
     } else {
-      let taskId = await this.createTaskAsync();
-      if (this.creationType === CrationTypeEnum.FullTask) {
+      let taskId = this.createTask();
+      if (this.creationType === CreationTypeEnum.FullTask) {
         this.redirSvc.toTask(taskId);
       } else {
-        //todo: reload just tasks, or apppend response ?
-        this.dashDataSvc.loadDataAsync();
+        this.dashDataSvc.loadData();
       }
     }
 
     this.creationName = '';
   }
 
-  private async createProjectAsync() {
-    let req: ProjectResponse = {
-      id: null,
+  private createProject() {
+
+    let ent: ProjectDO = {
       name: this.creationName,
       desc: ''
     };
 
-    var projId = await this.projApiSvc.create(req);
-    return projId;
+
+    let id = this.projModelSvc.create(ent);
+    return id;
   }
 
-  private async createTaskAsync() {
-    let req: TaskResponse = {
-      id: null,
+  private createTask() {
+
+    let d: TaskDO = {
       name: this.creationName,
       type: TaskTypeEnum.Unassigned,
       desc: ''
     };
 
-    var taskId = await this.taskApiSvc.create(req);
-    return taskId;
+    let e = this.taskEntSvc.create(d);
+    return e.id;
   }
 }

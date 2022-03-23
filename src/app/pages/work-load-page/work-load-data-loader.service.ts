@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { Moment } from 'moment';
-import { ConfigLoaderService } from 'src/app/api/account/config-loader.service';
+import { ConfigService } from 'src/app/services/config.service';
 import { TaskBusynessApiService } from 'src/app/api/task/task-busyness-api.service';
 import { DayLoadResponse, TaskTypeEnum, WorkloadDayResponse, WorkloadRequest, WorkloadResponse } from 'src/app/api/task/task-ints';
 import { ColorUtils } from 'src/app/utils/color-utils';
@@ -14,13 +14,13 @@ export class WorkLoadDataLoaderService {
   constructor(
     private taskBusynessApiSvc: TaskBusynessApiService,
     private wlUtilsSvc: WorkloadUtilsService,
-    private configSvc: ConfigLoaderService
+    private configSvc: ConfigService
   ) { }
 
   public response: WorkloadResponse;
 
   private get dayWorkingHours() {
-    return this.configSvc.response.dayWorkingHours;
+    return this.configSvc.dayWorkingHours;
   }
 
   public weeks: Week[] = [];
@@ -33,8 +33,6 @@ export class WorkLoadDataLoaderService {
 
   public async loadDataAsync(req: WorkloadRequest) {
     this.workingDaysCount = req.useDays.length;
-
-    await this.configSvc.getValueAsync();
 
     this.response = await this.taskBusynessApiSvc.getWorkloadPageData(req);
 

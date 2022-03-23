@@ -1,10 +1,8 @@
-import { T } from '@angular/cdk/keycodes';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { Router } from '@angular/router';
 import { faBriefcase, faCalendarAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 import * as moment from 'moment';
-import { ConfigLoaderService } from 'src/app/api/account/config-loader.service';
-import { TaskResponse, TaskTypeEnum, WorkloadMonthResponse, WorkloadRequest } from 'src/app/api/task/task-ints';
+import { ConfigService } from 'src/app/services/config.service';
+import { TaskTypeEnum, WorkloadRequest } from 'src/app/api/task/task-ints';
 import { DialogService } from 'src/app/dialogs/base/dialog.service';
 import { CalendarDayDialogComponent } from 'src/app/dialogs/calendar-day-dialog/calendar-day-dialog';
 import { CalendarTaskDialogComponent } from 'src/app/dialogs/calendar-task-dialog/calendar-task-dialog';
@@ -25,8 +23,7 @@ export class WorkLoadComponent implements OnInit {
   constructor(
     private wldlSvc: WorkLoadDataLoaderService,
     private wlUtilsSvc: WorkloadUtilsService,
-    private router: Router,
-    private configSvc: ConfigLoaderService,
+    private configSvc: ConfigService,
     public workloadFilterSvc: WorkloadFilterService,
     private dlgSvc: DialogService
   ) { }
@@ -198,7 +195,7 @@ export class WorkLoadComponent implements OnInit {
   }
 
   public get dayWorkingHours() {
-    return this.configSvc.response.dayWorkingHours;
+    return this.configSvc.dayWorkingHours;
   }
 
   private getMonth(year: number, month: number) {

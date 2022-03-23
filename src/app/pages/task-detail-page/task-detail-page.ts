@@ -1,12 +1,10 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import * as moment from 'moment';
 import { BehaviorSubject } from 'rxjs';
 import { ChatMessageResponse, DeleteChatMessageRequest, NewChatMessageRequest } from 'src/app/api/chat/chat-ints';
 import { TaskChatApiService } from 'src/app/api/chat/task-chat-api.service';
-import { TaskTypeEnum, TaskResponse } from 'src/app/api/task/task-ints';
-import { TaskDetailService, TaskUtils } from 'src/app/services/task-detail.service';
-import { DateUtils } from 'src/app/utils/date-utils';
+import { TaskDetailService } from 'src/app/services/task-detail.service';
+import { TaskUtils } from "src/app/services/task-utils";
 import { WorkloadUtilsService } from 'src/app/utils/workload-utils.service';
 import { UrlParamUtils } from 'src/lib/utils/url-utils';
 import { PageIdEnum } from '../page-id';
@@ -17,6 +15,10 @@ import { TaskBaseEditDialogComponent, TaskEditTypeModeEnum } from 'src/app/dialo
 import { LocationSaveResponse, UpdatePropRequest } from 'src/app/api/user/user-ints';
 import { TaskApiService } from 'src/app/api/task/task-api.service';
 import { FormControl } from '@angular/forms';
+import { TaskChatMessagesEntityOperations, TaskEntityOperations } from 'src/app/data/entity-operations';
+import { BaseChatMessagesEntity, TaskChatMessagesEntity } from 'src/app/data/entities/entities';
+import { UserService } from 'src/app/services/user.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-task-detail-page',
@@ -28,22 +30,23 @@ import { FormControl } from '@angular/forms';
 export class TaskDetailPageComponent implements OnInit {
   constructor(
     private router: Router,
+    private taskEntSvc: TaskEntityOperations,
+    private taskChatEntSvc: TaskChatMessagesEntityOperations,
     private workloadUtilsSvc: WorkloadUtilsService,
     private taskDetailSvc: TaskDetailService,
-    private taskChatApiSvc: TaskChatApiService,
     private dlgSvc: DialogService,
-    private taskApiSvc: TaskApiService
+    private userSvc: UserService
   ) { }
 
   public ngOnInit() {
-    this.initAsync();
+    this.init();
   }
 
   public activeId = PageIdEnum.Dashboard;
 
-  private async initAsync() {
-    await this.loadTaskAsync();
-    await this.reloadChatMessages();
+  private init() {
+    this.loadTask();
+    this.reloadChatMessages();
     this.reloadAddActions();
   }
 
@@ -59,7 +62,7 @@ export class TaskDetailPageComponent implements OnInit {
   public dateAndLoad = '';
   public desc = '';
 
-  public messages = new BehaviorSubject<ChatMessageResponse[]>([]);
+  public messages = new BehaviorSubject<BaseChatMessagesEntity[]>([]);
 
   public addActions: AddActionVM[];
 
@@ -107,9 +110,7 @@ export class TaskDetailPageComponent implements OnInit {
         callback: () => {
           alert('not implemented');
         }
-      },
-
-
+      }
     ];
 
     if (!this.hasMessages) {
@@ -129,27 +130,20 @@ export class TaskDetailPageComponent implements OnInit {
       m.title = 'Edit task base';
       m.mode = TaskEditTypeModeEnum.FullEdit;
       m.onSavedEvent.subscribe(() => {
-        this.loadTaskAsync();
+        this.loadTask();
       });
     });
   }
 
-  public nameSaveCallback = async () => {
-    let sucessful = await this.updateItem('name', this.name);
-
-    return sucessful;
+  public nameSaveCallback = () => {
+    this.updateItem('name', this.name);
   };
 
-  public locationSaveCallback = async () => {
+  public locationSaveCallback = () => {
     let fcv = <LocationSaveResponse>this.addressFormControl.value;
     let value = `${fcv.text}||${fcv.coords[0]}||${fcv.coords[0]}`;
-    let sucessful = await this.updateItem('location', value);
-
-    if (sucessful) {
-      this.location = fcv.text;
-    }
-
-    return sucessful;
+    this.updateItem('location', value);
+    this.location = fcv.text;
   };
 
   public descSaveCallback = async () => {
@@ -157,57 +151,58 @@ export class TaskDetailPageComponent implements OnInit {
     return sucessful;
   };
 
-  public msgPostCallback = async (text: string) => {
-    let req: NewChatMessageRequest = {
-      text,
-      topicId: this.id
-    };
-    await this.taskChatApiSvc.addMessage(req);
+  public msgPostCallback = (text: string) => {
 
-    await this.reloadChatMessages();
+    let e: TaskChatMessagesEntity = {
+      text,
+      topic_id: this.id,
+      author_id: this.userSvc.id,
+      posted: moment.utc(),
+      fullName: this.userSvc.fullName
+    };
+    this.taskChatEntSvc.create(e);
+
+    this.reloadChatMessages();
     this.reloadAddActions();
   }
 
-  public msgDeleteCallback = async (id: string) => {
-    let req: DeleteChatMessageRequest = {
-      id,
-      topicId: this.id
-    };
-    await this.taskChatApiSvc.deleteMessage(req);
-
-    await this.reloadChatMessages();
+  public msgDeleteCallback = (id: string) => {
+    this.taskChatEntSvc.deleteById(id);
+    this.reloadChatMessages();
   }
 
-  private async updateItem(name: string, value: string) {
-    var req: UpdatePropRequest = {
-      id: this.id,
-      item: name,
-      value: value
-    };
-    let sucessful = await this.taskApiSvc.updateProp(req);
-    return sucessful;
+  private updateItem(name: string, value: string) {
+
+    let item = <any>this.taskEntSvc.getById(this.id);
+
+    item[name] = value;
+    this.taskEntSvc.markEntityAsUpdated(item);
   }
 
-  private async loadTaskAsync() {
+  private loadTask() {
     if (!this.id) {
       return;
     }
 
-    await this.taskDetailSvc.reloadAsync(this.id);
+    this.taskDetailSvc.reload(this.id);
 
-    let r = this.taskDetailSvc.res;
+    let te = this.taskDetailSvc.te;
 
-    this.name = r.task.name;
-    this.desc = r.task.desc;
-    this.location = r.task.location.text;
+    this.name = te.name;
+    this.desc = te.desc;
 
-    let dateDesc = TaskUtils.getTaskTypeDesc(r.task);
-    let loadDesc = this.workloadUtilsSvc.daysHoursStr(r.task.manDays, r.task.manHours);
+    if (te.location) {
+      this.location = te.location.text;
+    }
+
+    let dateDesc = TaskUtils.getTaskTypeDesc(te);
+    let loadDesc = this.workloadUtilsSvc.daysHoursStr(te.manDays, te.manHours);
     this.dateAndLoad = [dateDesc, loadDesc].filter(i => !!i).join(', ');
   }
 
   private async reloadChatMessages() {
-    let messages = await this.taskChatApiSvc.getMessages(this.id);
+    //todo: get fresh from server
+    let messages = this.taskChatEntSvc.list.filter(i => i.topic_id === this.id);
     this.messages.next(messages);
 
     this.showChat = !!messages.length;

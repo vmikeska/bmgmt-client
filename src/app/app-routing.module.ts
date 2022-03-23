@@ -54,7 +54,9 @@ const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: PageIdEnum.LogIn
+    // redirectTo: PageIdEnum.LogIn
+    redirectTo: PageIdEnum.Dashboard
+
   }
 ];
 

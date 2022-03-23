@@ -15,7 +15,7 @@ export class AddOrEditLineComponent implements OnInit {
   ngOnInit() { }
 
   @Input()
-  public saveCallback: () => Promise<boolean>;
+  public saveCallback: () => void;
 
   @Input()
   public editable = true;
@@ -38,14 +38,8 @@ export class AddOrEditLineComponent implements OnInit {
     this.executeSaveAsync();
   }
 
-  private async executeSaveAsync() {
-    let successful = await this.saveCallback();
-    if (!successful) {
-      //todo: dialog
-      alert(`save didn't work`);
-      return;
-    }
-
+  private executeSaveAsync() {
+    this.saveCallback();
     this.editing = false;
   }
 }

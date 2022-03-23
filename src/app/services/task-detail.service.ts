@@ -1,63 +1,78 @@
 import { Injectable } from '@angular/core';
-import * as moment from 'moment';
 import { Moment } from 'moment';
 import { TopicParticipantEnum } from '../api/participant/particip-ints';
-import { TaskApiService } from '../api/task/task-api.service';
-import { ParticipantsOverviewReponse, TaskDetailResponse, TaskResponse, TaskTypeEnum } from '../api/task/task-ints';
+import { TaskTypeEnum } from '../api/task/task-ints';
+import { ProjectsTaskEntity, TaskEntity, TaskParticipantEntity } from '../data/entities/entities';
+import {
+  ProjectEntityOperations, ProjectsTaskEntityOperations, TaskEntityOperations,
+  TaskParticipantEntityOperations
+} from '../data/entity-operations';
 import { DialogService } from '../dialogs/base/dialog.service';
-import { ProjectParticipantDialogComponent } from '../dialogs/participants-dialog/project-participants-dialog';
 import { TaskParticipantDialogComponent } from '../dialogs/participants-dialog/task-participants-dialog';
 import { TaskToProjDialogComponent } from '../dialogs/task-to-proj-dialog/task-to-proj-dialog';
-import { DateUtils } from '../utils/date-utils';
 
 @Injectable({ providedIn: 'root' })
 export class TaskDetailService {
 
   constructor(
-    private taskApiSvc: TaskApiService,
+    // private taskApiSvc: TaskApiService,
+    private taskEntSvc: TaskEntityOperations,
+    private taskParticipEntSvc: TaskParticipantEntityOperations,
+    private projectBindingSvc: ProjectsTaskEntityOperations,
+    private projEntSvc: ProjectEntityOperations,
     private dlgSvc: DialogService,
   ) {
 
   }
 
   public vm: TaskVM;
-  public res: TaskDetailResponse;
+  public te: TaskEntity;
+  public pes: TaskParticipantEntity[];
+  public pb: ProjectsTaskEntity;
 
-  public async reloadAsync(id: string) {
-    var res = await this.taskApiSvc.getDetailById(id);
-    if (!res) {
+  public reload(id: string) {
+    this.te = this.taskEntSvc.getById(id);
+    if (!this.te) {
       return;
     }
 
-    this.res = res;
+    this.pes = this.taskParticipEntSvc.list.filter(p => p.topic_id === id);
+    this.pb = this.projectBindingSvc.list.find(p => p.task_id === id);
 
-    var tr = res.task;
+    let adminsCount = this.participantsByType(TopicParticipantEnum.Admin);
+    let observersCount = this.participantsByType(TopicParticipantEnum.Observer);
+    let workersCount = this.participantsByType(TopicParticipantEnum.Worker);
 
-    let adminsCount = this.participantsByType(res.participants, TopicParticipantEnum.Admin);
-    let observersCount = this.participantsByType(res.participants, TopicParticipantEnum.Observer);
-    let workersCount = this.participantsByType(res.participants, TopicParticipantEnum.Worker);
+    let projId = '';
+    let projName = '';
+    let hasProject = !!this.pb;
+    if (hasProject) {
+      let proj = this.projEntSvc.getById(this.pb.proj_id);
+      projName = proj.name;
+      projId = proj.id;
+    }
 
     this.vm = {
-      id: tr.id,
-      name: tr.name,
-      type: tr.type,
-      manDays: tr.manDays,
-      manHours: tr.manHours,
-      month: tr.month,
-      week: tr.week,
-      year: tr.year,
-      dateFrom: moment.utc(tr.dateFrom),
-      dateTo: moment.utc(tr.dateTo),
+      id: this.te.id,
+      name: this.te.name,
+      type: this.te.type,
+      manDays: this.te.manDays,
+      manHours: this.te.manHours,
+      month: this.te.month,
+      week: this.te.week,
+      year: this.te.year,
+      dateFrom: this.te.dateFrom,
+      dateTo: this.te.dateTo,
 
-      hasProject: res.projectBinding.hasProject,
-      projId: tr.projId,
-      projName: res.projectBinding.projName,
+      hasProject,
+      projId,
+      projName,
 
       adminsCount,
       observersCount,
       workersCount,
 
-      projectEditTxt: this.evaluateProjectEditTxt(this.res.projectBinding.hasProject, this.res.projectBinding.projName),
+      projectEditTxt: this.evaluateProjectEditTxt(hasProject, projName),
       participantsEditTxt: this.evaluateParticipantsEditTxt(workersCount, observersCount, adminsCount)
     };
   }
@@ -69,7 +84,7 @@ export class TaskDetailService {
     });
 
     var sub = dlg.instance.selected.subscribe(async () => {
-      await this.reloadAsync(this.vm.id);
+      this.reload(this.vm.id);
       sub.unsubscribe();
       this.dlgSvc.destroy();
     });
@@ -81,18 +96,14 @@ export class TaskDetailService {
       m.topicId = this.vm.id
     });
     var sub = this.dlgSvc.closeClicked.subscribe(async () => {
-      await this.reloadAsync(this.vm.id);
+      this.reload(this.vm.id);
       sub.unsubscribe();
     });
   }
 
-  private participantsByType(res: ParticipantsOverviewReponse[], type: TopicParticipantEnum) {
-    let group = res.find((i) => { return i.type === type });
-    if (!group) {
-      return 0;
-    }
-
-    return group.count;
+  private participantsByType(type: TopicParticipantEnum) {
+    let group = this.pes.filter(p => p.role === type);
+    return group.length;
   }
 
   private evaluateProjectEditTxt(hasProject: boolean, projName: string) {
@@ -125,33 +136,6 @@ export class TaskDetailService {
     return 'no participants yet';
   }
 
-}
-
-export class TaskUtils {
-  public static getTaskTypeDesc(t: TaskResponse) {
-    if (t.type === TaskTypeEnum.Month) {
-      let str = `${DateUtils.getMonthName(t.month)}, ${t.year}`;
-      return str;
-    }
-
-    if (t.type === TaskTypeEnum.Week) {
-      let date = moment().year(t.year).week(t.week).day('monday');
-      let str = `${t.week}. Week, ${DateUtils.getMonthName(date.month())}, ${t.year}`;
-      return str;
-    }
-
-    if (t.type === TaskTypeEnum.ExactFlexible) {
-      let str = `Working days between ${DateUtils.strFromStrDate(t.dateFrom)} and ${DateUtils.strFromStrDate(t.dateTo)}`;
-      return str;
-    }
-
-    if (t.type === TaskTypeEnum.ExactStatic) {
-      let str = `All days between ${DateUtils.strFromStrDate(t.dateFrom)} and ${DateUtils.strFromStrDate(t.dateTo)}`;
-      return str;
-    }
-
-    return '';
-  }
 }
 
 export interface TaskVM {

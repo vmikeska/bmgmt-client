@@ -4,6 +4,7 @@ import { CreateAccountComponent } from './pages/create-account-page/create-accou
 import { PageIdEnum } from './pages/page-id';
 import { ConfigDataService } from './services/config-data.service';
 import { CurrentInstance } from './services/current-instance';
+import { MainInitService } from './services/main-init.service';
 import { UserData } from './user-data';
 
 @Component({
@@ -15,10 +16,13 @@ export class AppComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private configSvc: ConfigDataService
+    private configSvc: ConfigDataService,
+    public mainInitSvc: MainInitService
   ) {
 
   }
+
+  public initialized = false;
 
   public onActivate(instance: any) {
     CurrentInstance.instance = instance;
@@ -26,10 +30,10 @@ export class AppComponent implements OnInit {
     let instName = CurrentInstance.instance.constructor.name;
     let isRegPage = instName === CreateAccountComponent.name;
 
-    if (!UserData.isLoggedIn && !isRegPage) {
-      let url = PageIdEnum.LogIn;
-      this.router.navigate([url]);
-    }
+    // if (!UserData.isLoggedIn && !isRegPage) {
+    //   let url = PageIdEnum.LogIn;
+    //   this.router.navigate([url]);
+    // }
   }
 
   public ngOnInit() {
@@ -38,10 +42,12 @@ export class AppComponent implements OnInit {
 
   private async initAsync() {
     this.configSvc.readSessionCookie();
+    await this.mainInitSvc.initAsync();
 
-    if (UserData.isLoggedIn) {
-      await this.configSvc.load();
-    }
+    this.initialized = true;
+    // if (UserData.isLoggedIn) {
+    //   await this.configSvc.load();
+    // }
   }
 }
 
