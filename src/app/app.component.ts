@@ -1,5 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserEntity, UserSkillsTagEntity } from './data/entities/entities';
+import { UserEntityOperations, UserSkillsBindingEntityOperations, UserSkillsTagEntityOperations } from './data/entity-operations';
 import { CreateAccountComponent } from './pages/create-account-page/create-account-page';
 import { PageIdEnum } from './pages/page-id';
 import { ConfigDataService } from './services/config-data.service';
@@ -17,7 +19,12 @@ export class AppComponent implements OnInit {
   constructor(
     private router: Router,
     private configSvc: ConfigDataService,
-    public mainInitSvc: MainInitService
+    public mainInitSvc: MainInitService,
+
+    private userEntSvc: UserEntityOperations,
+    private userTagsEntSvc: UserSkillsTagEntityOperations,
+    private usbeo: UserSkillsBindingEntityOperations
+
   ) {
 
   }
@@ -38,6 +45,7 @@ export class AppComponent implements OnInit {
 
   public ngOnInit() {
     this.initAsync();
+
   }
 
   private async initAsync() {
@@ -48,7 +56,70 @@ export class AppComponent implements OnInit {
     // if (UserData.isLoggedIn) {
     //   await this.configSvc.load();
     // }
+
+    // this.fillTempUsers();
+    //  this.fillUserTags();
+    console.log(this.usbeo.list);
   }
+
+  private fillUserTags() {
+    let us: UserSkillsTagEntity[] = [
+      {
+        name: 'Zednik'
+      },
+      {
+        name: 'Obrabec'
+      },
+      {
+        name: 'Dlazdic'
+      },
+      {
+        name: 'Tesar'
+      },
+      {
+        name: 'Helfer'
+      },
+      {
+        name: 'Vodak'
+      },
+    ];
+    us.forEach(u => this.userTagsEntSvc.create(u));
+  }
+
+  private fillTempUsers() {
+    let us: UserEntity[] = [
+      {
+        firstName: 'First',
+        lastName: 'Lastovic',
+        mail: 'm1@asfdsf.com',
+      },
+      {
+        firstName: 'Tomas',
+        lastName: 'Jadran',
+        mail: 'm2@asfdsf.com',
+      },
+      {
+        firstName: 'Pavel',
+        lastName: 'Kalivoda',
+        mail: 'm3@asfdsf.com',
+      },
+      {
+        firstName: 'Bruce',
+        lastName: 'Spencer',
+        mail: 'm4@asfdsf.com',
+      },
+      {
+        firstName: 'Jeronym',
+        lastName: 'Jouda',
+        mail: 'm5@asfdsf.com',
+      }
+    ];
+    us.forEach(u => this.userEntSvc.create(u));
+  }
+
 }
+
+
+
 
 

@@ -5,8 +5,8 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { cloneDeep, pull } from 'lodash-es';
 import { TopicParticipantEnum } from 'src/app/api/participant/particip-ints';
-import { UserApiService } from 'src/app/api/user/user-api.service';
 import { TopicParticipantEntity } from 'src/app/data/entities/entities';
+import { UserEntityOperations } from 'src/app/data/entity-operations';
 import { UsersService } from 'src/app/services/users.service';
 
 @Component({
@@ -18,8 +18,8 @@ import { UsersService } from 'src/app/services/users.service';
 
 export class RoleTaggerComponent implements OnInit {
   constructor(
-    private userApiSvc: UserApiService,
-    private usersSvc: UsersService
+    private usersSvc: UsersService,
+    private userEntSvc: UserEntityOperations
   ) { }
 
   @Input()
@@ -46,9 +46,7 @@ export class RoleTaggerComponent implements OnInit {
   public subscribeSearch() {
     this.filterInputFormControl.valueChanges.subscribe(async (s) => {
 
-      let us = await this.userApiSvc.find(s);
-
-      let results = us.map((u) => {
+      let results = this.userEntSvc.list.map((u) => {
         let name = `${u.firstName} ${u.lastName}`;
         let item: TagItem = { name, userId: u.id };
         return item;
@@ -65,7 +63,7 @@ export class RoleTaggerComponent implements OnInit {
 
     let tags = categoryUsers.map((i) => {
       let ti: TagItem = {
-        name: `${this.usersSvc.getNameByUserId(this.topicId)} ${this.usersSvc.getSurnameByUserId(this.topicId)}`,
+        name: this.usersSvc.getFullNameByUserId(this.topicId),
         bindingId: i.id,
         userId: i.user_id,
       };
@@ -85,18 +83,18 @@ export class RoleTaggerComponent implements OnInit {
   @Input()
   public loadCallback: (topicId: string) => TopicParticipantEntity[];
 
-  public async removeClick(item: TagItem) {
-    let deleted = await this.removeCallback(item)
+  public removeClick(item: TagItem) {
+    let deleted = this.removeCallback(item)
 
     if (deleted) {
       pull(this.selectedItems, item);
     }
   }
 
-  public async selected(event: MatAutocompleteSelectedEvent) {
+  public selected(event: MatAutocompleteSelectedEvent) {
     let userId = event.option.value.userId;
 
-    let bindingId = await this.addCallback(userId, this.role);
+    let bindingId = this.addCallback(userId, this.role);
 
     let tag: TagItem = cloneDeep(event.option.value);
     tag.bindingId = bindingId;

@@ -1,22 +1,26 @@
 import { Component, Input, OnInit, Output } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ProjectApiService } from 'src/app/api/project/project-api.service';
 import { ProjectTaskBindingRequest } from 'src/app/api/project/project-ints';
+import { ProjectsTaskEntity } from 'src/app/data/entities/entities';
+import { ProjectEntityOperations, ProjectsTaskEntityOperations } from 'src/app/data/entity-operations';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-task-to-proj-dialog',
   templateUrl: 'task-to-proj-dialog.html',
   styleUrls: ['task-to-proj-dialog.scss']
-
 })
 
 export class TaskToProjDialogComponent implements OnInit {
   constructor(
-    private projApiSvc: ProjectApiService
+    // private projApiSvc: ProjectApiService
+    private projTaskEntSvc: ProjectsTaskEntityOperations,
+    private projEntSvc: ProjectEntityOperations,
+    private userSvc: UserService
   ) { }
 
   public ngOnInit() {
-    this.loadListAsync();
+    this.loadList();
   }
 
   @Input()
@@ -29,9 +33,10 @@ export class TaskToProjDialogComponent implements OnInit {
 
   public items: ProjItemVM[] = [];
 
-  public async loadListAsync() {
-    let res = await this.projApiSvc.getList();
-    this.items = res.map((i) => {
+  public loadList() {
+    //todo: add other types of projects, like admin and so on
+    let es = this.projEntSvc.getByFilter(i => i.owner_id === this.userSvc.id);
+    this.items = es.map((i) => {
       let item: ProjItemVM = {
         id: i.id,
         name: i.name
@@ -42,25 +47,25 @@ export class TaskToProjDialogComponent implements OnInit {
   }
 
   public projectClick(id: string) {
-    this.assignTaskToProjAsync(id);
+    this.assignTaskToProj(id);
   }
 
   public removeClick() {
-    this.unassignTaskToProjAsync();
+    this.unassignTaskToProj();
   }
 
-  public async unassignTaskToProjAsync() {
-    let res = await this.projApiSvc.unassignTask(this.taskId);
+  public unassignTaskToProj() {
+    this.projTaskEntSvc.deleteByFind(i => i.task_id === this.taskId);
     this.selected.next();
   }
 
-  public async assignTaskToProjAsync(id: string) {
-    let req: ProjectTaskBindingRequest = {
-      taskId: this.taskId,
-      projId: id
+  public assignTaskToProj(id: string) {
+    let e: ProjectsTaskEntity = {
+      task_id: this.taskId,
+      proj_id: id
     };
 
-    let res = await this.projApiSvc.assignTask(req);
+    this.projTaskEntSvc.create(e);
 
     this.selected.next();
   }

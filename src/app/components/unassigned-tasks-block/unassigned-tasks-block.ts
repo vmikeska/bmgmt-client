@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
-import { TaskResponse } from 'src/app/api/task/task-ints';
 import { PageIdEnum } from 'src/app/pages/page-id';
+import { TaskItemVM } from '../comps-ints';
 
 @Component({
   selector: 'app-unassigned-tasks-block',
@@ -16,12 +16,12 @@ export class UnassignedTasksBlockComponent implements OnInit {
   ) { }
 
   @Input()
-  public tasks: TaskResponse[];
+  public tasks: TaskItemVM[];
 
   ngOnInit() { }
 
-  public taskLinkClick(item: TaskResponse) {
-    this.redirectToTaskDetail(item.id);
+  public taskLinkClick(item: TaskItemVM) {
+    this.redirectToTaskDetail(item. id);
   }
 
   private redirectToTaskDetail(id: string) {

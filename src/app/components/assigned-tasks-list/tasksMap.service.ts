@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { TaskResponse, TaskTypeEnum } from 'src/app/api/task/task-ints';
+import { TaskTypeEnum } from 'src/app/api/task/task-ints';
+import { TaskEntity } from 'src/app/data/entities/entities';
 import { DateUtils } from 'src/app/utils/date-utils';
 import { TaskItemVM } from '../comps-ints';
 
@@ -7,9 +8,9 @@ import { TaskItemVM } from '../comps-ints';
 export class TaskMapService {
   constructor() { }
 
-  public mapTaskVM(r: TaskResponse) {
+  public mapTaskVM(r: TaskEntity) {
     let t: TaskItemVM = {
-      res: r,
+      id: r.id,
       name: r.name,
       load: `${r.manDays}d ${r.manHours}h`,
       date: ''
@@ -24,7 +25,7 @@ export class TaskMapService {
     }
 
     if ([TaskTypeEnum.ExactFlexible, TaskTypeEnum.ExactStatic].includes(r.type)) {
-      t.date = `${DateUtils.strFromStrDate(r.dateFrom)} - ${DateUtils.strFromStrDate(r.dateFrom)}`
+      t.date = `${DateUtils.strFromDate(r.dateFrom)} - ${DateUtils.strFromDate(r.dateFrom)}`
     }
 
     return t;

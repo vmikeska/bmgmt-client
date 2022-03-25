@@ -1,19 +1,21 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ChatMessageResponse, DeleteChatMessageRequest, NewChatMessageRequest } from 'src/app/api/chat/chat-ints';
-import { ProjectChatApiService } from 'src/app/api/chat/project-chat-api.service';
-import { ProjectApiService } from 'src/app/api/project/project-api.service';
 import { UrlParamUtils } from 'src/lib/utils/url-utils';
 import { faComments, faEdit, faFile, faImage, faMapMarkerAlt, faPen, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import { PageIdEnum } from '../page-id';
 import { Router } from '@angular/router'
 import { TaskMapService } from 'src/app/components/assigned-tasks-list/tasksMap.service';
-import { TaskResponse } from 'src/app/api/task/task-ints';
-import { DatedBlockTasksVM } from 'src/app/components/comps-ints';
+import { TaskTypeEnum } from 'src/app/api/task/task-ints';
+import { DatedBlockTasksVM, TaskItemVM } from 'src/app/components/comps-ints';
 import { AddActionVM } from 'src/app/components/add-actions/add-actions';
 import { ProjectDetailService } from 'src/app/services/project-detail.service';
-import { LocationSaveResponse, UpdatePropRequest } from 'src/app/api/user/user-ints';
+import { LocationSaveResponse } from 'src/app/api/user/user-ints';
 import { FormControl } from '@angular/forms';
+import { ProjectChatMessagesEntityOperations, ProjectEntityOperations, ProjectsTaskEntityOperations,
+  TaskEntityOperations } from 'src/app/data/entity-operations';
+import { ProjectChatMessagesEntity, TaskChatMessagesEntity } from 'src/app/data/entities/entities';
+import * as moment from 'moment';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-project-detail-page',
@@ -24,11 +26,14 @@ import { FormControl } from '@angular/forms';
 
 export class ProjectDetailPageComponent implements OnInit {
   constructor(
-    private projApiSvc: ProjectApiService,
-    private projChatApiSvc: ProjectChatApiService,
+    private projChatEntSvc: ProjectChatMessagesEntityOperations,
+    private taskEnvSvc: TaskEntityOperations,
+    private projEntSvc: ProjectEntityOperations,
+    private projTaskBindingEntSvc: ProjectsTaskEntityOperations,
     private router: Router,
     private taskMapSvc: TaskMapService,
-    private projDetailSvc: ProjectDetailService
+    private projDetailSvc: ProjectDetailService,
+    private userSvc: UserService
   ) { }
 
   faEdit = faEdit;
@@ -36,7 +41,7 @@ export class ProjectDetailPageComponent implements OnInit {
   faMapMarkerAlt = faMapMarkerAlt;
 
   public ngOnInit() {
-    this.initAsync();
+    this.init();
   }
 
   public addressFormControl = new FormControl();
@@ -46,11 +51,10 @@ export class ProjectDetailPageComponent implements OnInit {
   public desc = '';
   public name = '';
 
-  private async initAsync() {
-    await this.loadProjectAsync();
-    await this.reloadChatMessages();
-    await this.loadAssignedTasks();
-    await this.loadUnassignedTasks();
+  private init() {
+    this.loadProject();
+    this.reloadChatMessages();
+    this.loadTasks();
     this.reloadAddActions();
   }
 
@@ -58,9 +62,9 @@ export class ProjectDetailPageComponent implements OnInit {
     return this.projDetailSvc.vm;
   }
 
-  public messages = new BehaviorSubject<ChatMessageResponse[]>([]);
+  public messages = new BehaviorSubject<TaskChatMessagesEntity[]>([]);
   public assignedTasks: DatedBlockTasksVM;
-  public unassignedTasks: TaskResponse[] = [];
+  public unassignedTasks: TaskItemVM[] = [];
 
   public addActions: AddActionVM[];
 
@@ -84,70 +88,76 @@ export class ProjectDetailPageComponent implements OnInit {
 
   public showChat = false;
 
-  public nameSaveCallback = async () => {
-    let sucessful = await this.updateItem('name', this.name);
-
-    if (sucessful) {
-      this.title = this.name;
-    }
-
-    return sucessful;
+  public nameSaveCallback = () => {
+    let task = this.projEntSvc.getById(this.id);
+    task.name = this.name;
+    this.projEntSvc.updateById(task);
+    this.title = task.name;
   };
 
-  public locationSaveCallback = async () => {
+  public locationSaveCallback = () => {
     let fcv = <LocationSaveResponse>this.addressFormControl.value;
-    let value = `${fcv.text}||${fcv.coords[0]}||${fcv.coords[0]}`;
-    let sucessful = await this.updateItem('location', value);
-
-    if (sucessful) {
-      this.location = fcv.text;
-    }
-
-    return sucessful;
-  };
-
-  public descSaveCallback = async () => {
-    let sucessful = await this.updateItem('desc', this.desc);
-    return sucessful;
-  };
-
-  private async updateItem(name: string, value: string) {
-    var req: UpdatePropRequest = {
-      id: this.id,
-      item: name,
-      value: value
+    let task = this.projEntSvc.getById(this.id);
+    task.location = {
+      text: fcv.text,
+      coords: fcv.coords
     };
-    let sucessful = await this.projApiSvc.updateProp(req);
-    return sucessful;
-  }
+    this.projEntSvc.updateById(task);
+    this.location = task.location.text;
+  };
 
-  private async loadProjectAsync() {
+  public descSaveCallback = () => {
+    let task = this.projEntSvc.getById(this.id);
+    task.desc = this.desc;
+    this.projEntSvc.updateById(task);
+    this.desc = task.desc;
+  };
+
+  private loadProject() {
     if (!this.id) {
       return;
     }
 
-    await this.projDetailSvc.reloadAsync(this.id);
+    this.projDetailSvc.reload(this.id);
 
-    let r = this.projDetailSvc.res;
+    let vm = this.projDetailSvc.vm;
 
-    this.title = r.project.name;
-    this.desc = r.project.desc;
-    this.name = r.project.name;
-    this.location = r.project.location.text;
+
+    this.title = vm.e.name;
+    this.desc = vm.e.desc;
+    this.name = vm.e.name;
+    this.location = vm.e.location ? vm.e.location.text : '';
   }
 
-  private async loadAssignedTasks() {
-    let tasks = await this.projApiSvc.getProjectAssignedTasks(this.id);
+  private loadTasks() {
+
+    let bindings = this.projTaskBindingEntSvc.getByFilter(i => i.proj_id === this.id);
+
     this.assignedTasks = {
-      dates: tasks.dates.map(i => this.taskMapSvc.mapTaskVM(i)),
-      months: tasks.months.map(i => this.taskMapSvc.mapTaskVM(i)),
-      weeks: tasks.weeks.map(i => this.taskMapSvc.mapTaskVM(i))
-    }
-  }
+      dates: [],
+      months: [],
+      weeks: []
+    };
+    this.unassignedTasks = [];
 
-  private async loadUnassignedTasks() {
-    let tasks = await this.projApiSvc.getProjectUnassignedTasks(this.id);
-    this.unassignedTasks = tasks;
+    for (let binding of bindings) {
+      let task = this.taskEnvSvc.getByFind(i => i.id === binding.task_id);
+
+      let vm = this.taskMapSvc.mapTaskVM(task);
+
+      if (task.type === TaskTypeEnum.Unassigned) {
+        this.unassignedTasks.push(vm);
+      }
+      if (task.type === TaskTypeEnum.Month) {
+        this.assignedTasks.months.push(vm);
+      }
+      if (task.type === TaskTypeEnum.Week) {
+        this.assignedTasks.weeks.push(vm);
+      }
+      if ([TaskTypeEnum.ExactFlexible, TaskTypeEnum.ExactStatic].includes(task.type)) {
+        this.assignedTasks.dates.push(vm);
+      }
+    }
   }
 
   public taskLinkClick(id: string) {
@@ -159,24 +169,24 @@ export class ProjectDetailPageComponent implements OnInit {
     this.router.navigate([url]);
   }
 
-  public msgPostCallback = async (text: string) => {
-    let req: NewChatMessageRequest = {
-      text,
-      topicId: this.id
-    };
-    await this.projChatApiSvc.addMessage(req);
+  public msgPostCallback = (text: string) => {
 
-    await this.reloadChatMessages();
+    let e: ProjectChatMessagesEntity = {
+      text,
+      topic_id: this.id,
+      author_id: this.userSvc.id,
+      posted: moment.utc(),
+      fullName: this.userSvc.fullName
+    };
+    this.projChatEntSvc.create(e);
+
+    this.reloadChatMessages();
+    this.reloadAddActions();
   }
 
-  public msgDeleteCallback = async (id: string) => {
-    let req: DeleteChatMessageRequest = {
-      id,
-      topicId: this.id
-    };
-    await this.projChatApiSvc.deleteMessage(req);
-
-    await this.reloadChatMessages();
+  public msgDeleteCallback = (id: string) => {
+    this.projChatEntSvc.deleteById(id);
+    this.reloadChatMessages();
   }
 
   private reloadAddActions() {
@@ -216,12 +226,15 @@ export class ProjectDetailPageComponent implements OnInit {
     }
   }
 
-  private async reloadChatMessages() {
-    let messages = await this.projChatApiSvc.getMessages(this.id);
+  private reloadChatMessages() {
+    //todo: get fresh from server
+    let messages = this.projChatEntSvc.list.filter(i => i.topic_id === this.id);
     this.messages.next(messages);
 
     this.showChat = !!messages.length;
   }
+
+
 }
 
 

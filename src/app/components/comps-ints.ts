@@ -7,7 +7,7 @@ export interface CreationTypeItem {
 
 
 export interface TaskItemVM {
-  res: TaskResponse;
+  id: string;
   name: string;
   date: string;
   load: string;

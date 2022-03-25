@@ -1,47 +1,49 @@
 import { Injectable } from '@angular/core';
-import * as moment from 'moment';
-import { Moment } from 'moment';
 import { TopicParticipantEnum } from '../api/participant/particip-ints';
-import { ProjectApiService } from '../api/project/project-api.service';
-import { ProjectDetailResponse } from '../api/project/project-ints';
-import { TaskApiService } from '../api/task/task-api.service';
-import { ParticipantsOverviewReponse, TaskDetailResponse, TaskTypeEnum } from '../api/task/task-ints';
+import { ProjectEntity } from '../data/entities/entities';
+import { ProjectEntityOperations, ProjectParticipantEntityOperations } from '../data/entity-operations';
 import { DialogService } from '../dialogs/base/dialog.service';
 import { ProjectParticipantDialogComponent } from '../dialogs/participants-dialog/project-participants-dialog';
-import { TaskParticipantDialogComponent } from '../dialogs/participants-dialog/task-participants-dialog';
-import { TaskToProjDialogComponent } from '../dialogs/task-to-proj-dialog/task-to-proj-dialog';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectDetailService {
 
   constructor(
-    private projectApiSvc: ProjectApiService,
+    private projEntSvc: ProjectEntityOperations,
+    private projParEntSvc: ProjectParticipantEntityOperations,
     private dlgSvc: DialogService,
   ) {
 
   }
 
   public vm: ProjDetailVM;
-  public res: ProjectDetailResponse;
 
-  public async reloadAsync(id: string) {
-    var res = await this.projectApiSvc.getDetailById(id);
-    if (!res) {
+  public reload(id: string) {
+    var e = this.projEntSvc.getById(id);
+    if (!e) {
       return;
     }
 
-    this.res = res;
+    let participBindings = this.projParEntSvc.getByFilter(i => i.topic_id === id);
 
-    var pr = res.project;
+    let adminsCount = 0;
+    let observersCount = 0;
+    let workersCount = 0;
 
-    let adminsCount = this.participantsByType(res.participants, TopicParticipantEnum.Admin);
-    let observersCount = this.participantsByType(res.participants, TopicParticipantEnum.Observer);
-    let workersCount = this.participantsByType(res.participants, TopicParticipantEnum.Worker);
+    for (let b of participBindings) {
+      if (b.role === TopicParticipantEnum.Admin) {
+        adminsCount++;
+      }
+      if (b.role === TopicParticipantEnum.Observer) {
+        observersCount++;
+      }
+      if (b.role === TopicParticipantEnum.Worker) {
+        workersCount++;
+      }
+    }
 
     this.vm = {
-      id: pr.id,
-      name: pr.name,
-      desc: pr.desc,
+      e,
 
       adminsCount,
       observersCount,
@@ -53,21 +55,12 @@ export class ProjectDetailService {
 
   public showEditParticipantsDialog() {
     let dlg = this.dlgSvc.create(ProjectParticipantDialogComponent, (m) => {
-      m.topicId = this.vm.id
+      m.topicId = this.vm.e.id;
     });
-    var sub = this.dlgSvc.closeClicked.subscribe(async () => {
-      await this.reloadAsync(this.vm.id);
+    var sub = this.dlgSvc.closeClicked.subscribe(() => {
+      this.reload(this.vm.e.id);
       sub.unsubscribe();
     });
-  }
-
-  private participantsByType(res: ParticipantsOverviewReponse[], type: TopicParticipantEnum) {
-    let group = res.find((i) => { return i.type === type });
-    if (!group) {
-      return 0;
-    }
-
-    return group.count;
   }
 
   private evaluateParticipantsEditTxt(workersCount: number, observersCount: number, adminsCount: number) {
@@ -95,9 +88,7 @@ export class ProjectDetailService {
 }
 
 export interface ProjDetailVM {
-  id: string;
-  name: string;
-  desc: string;
+  e: ProjectEntity;
 
   adminsCount?: number;
   observersCount?: number;

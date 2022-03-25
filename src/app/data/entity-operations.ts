@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ProjectEntity, ProjectParticipantEntity, ProjectsTaskEntity, TaskChatMessagesEntity, TaskEntity, TaskParticipantEntity, UserEntity, UserSettingsEntity } from "./entities/entities";
+import { ProjectChatMessagesEntity, ProjectEntity, ProjectParticipantEntity, ProjectsTaskEntity, TaskChatMessagesEntity, TaskEntity, TaskParticipantEntity, UserEntity, UserSettingsEntity, UserSkillsBindingEntity, UserSkillsTagEntity } from "./entities/entities";
 import { EntityOperationsBase } from "./entity-operation-base";
 
 @Injectable({ providedIn: 'root' })
@@ -74,6 +74,32 @@ export class TaskChatMessagesEntityOperations extends EntityOperationsBase<TaskC
 
 }
 
+@Injectable({ providedIn: 'root' })
+export class ProjectChatMessagesEntityOperations extends EntityOperationsBase<ProjectChatMessagesEntity> {
+
+  public get fullName() {
+    return 'ProjectChatMessagesEntity';
+  }
+
+}
+
+@Injectable({ providedIn: 'root' })
+export class UserSkillsBindingEntityOperations extends EntityOperationsBase<UserSkillsBindingEntity> {
+
+  public get fullName() {
+    return 'UserSkillsBindingEntity';
+  }
+
+}
+
+@Injectable({ providedIn: 'root' })
+export class UserSkillsTagEntityOperations extends EntityOperationsBase<UserSkillsTagEntity> {
+
+  public get fullName() {
+    return 'UserSkillsTagEntity';
+  }
+
+}
 
 
 

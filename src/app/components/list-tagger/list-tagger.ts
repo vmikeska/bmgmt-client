@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { pull } from 'lodash';
-import { TagBindingResponse, TagResponse } from 'src/app/api/tags/tags-ints';
+import { TagBaseEntity } from 'src/app/data/entities/entities';
 
 
 @Component({
@@ -28,17 +28,17 @@ export class ListTaggerComponent implements OnInit {
 
   public search = '';
 
-  public options: TagResponse[] = [];
+  public options: TagBaseEntity[] = [];
 
-  public tags: TagBindingResponse[] = [];
+  public tags: TagBaseEntity[] = [];
 
   @Input()
   public entityId: string;
 
   public isOpened = true;
 
-  private async initItemsAsync() {
-    this.tags = await this.loadCallback(this.entityId);
+  private initItemsAsync() {
+    this.tags = this.loadCallback(this.entityId);
   }
 
   @Input()
@@ -48,46 +48,42 @@ export class ListTaggerComponent implements OnInit {
   public editable = true;
 
   @Input()
-  public removeCallback: (item: TagBindingResponse) => Promise<boolean>;
+  public removeCallback: (item: TagBaseEntity) => void;
 
   @Input()
-  public addCallback: (tagId: string, entityId: string) => Promise<string>;
+  public addCallback: (tagId: string, entityId: string) => string;
 
   @Input()
-  public loadCallback: (entityId: string) => Promise<TagBindingResponse[]>;
+  public loadCallback: (entityId: string) => TagBaseEntity[];
 
   @Input()
-  public searchCallback: (str: string, entityId: string) => Promise<TagResponse[]>;
+  public searchCallback: (str: string, entityId: string) => TagBaseEntity[];
 
-  public async removeClick(item: TagBindingResponse) {
-    let deleted = await this.removeCallback(item);
-
-    if (deleted) {
-      pull(this.tags, item);
-    }
+  public removeClick(item: TagBaseEntity) {
+    this.removeCallback(item);
+    pull(this.tags, item);
   }
 
-  public async optionClick(option: TagResponse) {
-    let bindingId = await this.addCallback(option.id, this.entityId);
+  public optionClick(option: TagBaseEntity) {
+    let bindingId = this.addCallback(option.id, this.entityId);
 
-    let newTag: TagBindingResponse = {
-      bindingId,
-      name: option.name,
-      tagId: option.id
-    };
-
-    this.tags.push(newTag);
+    this.tags.push(option);
 
     this.isOpened = false;
     this.search = '';
   }
 
   public async searchChange() {
-    let res = await this.searchCallback(this.search, this.entityId);
-    this.options = res;
+    let es = this.searchCallback(this.search, this.entityId);
+    this.options = es;
     if (this.options.length) {
       this.isOpened = true;
     }
   }
 
+}
+
+export interface TagResponse {
+  id: string;
+  name: string;
 }

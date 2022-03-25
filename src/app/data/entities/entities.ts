@@ -39,22 +39,23 @@ export interface TaskEntity extends SearchableEntity {
 // }
 
 export interface UserEntity extends EntityBase {
-  firstName: string;
+  firstName?: string;
 
-  lastName: string;
+  lastName?: string;
 
-  desc: string;
+  desc?: string;
 
-  phone: string;
+  phone?: string;
 
-  mail: string;
+  mail?: string;
 
-  website: string;
+  website?: string;
 
-  location: LocationSE
+  location?: LocationSE
 
-  fields: TagSE[];
+  fields?: TagSE[];
 }
+
 
 export interface UserSettingsEntity extends EntityBase {
   user_id: string;

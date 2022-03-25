@@ -2,10 +2,13 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { faEnvelope, faGlobeAmericas, faMapMarkerAlt, faPen, faPhone, faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
+import { isLength } from 'lodash-es';
 import { NewTagBindingResponse, SearchTagResponse, TagBindingResponse } from 'src/app/api/tags/tags-ints';
-import { UserSkillsApiService } from 'src/app/api/tags/user-skills-api.service';
-import { UserApiService } from 'src/app/api/user/user-api.service';
-import { LocationSaveResponse, UpdatePropRequest, UserResponse } from 'src/app/api/user/user-ints';
+import { LocationSaveResponse } from 'src/app/api/user/user-ints';
+import { TagBaseEntity, TagBindingBaseEntity, UserSkillsBindingEntity } from 'src/app/data/entities/entities';
+import { UserEntityOperations, UserSkillsBindingEntityOperations, UserSkillsTagEntityOperations } from 'src/app/data/entity-operations';
+import { UserService } from 'src/app/services/user.service';
+import { UsersService } from 'src/app/services/users.service';
 import { UserData } from 'src/app/user-data';
 import { CookieService } from 'src/app/utils/cookie.service';
 import { UrlParamUtils } from 'src/lib/utils/url-utils';
@@ -20,10 +23,13 @@ import { PageIdEnum } from '../page-id';
 
 export class UserDetailPageComponent implements OnInit {
   constructor(
-    private userApiSvc: UserApiService,
     private router: Router,
-    private userSkillsApiSvc: UserSkillsApiService,
     private cookieSvc: CookieService,
+    private userEntSvc: UserEntityOperations,
+    private usersSvc: UsersService,
+    private userSvc: UserService,
+    private userSkillsBindEntSvc: UserSkillsBindingEntityOperations,
+    private userSkillsTagEntSvc: UserSkillsTagEntityOperations,
   ) { }
 
   public activeId: string;
@@ -41,7 +47,7 @@ export class UserDetailPageComponent implements OnInit {
   public addressFormControl = new FormControl();
 
   ngOnInit() {
-    this.loadAsync();
+    this.load();
 
     this.isMe = !this.id;
 
@@ -52,66 +58,56 @@ export class UserDetailPageComponent implements OnInit {
 
   public vm: UserDetailVM;
 
-  public phoneSaveCallback = async () => {
-    let sucessful = await this.updateItem('phone', this.vm.phone);
-    return sucessful;
+  public phoneSaveCallback = () => {
+    let user = this.userEntSvc.getById(this.realId);
+    user.phone = this.vm.phone;
+    this.userEntSvc.updateById(user);
   };
 
-  public mailSaveCallback = async () => {
-    let sucessful = await this.updateItem('mail', this.vm.mail);
-    return sucessful;
+  public mailSaveCallback = () => {
+    let user = this.userEntSvc.getById(this.realId);
+    user.mail = this.vm.mail;
+    this.userEntSvc.updateById(user);
   };
 
-  public websiteSaveCallback = async () => {
-    let sucessful = await this.updateItem('website', this.vm.website);
-    return sucessful;
+  public websiteSaveCallback = () => {
+    let user = this.userEntSvc.getById(this.realId);
+    user.website = this.vm.website;
+    this.userEntSvc.updateById(user);
   };
 
-  public firstNameSaveCallback = async () => {
-    let sucessful = await this.updateItem('firstName', this.vm.firstName);
+  public firstNameSaveCallback = () => {
+    let user = this.userEntSvc.getById(this.realId);
+    user.firstName = this.vm.firstName;
+    this.userEntSvc.updateById(user);
 
-    if (sucessful) {
-      this.vm.fullName = this.getName(this.vm.firstName, this.vm.lastName);
-    }
-
-    return sucessful;
+    this.vm.fullName = this.usersSvc.getFullNameByUserId(this.realId);
   };
 
-  public lastNameSaveCallback = async () => {
-    let sucessful = await this.updateItem('lastName', this.vm.lastName);
+  public lastNameSaveCallback = () => {
+    let user = this.userEntSvc.getById(this.realId);
+    user.lastName = this.vm.lastName;
+    this.userEntSvc.updateById(user);
 
-    if (sucessful) {
-      this.vm.fullName = this.getName(this.vm.firstName, this.vm.lastName);
-    }
-
-    return sucessful;
+    this.vm.fullName = this.usersSvc.getFullNameByUserId(this.realId);
   };
 
-  public descSaveCallback = async () => {
-    let sucessful = await this.updateItem('desc', this.vm.desc);
-    return sucessful;
+  public descSaveCallback = () => {
+    let user = this.userEntSvc.getById(this.realId);
+    user.desc = this.vm.desc;
+    this.userEntSvc.updateById(user);
   };
 
-  public locationSaveCallback = async () => {
+  public locationSaveCallback = () => {
     let fcv = <LocationSaveResponse>this.addressFormControl.value;
-    let value = `${fcv.text}||${fcv.coords[0]}||${fcv.coords[0]}`;
-    let sucessful = await this.updateItem('location', value);
-
-    if (sucessful) {
-      this.vm.location = fcv.text;
-    }
-
-    return sucessful;
-  };
-
-  private async updateItem(name: string, value: string) {
-    var req: UpdatePropRequest = {
-      item: name,
-      value: value
+    let task = this.userEntSvc.getById(this.realId);
+    task.location = {
+      text: fcv.text,
+      coords: fcv.coords
     };
-    let sucessful = await this.userApiSvc.updateProp(req);
-    return sucessful;
-  }
+    this.userEntSvc.updateById(task);
+    this.vm.location = fcv.text;
+  };
 
   public get id() {
     let id = UrlParamUtils.getUrlParam<string>('id');
@@ -120,59 +116,66 @@ export class UserDetailPageComponent implements OnInit {
 
   public realId: string;
 
-  public async loadAsync() {
-    let res: UserResponse;
+  public load() {
 
-    if (this.id) {
-      res = await this.userApiSvc.getById(this.id);
-    } else {
-      res = await this.userApiSvc.getLoggedUser();
+    this.realId = this.id ? this.id : this.userSvc.id;
+    let e = this.userEntSvc.getById(this.realId);
+
+    //todo: load other users if not here
+    if (e) {
+      this.vm = {
+        isMe: !this.id,
+        firstName: e.firstName,
+        lastName: e.lastName,
+        fullName: this.getName(e.firstName, e.lastName),
+        desc: e.desc,
+        mail: e.mail,
+        phone: e.phone,
+        website: e.website,
+        location: e.location ? e.location.text : ''
+      };
     }
-    this.realId = res.id;
 
-    this.vm = {
-      isMe: !this.id,
-      firstName: res.firstName,
-      lastName: res.lastName,
-      fullName: this.getName(res.firstName, res.lastName),
-      desc: res.desc,
-      mail: res.mail,
-      phone: res.phone,
-      website: res.website,
-      location: res.location.text
+    this.addressFormControl.setValue(e.location);
+  }
+
+  public userTagsRemoveCallback = (item: TagBaseEntity) => {
+    this.userSkillsBindEntSvc.deleteByFind(i => i.tag_id === item.id);
+  }
+
+  public userTagsAddCallback = (tagId: string, entityId: string) => {
+    let e: UserSkillsBindingEntity = {
+      tag_id: tagId,
+      entity_id: entityId
     };
 
-    this.addressFormControl.setValue(res.location);
-
+    let be = this.userSkillsBindEntSvc.create(e);
+    return be.id;
   }
 
-  public userTagsRemoveCallback = async (item: TagBindingResponse) => {
-    let removed = await this.userSkillsApiSvc.remove(item.bindingId);
-    return removed;
+  public userTagsLoadCallback = (entityId: string) => {
+    let bs = this.userSkillsBindEntSvc.ulist.filter(i => i.entity_id === entityId);
+
+    let tags = bs.map(b => {
+      let tag = <TagBaseEntity>this.userSkillsTagEntSvc.getById(b.tag_id);
+      if (tag) {
+        return tag;
+      }
+
+      let btag: TagBaseEntity = {
+        name: 'N/A',
+        id: b.tag_id
+      };
+      return btag;
+    });
+
+
+    return tags;
   }
 
-  public userTagsAddCallback = async (tagId: string, entityId: string) => {
-    let req: NewTagBindingResponse = {
-      tagId,
-      entityId
-    };
-    let bindingId = await this.userSkillsApiSvc.add(req);
-    return bindingId;
-  }
-
-  public userTagsLoadCallback = async (entityId: string) => {
-    let items = await this.userSkillsApiSvc.getSaved(entityId);
-    return items;
-  }
-
-  public userTagsSearchCallback = async (str: string, entityId: string) => {
-    let req: SearchTagResponse = {
-      str,
-      entityId
-    };
-
-    let items = await this.userSkillsApiSvc.searchTags(req);
-    return items;
+  public userTagsSearchCallback = (str: string, entityId: string) => {
+    let e = this.userSkillsTagEntSvc.ulist.filter(i => i.name.toLowerCase().includes(str.toLowerCase()));
+    return e;
   }
 
   private getName(fn: string, ln: string) {

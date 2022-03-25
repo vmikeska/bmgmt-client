@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { pull } from "lodash-es";
 import { Subject } from "rxjs";
 import { StringUtils } from "src/lib/utils/string-utils";
 import { EntityBase } from "./entities/base-enitity";
@@ -29,6 +30,16 @@ export class EntityOperationsBase<T extends EntityBase> {
   public getById(id: string) {
     let item = this.list.find(i => i.id === id);
     return item;
+  }
+
+  public getByFind(filter: (item: T) => boolean) {
+    let e = this.list.find(i => filter(i));
+    return e;
+  }
+
+  public getByFilter(filter: (item: T) => boolean) {
+    let es = this.list.filter(i => filter(i));
+    return es;
   }
 
   private getNewId() {
@@ -66,29 +77,31 @@ export class EntityOperationsBase<T extends EntityBase> {
     this.onUpdateEvent.next(e);
   }
 
-  public deleteById(id: string) {
-    let removedItem = this.list.find(i => i.id === id);
+  public delete(removedItem: T) {
     if (!removedItem) {
       return null;
     }
 
-    removedItem.deleted = true;
-    removedItem.synced = false;
+    if (!removedItem.synced) {
+      pull(this.list, removedItem);
+    } else {
+      removedItem.deleted = true;
+      removedItem.synced = false;
+    }
 
     this.onRemoveItem.next(removedItem);
     return removedItem;
   }
 
+  public deleteById(id: string) {
+    let removedItem = this.list.find(i => i.id === id);
+    let r = this.delete(removedItem);
+    return r;
+  }
+
   public deleteByFind(filter: (item: T) => boolean) {
     let removedItem = this.list.find(i => filter(i));
-    if (!removedItem) {
-      return null;
-    }
-
-    removedItem.deleted = true;
-    removedItem.synced = false;
-
-    this.onRemoveItem.next(removedItem);
-    return removedItem;
+    let r = this.delete(removedItem);
+    return r;
   }
 }

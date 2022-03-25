@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { TaskResponse } from 'src/app/api/task/task-ints';
 import { PageIdEnum } from 'src/app/pages/page-id';
 import { TaskItemVM } from '../comps-ints';
 
@@ -20,7 +19,7 @@ export class AssignedTasksListComponent implements OnInit {
   @Input()
   public items: TaskItemVM[];
 
-  public taskLinkClick(item: TaskResponse) {
+  public taskLinkClick(item: TaskItemVM) {
     this.redirectToTaskDetail(item.id);
   }
 

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ProjectEntityOperations, TaskEntityOperations } from './entity-operations';
+import { ProjectChatMessagesEntityOperations, ProjectEntityOperations, ProjectParticipantEntityOperations, ProjectsTaskEntityOperations, TaskChatMessagesEntityOperations, TaskEntityOperations, TaskParticipantEntityOperations, UserEntityOperations, UserSettingsEntityOperations, UserSkillsBindingEntityOperations, UserSkillsTagEntityOperations } from './entity-operations';
 import { Storage } from '@capacitor/storage';
 import { EntityBase } from './entities/base-enitity';
 import { EntityOperationsBase } from './entity-operation-base';
@@ -9,13 +9,37 @@ export class EntitiesInitService {
 
   constructor(
     private projectEntSvc: ProjectEntityOperations,
-    private taskEntSvc: TaskEntityOperations
+    private taskEntSvc: TaskEntityOperations,
+    private taskParEntSvc: TaskParticipantEntityOperations,
+    private projParEntSvc: ProjectParticipantEntityOperations,
+    private projTaskEntSvc: ProjectsTaskEntityOperations,
+    private projChatEntSvc: ProjectChatMessagesEntityOperations,
+    private taskChatEntSvc: TaskChatMessagesEntityOperations,
+    private userSetEntSvc: UserSettingsEntityOperations,
+    private userEntSvc: UserEntityOperations,
+    private userSkillsBindEntSvc: UserSkillsBindingEntityOperations,
+    private userSillsTagEntSvc: UserSkillsTagEntityOperations,
   ) { }
 
-
   public async initAsync() {
-    await this.initEntityAsync(this.projectEntSvc);
-    await this.initEntityAsync(this.taskEntSvc);
+
+    let allOps: EntityOperationsBase<any>[] = [
+      this.projectEntSvc,
+      this.taskEntSvc,
+      this.taskParEntSvc,
+      this.projParEntSvc,
+      this.projTaskEntSvc,
+      this.userSetEntSvc,
+      this.userEntSvc,
+      this.userSkillsBindEntSvc,
+      this.userSillsTagEntSvc,
+      this.projChatEntSvc,
+      this.taskChatEntSvc
+    ];
+
+    for (let s of allOps) {
+      await this.initEntityAsync(s);
+    }
   }
 
   private async initEntityAsync<T extends EntityBase>(op: EntityOperationsBase<T>) {

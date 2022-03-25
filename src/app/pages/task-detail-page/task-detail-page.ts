@@ -149,7 +149,7 @@ export class TaskDetailPageComponent implements OnInit {
     this.location = task.location.text;
   };
 
-  public descSaveCallback = async () => {
+  public descSaveCallback = () => {
     let task = this.taskEntSvc.getById(this.id);
     task.desc = this.desc;
     this.taskEntSvc.updateById(task);
@@ -196,7 +196,7 @@ export class TaskDetailPageComponent implements OnInit {
     this.dateAndLoad = [dateDesc, loadDesc].filter(i => !!i).join(', ');
   }
 
-  private async reloadChatMessages() {
+  private reloadChatMessages() {
     //todo: get fresh from server
     let messages = this.taskChatEntSvc.list.filter(i => i.topic_id === this.id);
     this.messages.next(messages);
