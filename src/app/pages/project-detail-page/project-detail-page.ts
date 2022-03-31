@@ -27,7 +27,7 @@ import { UserService } from 'src/app/services/user.service';
 export class ProjectDetailPageComponent implements OnInit {
   constructor(
     private projChatEntSvc: ProjectChatMessagesEntityOperations,
-    private taskEnvSvc: TaskEntityOperations,
+    private taskEntSvc: TaskEntityOperations,
     private projEntSvc: ProjectEntityOperations,
     private projTaskBindingEntSvc: ProjectsTaskEntityOperations,
     private router: Router,
@@ -141,7 +141,7 @@ export class ProjectDetailPageComponent implements OnInit {
     this.unassignedTasks = [];
 
     for (let binding of bindings) {
-      let task = this.taskEnvSvc.getByFind(i => i.id === binding.task_id);
+      let task = this.taskEntSvc.getByFind(i => i.id === binding.task_id);
 
       let vm = this.taskMapSvc.mapTaskVM(task);
 

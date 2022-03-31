@@ -35,10 +35,10 @@ export class AddOrEditLineComponent implements OnInit {
       return;
     }
 
-    this.executeSaveAsync();
+    this.executeSave();
   }
 
-  private executeSaveAsync() {
+  private executeSave() {
     this.saveCallback();
     this.editing = false;
   }

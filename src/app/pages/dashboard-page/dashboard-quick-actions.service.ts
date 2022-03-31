@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TaskTypeEnum } from 'src/app/api/task/task-ints';
-import { CrationTypeEnum as CreationTypeEnum, CreationTypeItem } from 'src/app/components/comps-ints';
-import { ProjectEntityOperations, TaskEntityOperations } from 'src/app/data/entity-operations';
+import { CreationTypeItem } from 'src/app/components/comps-ints';
+import { CreationTypeEnum } from 'src/app/ints/enums';
 import { ProjectDO } from 'src/app/models/project/project-model-ints';
 import { ProjectModelService } from 'src/app/models/project/project-model.service';
 import { TaskDO } from 'src/app/models/task/task-model-ints';
@@ -17,8 +17,6 @@ export class DashboardQuickActionsService {
     private redirSvc: RedirectService,
     private dashDataSvc: DashboardDataService,
 
-    private projectEntSvc: ProjectEntityOperations,
-    private taskEntSvc: TaskEntityOperations,
     private taskModelSvc: TaskModelService,
     private projModelSvc: ProjectModelService
   ) {
@@ -100,7 +98,7 @@ export class DashboardQuickActionsService {
       desc: ''
     };
 
-    let e = this.taskEntSvc.create(d);
+    let e = this.taskModelSvc.createTask(d);
     return e.id;
   }
 }

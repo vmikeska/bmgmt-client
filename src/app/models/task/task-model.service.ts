@@ -18,13 +18,17 @@ export class TaskModelService {
   }
 
   public createTask(d: TaskDO) {
+
+    let manDays = d.manDays ? d.manDays : 0;
+    let manHours = d.manHours ? d.manHours : 0;
+
     let e: TaskEntity =
     {
       owner_id: this.userSvc.id,
       name: d.name,
       type: d.type,
-      manDays: d.manDays,
-      manHours: d.manHours,
+      manDays: manDays,
+      manHours: manHours,
       desc: d.desc
     };
 

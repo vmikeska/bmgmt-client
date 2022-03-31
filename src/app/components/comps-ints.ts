@@ -1,8 +1,8 @@
-import { TaskResponse } from "../api/task/task-ints";
+import { CreationTypeEnum } from "../ints/enums";
 
 export interface CreationTypeItem {
   label: string;
-  value: CrationTypeEnum;
+  value: CreationTypeEnum;
 }
 
 
@@ -24,7 +24,5 @@ export interface ProjItemVM {
   id: string;
   name: string;
 }
-
-export enum CrationTypeEnum { SimpleTask, FullTask, Project }
 
 

@@ -3,6 +3,7 @@ import { ProjectChatMessagesEntityOperations, ProjectEntityOperations, ProjectPa
 import { Storage } from '@capacitor/storage';
 import { EntityBase } from './entities/base-enitity';
 import { EntityOperationsBase } from './entity-operation-base';
+import * as moment from 'moment';
 
 @Injectable({ providedIn: 'root' })
 export class EntitiesInitService {
@@ -84,7 +85,13 @@ export class LocalSyncer<T extends EntityBase> {
   public async loadAsync() {
     let r = await Storage.get({ key: this.colName });
     if (r.value) {
-      let list = <T[]>JSON.parse(r.value);
+      let list = <T[]>JSON.parse(r.value, (key, value) => {
+        if (['dateFrom', 'dateTo'].includes(key)) {
+          return moment.utc(value);
+        }
+
+        return value;
+      });
       this.op.list = list;
     }
   }
