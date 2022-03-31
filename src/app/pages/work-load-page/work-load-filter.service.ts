@@ -6,7 +6,7 @@ import { DayFilterItem } from './work-load-page';
 export class WorkloadFilterService {
   constructor() { }
 
-  private now = moment().utc();
+  private now = moment().utc().startOf('day');
   private firstDay = this.now.startOf('month');
 
   public from = this.firstDay.clone();

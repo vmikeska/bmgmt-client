@@ -2,119 +2,245 @@ import { Injectable } from '@angular/core';
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { ConfigService } from 'src/app/services/config.service';
-import { TaskBusynessApiService } from 'src/app/api/task/task-busyness-api.service';
-import { DayLoadResponse, TaskTypeEnum, WorkloadDayResponse, WorkloadRequest, WorkloadResponse } from 'src/app/api/task/task-ints';
-import { ColorUtils } from 'src/app/utils/color-utils';
+import { TaskTypeEnum } from 'src/app/api/task/task-ints';
 import { WorkloadUtilsService } from 'src/app/utils/workload-utils.service';
 import { AssignTaskEvents } from './assign-task-events';
-import { GenerateEventBlocks } from './generate-event-blocks';
+// import { GenerateEventBlocks } from './generate-event-blocks';
+import { TaskEntityOperations } from 'src/app/data/entity-operations';
+import { UserService } from 'src/app/services/user.service';
+import { TaskUtils } from 'src/app/services/task-utils';
+import { TaskEntity } from 'src/app/data/entities/entities';
+import { sumBy } from 'lodash-es';
 
 @Injectable({ providedIn: 'root' })
 export class WorkLoadDataLoaderService {
   constructor(
-    private taskBusynessApiSvc: TaskBusynessApiService,
     private wlUtilsSvc: WorkloadUtilsService,
-    private configSvc: ConfigService
+    private configSvc: ConfigService,
+    private taskEntSvc: TaskEntityOperations,
+    private userSvc: UserService
   ) { }
-
-  public response: WorkloadResponse;
 
   private get dayWorkingHours() {
     return this.configSvc.dayWorkingHours;
   }
 
-  public weeks: Week[] = [];
-  public days: Day[] = [];
+  public daysCompMgr: DaysManager;
+  public daysProjectionMgr: DaysManager;
 
-  public minDay: Moment;
-  public maxDay: Moment;
+  public queryFrom: Moment;
+  public queryTo: Moment;
+
+  public weekSafeFrom: Moment;
+  public weekSafeTo: Moment;
 
   public workingDaysCount = 0;
 
-  public async loadDataAsync(req: WorkloadRequest) {
-    this.workingDaysCount = req.useDays.length;
+  public hoursPerDay = 8;
 
-    this.response = await this.taskBusynessApiSvc.getWorkloadPageData(req);
+  public tasks: TaskEntity[];
+  public usedDays: number[];
 
-    this.generateTimerRange();
+  //todo: asure these are UTC dates
+  public loadData(usedDays: number[], queryFrom: Moment, queryTo: Moment) {
+    this.daysCompMgr = new DaysManager(this.wlUtilsSvc);
+    this.daysProjectionMgr = new DaysManager(this.wlUtilsSvc);
 
-    let dr = this.response.dateRange;
-    this.minDay = moment.utc(dr.from);
-    this.maxDay = moment.utc(dr.to);
+    this.workingDaysCount = usedDays.length;
+    this.usedDays = usedDays;
 
-    let ate = new AssignTaskEvents(this.response, this.days, this.weeks);
-    ate.assign();
+    this.queryFrom = queryFrom;
+    this.queryTo = queryTo;
 
-    let geb = new GenerateEventBlocks(this.days, this.weeks, this.response.tasks);
-    geb.assign();
+    this.weekSafeFrom = queryFrom.startOf('month').startOf('week');
+    this.weekSafeTo = queryTo.endOf('month').endOf('week');
+
+    this.loadTasks();
+    this.assignDataWorkLoad();
+    this.createProjectionDays();
+
+    this.daysProjectionMgr.projectLoad(this.usedDays.length, this.dayWorkingHours);
+
+    // let ate = new AssignTaskEvents(this.response, this.days, this.weeks);
+    // ate.assign();
+
+    // let geb = new GenerateEventBlocks(this.days, this.weeks, this.response.tasks);
+    // geb.assign();
   }
 
-  private generateTimerRange() {
+  private loadTasks() {
+    let minMid = TaskUtils.MidFromDate(this.weekSafeFrom);
+    let maxMid = TaskUtils.MidFromDate(this.weekSafeTo);
 
-    this.days = [];
-    this.weeks = [];
+    let minWid = TaskUtils.WidFromDate(this.weekSafeFrom);
+    let maxWid = TaskUtils.WidFromDate(this.weekSafeTo);
 
-    this.response.days.forEach((d) => {
-      let md = moment.utc(d.date);
-      this.addDay(md);
-    })
+    //todo: fix id owner issue
+    this.tasks = this.taskEntSvc.getByFilter(t =>
+      t.owner_id === this.userSvc.id
+      &&
+      (
+        t.mid >= minMid && t.mid <= maxMid
+        ||
+        t.wid >= minWid && t.wid <= maxWid
+        ||
+        (
+          this.taskIntersectsWithWeekSafeRange(t.dateFrom)
+          ||
+          this.taskIntersectsWithWeekSafeRange(t.dateTo)
+        )
+      )
+    );
   }
 
-  private addDay(d: Moment) {
-    let yearWeekStr = d.format('GGGG,WW');
-    let ywsPrms = yearWeekStr.split(',');
-    let weekNo = parseInt(ywsPrms[1]);
-    let year = parseInt(ywsPrms[0]);
-    let week = this.getCurrentWeek(year, weekNo);
+  private taskIntersectsWithWeekSafeRange(date: Moment) {
+    let intersects = this.weekSafeFrom.isSameOrBefore(date) && this.weekSafeTo.isSameOrAfter(date);
+    return intersects;
+  }
 
-    let rDay = this.response.days.find((res) => {
-      let resDate = moment.utc(res.date);
-      let matches = resDate.isSame(d);
-      return matches;
-    });
+  private createProjectionDays() {
+    let currentDate = this.weekSafeFrom.clone();
+    while (currentDate.isSameOrBefore(this.weekSafeTo)) {
+      let day = this.daysCompMgr.getDay(currentDate);
+      if (day) {
+        this.daysProjectionMgr.days.push(day);
+      } else {
+        this.daysProjectionMgr.addDay(currentDate);
+      }
+      currentDate.add(1, 'day');
+    }
+  }
+
+  private assignDataWorkLoad() {
+
+    let from: Moment;
+    let to: Moment;
+    let usedDays: number[] = null;
+
+    for (let item of this.tasks) {
+
+      if (item.type === TaskTypeEnum.ExactFlexible) {
+        from = item.dateFrom;
+        to = item.dateTo;
+      }
+
+      if (item.type === TaskTypeEnum.ExactStatic) {
+        from = item.dateFrom;
+        to = item.dateTo;
+      }
+
+      if (item.type === TaskTypeEnum.Week) {
+        //todo: assure this is monday
+        from = moment().year(item.year).isoWeek(item.week);
+        to = from.endOf('week');
+      }
+
+      if (item.type == TaskTypeEnum.Month) {
+        //todo: check month ok
+        from = moment().year(item.year).month(item.month).day(1);
+        to = from.endOf('month');
+      }
+
+      let totalHours = item.manHours + (item.manDays * this.hoursPerDay);;
+      let involvedDays = this.getDaysInPeriod(item.dateFrom, item.dateTo, usedDays);
+      //todo: zero division check
+      let hoursPerDay = totalHours / involvedDays.length;
+      involvedDays.forEach(currentDay => {
+        let day = this.daysCompMgr.getDaySafe(currentDay);
+        this.addDayLoad(day, item, hoursPerDay);
+      });
+    }
+  }
+
+  private addDayLoad(day: Day, task: TaskEntity, hours: number) {
+
+    if (!day) {
+      console.error('should not be null');
+      return;
+    }
+
+    let load: DayLoad = {
+      hours,
+      task
+    };
+    day.loads.push(load);
+  }
+
+  private getDaysInPeriod(from: Moment, to: Moment, usedDays: number[] = null) {
+
+    let currentDate = from.clone();
+    let days: Moment[] = [];
+
+    while (currentDate.isSameOrBefore(to)) {
+
+      let shouldAddDay = true;
+
+      if (usedDays) {
+        let dayNo = currentDate.isoWeekday();
+        let isWorkingDay = this.usedDays.includes(dayNo);
+        shouldAddDay = isWorkingDay;
+      }
+
+      if (shouldAddDay) {
+        days.push(currentDate.clone());
+      }
+
+      currentDate.add(1, 'day');
+    }
+    return days;
+  }
+
+}
+
+export class DaysManager {
+
+  constructor(
+    private wlUtilsSvc: WorkloadUtilsService
+  ) {
+
+  }
+
+  public days: Day[] = [];
+  public weeks: Week[] = [];
+
+  public addDay(d: Moment) {
 
     let day: Day = {
       day: d,
       year: d.year(),
       dayOfWeek: d.day(),
       dayOfMonth: parseInt(d.format('D')),
-      response: rDay,
       eventPositions: [],
-      tempLoads: []
+      loads: []
     };
-
-    if (rDay) {
-      day.busyIndex = rDay.busyIndex;
-      day.totalHours = rDay.totalHours;
-      day.color = ColorUtils.getColor(rDay.busyIndex);
-    }
-
     this.days.push(day);
+
+    this.addDayToWeek(day);
+
+    return day;
+  }
+
+  private addDayToWeek(day: Day) {
+    let yearWeekStr = day.day.format('GGGG,WW');
+    let ywsPrms = yearWeekStr.split(',');
+    let weekNo = parseInt(ywsPrms[1]);
+    let year = parseInt(ywsPrms[0]);
+    let week = this.getCurrentWeek(year, weekNo);
     week.days.push(day);
   }
 
   private getCurrentWeek(year: number, no: number) {
-
-    if (no === 52) {
-      var a = 'c';
-    }
 
     let week = this.weeks.find((w) => { return w.no === no && w.year === year; });
     if (week) {
       return week;
     }
 
-    let rWeek = this.findWeekFromResponse(year, no);
-
-    let hoursAday = rWeek.totalHours / this.workingDaysCount / this.dayWorkingHours;
-
     let nWeek: Week = {
       year,
       no,
       days: [],
-      totalHours: rWeek.totalHours,
-      workloadStr: this.wlUtilsSvc.daysHoursStr(0, rWeek.totalHours),
-      workloadDayStr: this.wlUtilsSvc.daysHoursStr(0, hoursAday),
+
       eventBlocks: [],
       tasks: []
     };
@@ -122,9 +248,55 @@ export class WorkLoadDataLoaderService {
     return nWeek;
   }
 
-  private findWeekFromResponse(year: number, no: number) {
-    let week = this.response.weeks.find((w) => { return w.year === year && w.no == no; });
-    return week;
+  public getDay(day: Moment) {
+    let d = this.days.find(d => d.day.isSame(day));
+    return d;
+  }
+
+  public getDaySafe(day: Moment) {
+    let d = this.getDay(day);
+
+    if (!d) {
+      d = this.addDay(day);
+    }
+
+    return d;
+  }
+
+  public projectLoad(
+    workingDaysCount: number,
+    dayWorkingHours: number
+  ) {
+
+    this.days.forEach(day => {
+      day.totalHours = sumBy(day.loads, i => i.hours);
+      //todo: busyIndex
+      day.busyIndex = 0;
+    });
+
+    this.weeks.forEach(week => {
+      week.totalHours = sumBy(week.days, i => i.totalHours);
+      let hoursAday = week.totalHours / workingDaysCount / dayWorkingHours;
+      week.workloadStr = this.wlUtilsSvc.daysHoursStr(0, week.totalHours);
+      week.workloadDayStr = this.wlUtilsSvc.daysHoursStr(0, hoursAday);
+    });
+
+  }
+
+  public getDaysInPeriod(from: Moment, to: Moment) {
+
+    let currentDate = from.clone();
+    let days: Day[] = [];
+
+    while (currentDate.isSameOrBefore(to)) {
+
+      let day = this.getDay(currentDate)
+      days.push(day);
+
+      currentDate.add(1, 'day');
+    }
+
+    return days;
   }
 
 }
@@ -158,18 +330,16 @@ export interface EventBar {
   ed?: string;
 }
 
-
-
 export interface Week {
   year: number;
   no: number;
   days: Day[];
-  totalHours: number;
-  workloadStr: string;
-  workloadDayStr: string;
   tasks: TaskVM[];
-
   eventBlocks: EventBlock[];
+
+  totalHours?: number;
+  workloadStr?: string;
+  workloadDayStr?: string;
 }
 
 export interface Day {
@@ -177,14 +347,17 @@ export interface Day {
   dayOfWeek: number;
   dayOfMonth: number;
   year: number;
+  loads: DayLoad[];
+  eventPositions: EventPosition[];
+
   totalHours?: number;
   busyIndex?: number;
   color?: string;
-  response?: WorkloadDayResponse;
+}
 
-  tempLoads: DayLoadResponse[];
-
-  eventPositions: EventPosition[];
+export interface DayLoad {
+  hours: number;
+  task: TaskEntity;
 }
 
 export interface Month {

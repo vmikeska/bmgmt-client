@@ -11,6 +11,7 @@ import { WorkloadUtilsService } from 'src/app/utils/workload-utils.service';
 import { PageIdEnum } from '../page-id';
 import { Day, Month, TaskVM, Week, WorkLoadDataLoaderService } from './work-load-data-loader.service';
 import { WorkloadFilterService } from './work-load-filter.service';
+import { flatten } from 'lodash-es';
 
 @Component({
   selector: 'app-work-load-page',
@@ -58,13 +59,10 @@ export class WorkLoadComponent implements OnInit {
   }
 
   private async loadDataAsync() {
-    let req: WorkloadRequest = {
-      useDays: this.useDays,
-      from: this.workloadFilterSvc.from.toISOString(),
-      to: this.workloadFilterSvc.to.toISOString(),
-    };
+    let from = this.workloadFilterSvc.from;
+    let to = this.workloadFilterSvc.to;
 
-    await this.wldlSvc.loadDataAsync(req);
+    this.wldlSvc.loadData(this.useDays, from, to);
 
     this.buildWorkloadView();
     this.assignMonthAndWeekTasks();
@@ -160,7 +158,7 @@ export class WorkLoadComponent implements OnInit {
   private buildWorkloadView() {
     this.months = [];
 
-    for (let week of this.wldlSvc.weeks) {
+    for (let week of this.wldlSvc.daysProjectionMgr.weeks) {
 
       let firstWeekDay = week.days[0].day;
       let lastWeekDay = week.days[6].day;
@@ -206,57 +204,38 @@ export class WorkLoadComponent implements OnInit {
 
     let monthStart = moment(`${year}-${month}-1`);
 
-
-    let resMonth = this.getResponseMonth(year, month);
-
-    // let tasksRes = res.tasks.filter((i) => {
-    //   return resMonth.involvedTasksIds.includes(i.id);
-    // });
-
-    // let tasks = tasksRes.map((tr) => {
-    //   let t: TaskVM = {
-    //     id: tr.id,
-    //     name: tr.name,
-    //     type: tr.type
-    //   };
-    //   return t;
-    // });
-
-    // let monthTask = tasks.filter(t => t.type === TaskTypeEnum.Month);
+    //todo: calculate
+    let totalHours = 0;
+    let workingDays = 0;
 
     let newMonth: Month = {
       year,
-      tasks: [], //monthTask,
-      totalHours: resMonth.totalHours,
-      workingDays: resMonth.workingDays,
+      tasks: [],
+      totalHours,
+      workingDays,
       no: month,
       weeks: [],
       title: `${year} - ${monthStart.format('MMMM')}`,
-      workloadStr: this.wlUtilsSvc.daysHoursStr(0, resMonth.totalHours),
+      workloadStr: this.wlUtilsSvc.daysHoursStr(0, totalHours),
     };
     this.months.push(newMonth);
 
     return newMonth;
   }
 
-  private getResponseMonth(year: number, month: number) {
-    let res = this.wldlSvc.response;
-    let resMonth = res.months.find((m) => { return m.year === year && m.no === month; });
-    return resMonth;
-  }
-
   private assignMonthAndWeekTasks() {
 
     this.months.forEach((vmMonth) => {
-      let resMonth = this.getResponseMonth(vmMonth.year, vmMonth.no);
 
-      let resTasks = this.wldlSvc.response.tasks;
+      //todo: check date
+      let from = moment().year(vmMonth.year).month(vmMonth.no).day(1);
+      let to = from.endOf('month');
 
-      let thisMonthResTasks = resTasks.filter((resTask) => {
-        return resMonth.involvedTasksIds.includes(resTask.id);
-      });
+      let days = this.wldlSvc.daysProjectionMgr.getDaysInPeriod(from, to);
 
-      let tasks = thisMonthResTasks.map((tr) => {
+      let monthTasks = flatten(days.map(d => d.loads.map(l => l.task)));
+
+      let tasks = monthTasks.map((tr) => {
 
         let t: TaskVM = {
           id: tr.id,
@@ -269,14 +248,10 @@ export class WorkLoadComponent implements OnInit {
         return t;
       });
 
+
       let monthlyResTasks = tasks.filter(t => t.type === TaskTypeEnum.Month);
       vmMonth.tasks = monthlyResTasks;
-
       vmMonth.weeks.forEach((vmWeek) => {
-
-        if (vmWeek.no === 52) {
-          var a = 'dsfd';
-        }
 
         //this is more like bugfix, coz there are not comming data from the same week that takes place in two monts, fix later
         let hasAlreadyLoadadDataForThisWeek = !!vmWeek.tasks.length;

@@ -8,6 +8,8 @@ import { TaskTypeEnum } from 'src/app/api/task/task-ints';
 import { TaskEntity } from 'src/app/data/entities/entities';
 import { TaskEntityOperations } from 'src/app/data/entity-operations';
 import { ItemOption } from 'src/app/ints/common-ints';
+import { TaskDO } from 'src/app/models/task/task-model-ints';
+import { TaskModelService } from 'src/app/models/task/task-model.service';
 import { DialogService } from '../base/dialog.service';
 
 @Component({
@@ -18,7 +20,8 @@ import { DialogService } from '../base/dialog.service';
 export class TaskBaseEditDialogComponent implements OnInit {
   constructor(
     private dialogSvc: DialogService,
-    private taskEntSvc: TaskEntityOperations
+    private taskEntSvc: TaskEntityOperations,
+    private taskModelSvc: TaskModelService
   ) { }
 
   @Input()
@@ -268,11 +271,12 @@ export class TaskBaseEditDialogComponent implements OnInit {
   }
 
   public updateClick() {
-    this.sendDataAsync();
+    this.update();
   }
 
-  private async sendDataAsync() {
-    let e: TaskEntity = {
+  private update() {
+
+    let d: TaskDO = {
       id: this.id,
       name: this.name,
       type: this.type,
@@ -282,12 +286,11 @@ export class TaskBaseEditDialogComponent implements OnInit {
       week: this.week,
       year: this.year,
       dateFrom: this.dateFrom,
-      dateTo: this.dateTo
+      dateTo: this.dateTo,
     };
 
-    this.taskEntSvc.updateById(e)
+    this.taskModelSvc.updateTask(d);
 
-    this.onSavedEvent.next();
     this.closeDialog();
   }
 

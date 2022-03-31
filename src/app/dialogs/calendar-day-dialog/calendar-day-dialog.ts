@@ -52,12 +52,11 @@ export class CalendarDayDialogComponent implements OnInit {
     this.workloadStr = this.wlUtilsSvc.daysHoursStr(0, this.day.totalHours);
 
 
-    this.tasks = this.day.response.loads.map((l) => {
-      let task = this.wldlSvc.response.tasks.find(i => i.id === l.taskId);
+    this.tasks = this.day.loads.map((l) => {
 
       let vm: TaskInfoVM = {
-        id: task.id,
-        name: task.name,
+        id: l.task.id,
+        name: l.task.name,
         workload: this.wlUtilsSvc.daysHoursStr(0, l.hours)
       };
       return vm;
