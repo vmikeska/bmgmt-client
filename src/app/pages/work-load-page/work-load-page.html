@@ -168,11 +168,13 @@
                       </div>
                     </div>
                     <div class="r">
-                      <span class="add-btn-cont">
+                      <span
+                        class="add-btn-cont"
+                        (click)="addWeekClick(week)"
+                      >
                         <fa-icon
                           class="ico"
                           [icon]="faPlus"
-                          (click)="addWeekClick(week)"
                         ></fa-icon>
                       </span>
                     </div>

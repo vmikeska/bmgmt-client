@@ -10,7 +10,8 @@ import { TaskEntityOperations } from 'src/app/data/entity-operations';
 import { UserService } from 'src/app/services/user.service';
 import { TaskUtils } from 'src/app/services/task-utils';
 import { TaskEntity } from 'src/app/data/entities/entities';
-import { sumBy } from 'lodash-es';
+import { DaysManager } from './days-manager';
+import { DateUtils } from 'src/app/utils/date-utils';
 
 @Injectable({ providedIn: 'root' })
 export class WorkLoadDataLoaderService {
@@ -52,8 +53,11 @@ export class WorkLoadDataLoaderService {
     this.queryFrom = queryFrom;
     this.queryTo = queryTo;
 
-    this.weekSafeFrom = queryFrom.startOf('month').startOf('week');
-    this.weekSafeTo = queryTo.endOf('month').endOf('week');
+    this.weekSafeFrom = queryFrom.clone();
+    this.weekSafeFrom.startOf('month').startOf('isoWeek');
+
+    this.weekSafeTo = queryTo.clone();
+    this.weekSafeTo.endOf('month').endOf('isoWeek');
 
     this.loadTasks();
     this.assignDataWorkLoad();
@@ -98,7 +102,7 @@ export class WorkLoadDataLoaderService {
     return intersects;
   }
 
-  tady se to nejak blbe prirazuje
+
   private createProjectionDays() {
     let currentDate = this.weekSafeFrom.clone();
     while (currentDate.isSameOrBefore(this.weekSafeTo)) {
@@ -115,15 +119,16 @@ export class WorkLoadDataLoaderService {
 
   private assignDataWorkLoad() {
 
-    let from: Moment;
-    let to: Moment;
-    let usedDays: number[] = null;
-
     for (let task of this.tasks) {
+
+      let usedDays: number[] = null;
+      let from: Moment;
+      let to: Moment;
 
       if (task.type === TaskTypeEnum.ExactFlexible) {
         from = task.dateFrom;
         to = task.dateTo;
+        usedDays = this.usedDays;
       }
 
       if (task.type === TaskTypeEnum.ExactStatic) {
@@ -132,20 +137,21 @@ export class WorkLoadDataLoaderService {
       }
 
       if (task.type === TaskTypeEnum.Week) {
-        //todo: assure this is monday
-        from = moment().utc().year(task.year).isoWeek(task.week);
-        to = from.endOf('week');
+        from = DateUtils.mondayByWeekNo(task.year, task.week);
+        to = DateUtils.endOfWeek(from);
+        usedDays = this.usedDays;
       }
 
       if (task.type == TaskTypeEnum.Month) {
         //todo: check month ok
-        from = moment.utc().year(task.year).month(task.month).day(1);
-        to = from.endOf('month');
+        from = DateUtils.parse(`${task.year}-${task.month}-1`);
+        to = DateUtils.endOfMonth(from);
+        usedDays = this.usedDays;
       }
 
       let totalHours = this.wlUtilsSvc.calcTotalHours(task.manDays, task.manHours);
 
-      let involvedDays = this.getDaysInPeriod(task.dateFrom, task.dateTo, usedDays);
+      let involvedDays = this.getDaysInPeriod(from, to, usedDays);
       //todo: zero division check
       let hoursPerDay = totalHours / involvedDays.length;
       involvedDays.forEach(currentDay => {
@@ -156,11 +162,6 @@ export class WorkLoadDataLoaderService {
   }
 
   private addDayLoad(day: Day, task: TaskEntity, hours: number) {
-
-    if (!day) {
-      console.error('should not be null');
-      return;
-    }
 
     let load: DayLoad = {
       hours,
@@ -179,7 +180,7 @@ export class WorkLoadDataLoaderService {
       let shouldAddDay = true;
 
       if (usedDays) {
-        let dayNo = currentDate.isoWeekday();
+        let dayNo = DateUtils.getDayNo(currentDate);
         let isWorkingDay = this.usedDays.includes(dayNo);
         shouldAddDay = isWorkingDay;
       }
@@ -190,115 +191,6 @@ export class WorkLoadDataLoaderService {
 
       currentDate.add(1, 'day');
     }
-    return days;
-  }
-
-}
-
-export class DaysManager {
-
-  constructor(
-    private wlUtilsSvc: WorkloadUtilsService
-  ) {
-
-  }
-
-  public days: Day[] = [];
-  public weeks: Week[] = [];
-
-  public addDay(d: Moment) {
-
-    let day: Day = {
-      day: d,
-      year: d.year(),
-      dayOfWeek: d.day(),
-      dayOfMonth: parseInt(d.format('D')),
-      eventPositions: [],
-      loads: []
-    };
-    this.days.push(day);
-
-    this.addDayToWeek(day);
-
-    return day;
-  }
-
-  public addDayToWeek(day: Day) {
-    let yearWeekStr = day.day.format('GGGG,WW');
-    let ywsPrms = yearWeekStr.split(',');
-    let weekNo = parseInt(ywsPrms[1]);
-    let year = parseInt(ywsPrms[0]);
-    let week = this.getCurrentWeek(year, weekNo);
-    week.days.push(day);
-  }
-
-  private getCurrentWeek(year: number, no: number) {
-
-    let week = this.weeks.find((w) => { return w.no === no && w.year === year; });
-    if (week) {
-      return week;
-    }
-
-    let nWeek: Week = {
-      year,
-      no,
-      days: [],
-
-      eventBlocks: [],
-      tasks: []
-    };
-    this.weeks.push(nWeek)
-    return nWeek;
-  }
-
-  public getDay(day: Moment) {
-    let d = this.days.find(d => d.day.isSame(day));
-    return d;
-  }
-
-  public getDaySafe(day: Moment) {
-    let d = this.getDay(day);
-
-    if (!d) {
-      d = this.addDay(day);
-    }
-
-    return d;
-  }
-
-  public projectLoad(
-    workingDaysCount: number,
-    dayWorkingHours: number
-  ) {
-
-    this.days.forEach(day => {
-      day.totalHours = sumBy(day.loads, i => i.hours);
-      //todo: busyIndex
-      day.busyIndex = 0;
-    });
-
-    this.weeks.forEach(week => {
-      week.totalHours = sumBy(week.days, i => i.totalHours);
-      let hoursAday = week.totalHours / workingDaysCount / dayWorkingHours;
-      week.workloadStr = this.wlUtilsSvc.daysHoursStr(0, week.totalHours);
-      week.workloadDayStr = this.wlUtilsSvc.daysHoursStr(0, hoursAday);
-    });
-
-  }
-
-  public getDaysInPeriod(from: Moment, to: Moment) {
-
-    let currentDate = from.clone();
-    let days: Day[] = [];
-
-    while (currentDate.isSameOrBefore(to)) {
-
-      let day = this.getDay(currentDate)
-      days.push(day);
-
-      currentDate.add(1, 'day');
-    }
-
     return days;
   }
 
@@ -347,6 +239,7 @@ export interface Week {
 
 export interface Day {
   day: Moment;
+  dayStr: string;
   dayOfWeek: number;
   dayOfMonth: number;
   year: number;

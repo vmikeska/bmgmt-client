@@ -73,11 +73,6 @@ export class TaskBaseEditDialogComponent implements OnInit {
 
   public ngOnInit() {
 
-    this.te = this.taskEntSvc.getById(this.id);
-    if (!this.te) {
-      return;
-    }
-
     let typeOptions = cloneDeep(this.allTypeOptions);
 
     if (this.mode === TaskEditTypeModeEnum.AddMonth) {
@@ -122,6 +117,8 @@ export class TaskBaseEditDialogComponent implements OnInit {
   }
 
   private async initEditAsync() {
+    this.te = this.taskEntSvc.getById(this.id);
+
     this.name = this.te.name;
     this.type = this.te.type;
     this.manDays = this.te.manDays;
@@ -270,8 +267,13 @@ export class TaskBaseEditDialogComponent implements OnInit {
     return TaskTypeEnum.Week === this.type;
   }
 
-  public updateClick() {
-    this.update();
+  public finalizeClick() {
+    if (this.isEdit) {
+      this.update();
+    } else {
+      this.create();
+    }
+
   }
 
   private update() {
@@ -290,6 +292,27 @@ export class TaskBaseEditDialogComponent implements OnInit {
     };
 
     this.taskModelSvc.updateTask(d);
+    this.onSavedEvent.next();
+
+    this.closeDialog();
+  }
+
+  private create() {
+
+    let d: TaskDO = {
+      name: this.name,
+      type: this.type,
+      manDays: this.manDays,
+      manHours: this.manHours,
+      month: this.month,
+      week: this.week,
+      year: this.year,
+      dateFrom: this.dateFrom,
+      dateTo: this.dateTo
+    };
+
+    this.taskModelSvc.createTask(d);
+    this.onSavedEvent.next();
 
     this.closeDialog();
   }

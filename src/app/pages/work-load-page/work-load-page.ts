@@ -1,8 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { faBriefcase, faCalendarAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
-import * as moment from 'moment';
 import { ConfigService } from 'src/app/services/config.service';
-import { TaskTypeEnum, WorkloadRequest } from 'src/app/api/task/task-ints';
+import { TaskTypeEnum } from 'src/app/api/task/task-ints';
 import { DialogService } from 'src/app/dialogs/base/dialog.service';
 import { CalendarDayDialogComponent } from 'src/app/dialogs/calendar-day-dialog/calendar-day-dialog';
 import { CalendarTaskDialogComponent } from 'src/app/dialogs/calendar-task-dialog/calendar-task-dialog';
@@ -11,7 +10,8 @@ import { WorkloadUtilsService } from 'src/app/utils/workload-utils.service';
 import { PageIdEnum } from '../page-id';
 import { Day, Month, TaskVM, Week, WorkLoadDataLoaderService } from './work-load-data-loader.service';
 import { WorkloadFilterService } from './work-load-filter.service';
-import { flatten } from 'lodash-es';
+import { flatten, uniq } from 'lodash-es';
+import { DateUtils } from 'src/app/utils/date-utils';
 
 @Component({
   selector: 'app-work-load-page',
@@ -202,7 +202,7 @@ export class WorkLoadComponent implements OnInit {
       return existing;
     }
 
-    let monthStart = moment(`${year}-${month}-1`);
+    let monthStart = DateUtils.parse(`${year}-${month}-1`);
 
     //todo: calculate
     let totalHours = 0;
@@ -227,13 +227,19 @@ export class WorkLoadComponent implements OnInit {
 
     this.months.forEach((vmMonth) => {
 
-      //todo: check date
-      let from = moment().year(vmMonth.year).month(vmMonth.no).day(1);
-      let to = from.endOf('month');
+      let from = DateUtils.parse(`${vmMonth.year}-${vmMonth.no}-1`);
+      let to = DateUtils.endOfMonth(from);
 
       let days = this.wldlSvc.daysProjectionMgr.getDaysInPeriod(from, to);
 
-      let monthTasks = flatten(days.map(d => d.loads.map(l => l.task)));
+      let monthTasks = uniq(flatten(days.map(d => {
+        if (!d.loads) {
+          return [];
+        }
+        let ts = d.loads.map(l => l.task);
+        return ts;
+      })
+      ));
 
       let tasks = monthTasks.map((tr) => {
 
