@@ -78,10 +78,7 @@ export interface UserSkillsTagEntity extends TagBaseEntity { }
 export interface ProjectEntity extends SearchableEntity {
   location?: LocationSE;
 }
-
-export interface TopicParticipantEntity extends EntityBase {
-  topic_id: string;
-  user_id: string;
+export interface TopicParticipantEntity extends TagBindingBaseEntity {
   role: TopicParticipantEnum;
 }
 

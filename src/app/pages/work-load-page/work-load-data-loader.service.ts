@@ -12,6 +12,7 @@ import { TaskUtils } from 'src/app/services/task-utils';
 import { TaskEntity } from 'src/app/data/entities/entities';
 import { DaysManager } from './days-manager';
 import { DateUtils } from 'src/app/utils/date-utils';
+import { GenerateEventBlocks } from './generate-event-blocks';
 
 @Injectable({ providedIn: 'root' })
 export class WorkLoadDataLoaderService {
@@ -65,11 +66,11 @@ export class WorkLoadDataLoaderService {
 
     this.daysProjectionMgr.projectLoad(this.usedDays.length, this.dayWorkingHours);
 
-    // let ate = new AssignTaskEvents(this.response, this.days, this.weeks);
-    // ate.assign();
+    let ate = new AssignTaskEvents(this.tasks, this.daysProjectionMgr.days, this.daysProjectionMgr.weeks);
+    ate.assign();
 
-    // let geb = new GenerateEventBlocks(this.days, this.weeks, this.response.tasks);
-    // geb.assign();
+    let geb = new GenerateEventBlocks(this.daysProjectionMgr.days, this.daysProjectionMgr.weeks, this.tasks);
+    geb.assign();
   }
 
   private loadTasks() {

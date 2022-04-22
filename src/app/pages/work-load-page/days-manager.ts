@@ -3,6 +3,7 @@ import { WorkloadUtilsService } from 'src/app/utils/workload-utils.service';
 import { sumBy } from 'lodash-es';
 import { Day, Week } from './work-load-data-loader.service';
 import { DateUtils } from 'src/app/utils/date-utils';
+import { ColorUtils } from 'src/app/utils/color-utils';
 
 
 export class DaysManager {
@@ -14,6 +15,9 @@ export class DaysManager {
 
   public days: Day[] = [];
   public weeks: Week[] = [];
+
+
+  public maxHoursAday = 8;
 
   public addDay(d: Moment) {
 
@@ -83,8 +87,11 @@ export class DaysManager {
 
     this.days.forEach(day => {
       day.totalHours = sumBy(day.loads, i => i.hours);
-      //todo: busyIndex
-      day.busyIndex = 0;
+
+      let bindex = day.totalHours / this.maxHoursAday;
+
+      day.busyIndex = bindex > 1 ? 1 : bindex;
+      day.color = ColorUtils.getColor(day.busyIndex);
     });
 
     this.weeks.forEach(week => {

@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
+import { updateLocale } from 'moment';
 import { TopicParticipantEnum } from 'src/app/api/participant/particip-ints';
 import { TagItem } from 'src/app/components/role-tagger/role-tagger';
 import { TaskParticipantEntity } from 'src/app/data/entities/entities';
@@ -23,25 +24,27 @@ export class ProjectParticipantDialogComponent implements OnInit {
 
   public TopicParticipantEnum = TopicParticipantEnum;
 
-  public removeCallback = (item: TagItem) => {
-    let e = this.taskParEntSvc.deleteById(item.bindingId);
-    return !!e;
+  public removeCallback = (userId: string) => {
+    this.taskParEntSvc.deleteByFind(i => i.entity_id === this.topicId && i.tag_id === userId);
+    return true;
   };
 
-  public addCallback = (userId: string, role: TopicParticipantEnum) => {
-    let e: TaskParticipantEntity = {
-      role: role,
-      topic_id: this.topicId,
-      user_id: userId
-    };
+  public addCallback = (userId: string, role: TopicParticipantEnum): any => {
+    // let e: TaskParticipantEntity = {
+    //   role: role,
+    //   topic_id: this.topicId,
+    //   user_id: userId
+    // };
 
-    this.taskParEntSvc.create(e);
-    return e.id;
+    // this.taskParEntSvc.create(e);
+    // return e.id;
+    return null;
   };
 
-  public loadCallback = (topicId: string) => {
-    let e = this.taskParEntSvc.ulist.filter(i => i.topic_id === topicId);
-    return e;
+  public loadCallback = (topicId: string, role: TopicParticipantEnum): any => {
+    // let e = this.taskParEntSvc.ulist.filter(i => i.topic_id === topicId);
+    // return e;
+    return null;
   }
 
 }

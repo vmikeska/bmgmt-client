@@ -5,7 +5,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { cloneDeep, pull } from 'lodash-es';
 import { TopicParticipantEnum } from 'src/app/api/participant/particip-ints';
-import { TopicParticipantEntity } from 'src/app/data/entities/entities';
+import { TagBaseEntity, TopicParticipantEntity } from 'src/app/data/entities/entities';
 import { UserEntityOperations } from 'src/app/data/entity-operations';
 import { UsersService } from 'src/app/services/users.service';
 
@@ -29,81 +29,73 @@ export class RoleTaggerComponent implements OnInit {
   public topicId: string;
 
   public ngOnInit() {
-    this.subscribeSearch();
-    this.loadSelectedAsync();
+
   }
-
-  public filterInputFormControl = new FormControl();
-  public filteredSearchItems: TagItem[] = [];
-
-  separatorKeysCodes: number[] = [ENTER, COMMA];
-
-  selectedItems: TagItem[] = [];
-
-  @ViewChild('searchInput')
-  public searchInput: ElementRef<HTMLInputElement>;
-
-  public subscribeSearch() {
-    this.filterInputFormControl.valueChanges.subscribe(async (s) => {
-
-      let results = this.userEntSvc.list.map((u) => {
-        let name = `${u.firstName} ${u.lastName}`;
-        let item: TagItem = { name, userId: u.id };
-        return item;
-      });
-
-      this.filteredSearchItems = results;
-    });
-  }
-
-  public async loadSelectedAsync() {
-    let es = this.loadCallback(this.topicId);
-
-    let categoryUsers = es.filter(t => t.role === this.role);
-
-    let tags = categoryUsers.map((i) => {
-      let ti: TagItem = {
-        name: this.usersSvc.getFullNameByUserId(this.topicId),
-        bindingId: i.id,
-        userId: i.user_id,
-      };
-      return ti;
-    });
-    this.selectedItems = tags;
-  }
-
-  public add(event: MatChipInputEvent) { }
 
   @Input()
-  public removeCallback: (item: TagItem) => boolean;
+  public loadCallback: (topicId: string, role: TopicParticipantEnum) => TopicParticipantEntity[];
+
+  @Input()
+  public removeCallback: (userId: string) => boolean;
 
   @Input()
   public addCallback: (userId: string, role: TopicParticipantEnum) => string;
 
-  @Input()
-  public loadCallback: (topicId: string) => TopicParticipantEntity[];
 
-  public removeClick(item: TagItem) {
-    let deleted = this.removeCallback(item)
+  public userTagsLoadCallback = (entityId: string) => {
+    //hack, faking the entity
+    let es = this.loadCallback(entityId, this.role);
+    let fes = es.map(i => {
+      let name = this.usersSvc.getFullNameByUserId(i.tag_id);;
+      let e: TagBaseEntity = {
+        id: i.tag_id,
+        name
+      };
+      return e;
+    });
 
-    if (deleted) {
-      pull(this.selectedItems, item);
-    }
+    return fes;
   }
 
-  public selected(event: MatAutocompleteSelectedEvent) {
-    let userId = event.option.value.userId;
-
-    let bindingId = this.addCallback(userId, this.role);
-
-    let tag: TagItem = cloneDeep(event.option.value);
-    tag.bindingId = bindingId;
-
-    this.selectedItems.push(tag);
-
-    this.searchInput.nativeElement.value = '';
-    this.filterInputFormControl.setValue(null);
+  public userTagsRemoveCallback = (item: TagBaseEntity) => {
+    let userId = item.id;
+    this.removeCallback(userId);
   }
+
+  public userTagsAddCallback = (userId: string, entityId: string) => {
+    let id = this.addCallback(userId, this.role);
+    return id;
+  }
+
+
+
+  public userTagsSearchCallback = (str: string, entityId: string) => {
+    let sstr = str.toLowerCase();
+
+    let items = this.userEntSvc.getByFilter(i => {
+      let firstName = i.firstName ? i.firstName.toLowerCase() : '';
+      let lastName = i.lastName ? i.lastName.toLowerCase() : '';
+
+      let matches = firstName.includes(sstr) || lastName.includes(sstr);
+      return matches;
+    });
+
+    //hack, faking the entity
+    let results = items.map((u) => {
+      let name = `${u.firstName} ${u.lastName}`;
+      let item: TagBaseEntity = { name, id: u.id };
+      return item;
+    });
+
+    return results;
+  }
+
+
+
+
+
+
+
 }
 
 

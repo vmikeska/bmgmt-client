@@ -1,20 +1,21 @@
 import * as moment from 'moment';
 import { Moment } from 'moment';
 import { TaskTypeEnum, WorkloadResponse } from 'src/app/api/task/task-ints';
+import { TaskEntity } from 'src/app/data/entities/entities';
 import { Day, Week, EventPosition } from './work-load-data-loader.service';
 
 
 export class AssignTaskEvents {
 
   constructor(
-    private response: WorkloadResponse,
+    private tasks: TaskEntity[],
     private days: Day[],
     private weeks: Week[]
   ) {
   }
 
   public assign() {
-    this.response.tasks.forEach((task) => {
+    this.tasks.forEach((task) => {
       let isDateRangeType = [TaskTypeEnum.ExactFlexible, TaskTypeEnum.ExactStatic].includes(task.type);
       if (isDateRangeType) {
 

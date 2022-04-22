@@ -1,44 +1,10 @@
-<mat-form-field
-  class="tagger-form-filed"
-  appearance="fill"
+<app-list-tagger
+  [entityId]="topicId"
+  [removeCallback]="userTagsRemoveCallback"
+  [addCallback]="userTagsAddCallback"
+  [loadCallback]="userTagsLoadCallback"
+  [searchCallback]="userTagsSearchCallback"
+  [editable]="true"
+  emptyPlaceholder="No users yet"
 >
-  <mat-label>Select user</mat-label>
-
-  <mat-chip-list
-    #chipList
-    aria-orientation="horizontal"
-  >
-    <mat-chip
-      *ngFor="let item of selectedItems"
-      (removed)="removeClick(item)"
-    >
-      {{item.name}}
-      <button matChipRemove>
-        <mat-icon>cancel</mat-icon>
-      </button>
-    </mat-chip>
-
-    <input
-      placeholder="New user..."
-      #searchInput
-      [formControl]="filterInputFormControl"
-      [matAutocomplete]="autox"
-      [matChipInputFor]="chipList"
-      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-      (matChipInputTokenEnd)="add($event)"
-    >
-  </mat-chip-list>
-
-  <mat-autocomplete
-    #autox="matAutocomplete"
-    (optionSelected)="selected($event)"
-  >
-    <mat-option
-      *ngFor="let item of filteredSearchItems"
-      [value]="item"
-    >
-      {{item.name}}
-    </mat-option>
-  </mat-autocomplete>
-
-</mat-form-field>
+</app-list-tagger>

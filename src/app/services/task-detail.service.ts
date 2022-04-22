@@ -35,7 +35,7 @@ export class TaskDetailService {
       return;
     }
 
-    this.pes = this.taskParticipEntSvc.list.filter(p => p.topic_id === id);
+    this.pes = this.taskParticipEntSvc.list.filter(p => p.entity_id === id);
     this.pb = this.projectBindingSvc.list.find(p => p.task_id === id);
 
     let adminsCount = this.participantsByType(TopicParticipantEnum.Admin);

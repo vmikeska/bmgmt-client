@@ -24,7 +24,7 @@ export class ProjectDetailService {
       return;
     }
 
-    let participBindings = this.projParEntSvc.getByFilter(i => i.topic_id === id);
+    let participBindings = this.projParEntSvc.getByFilter(i => i.entity_id === id);
 
     let adminsCount = 0;
     let observersCount = 0;
